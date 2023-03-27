@@ -6,13 +6,38 @@
     </title>
 </head>
 <body>
-  <div class="">Name</div>
-  <div>{{name}}</div>
-  <div class="">Verein</div>
-  <div>{{verein.name}}</div>
-  <div class="">Alter</div>
-  <div>{{alter}}</div>
-  <div class="">Gewicht</div>
-  <div>{{gewicht}}</div>
+  <a href="/wettkaempfer">Liste aller Wettkämpfer</a>
+  <form action="/wettkaempfer" method="POST">
+    <input type="hidden" name="id" value="{{kaempfer.id}}"/>
+    
+    <div class="">Verein</div>
+    {{#each vereine}}
+      {{name}}
+      <label><input type="radio" name="vereinsid" value="{{id}}" {{setChecked ../kaempfer.verein.id id}}/></label>
+    {{/each}}
+
+    <div class="">Name, Vorname</div>
+    <div><input type="string" name="name" value="{{kaempfer.name}}"/></div>
+
+    <div class="">Alter</div>
+    <div><input type="string" name="alter" value="{{kaempfer.alter}}"/></div>
+
+    <div class="">Geschlecht</div>
+    <div>
+      {{#each geschlechter}}
+      {{name}}
+      <label><input type="radio" name="geschlecht" value="{{id}}" {{setChecked ../kaempfer.geschlecht id}}/></label>
+      {{/each}}
+    </div>
+
+    <div class="">Gewicht</div>
+    <div><input type="number" name="gewicht" value="{{kaempfer.gewicht}}"/></div>
+
+    <button type="submit">Judoka eintragen</button>
+  </form>
 </body>
+<script type="text/javascript">
+  
+</script>
+
 </html>

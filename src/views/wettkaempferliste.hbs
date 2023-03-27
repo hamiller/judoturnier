@@ -6,6 +6,8 @@
     </title>
 </head>
 <body>
+    <a href="/wettkaempfer-neu">Neuen Wettkämpfer eintragen</a>
+
     <table>
         <thead>
             <th>Name</th>
@@ -13,18 +15,29 @@
             <th>Verein</th>
             <th>Alter</th>
             <th>Gewicht</th>
+            <th></th>
+            <th></th>
         </thead>
         <tbody>
-          <tr>
           {{#kaempferListe}}
-          <td>{{name}}</td>
-          <td>{{geschlecht}}</td>
-          <td>{{verein.name}}</td>
-          <td>{{alter}}</td>
-          <td>{{gewicht}}</td>
-          {{/kaempferListe}}
+          <tr>
+            <td>{{name}}</td>
+            <td>{{geschlecht}}</td>
+            <td>{{verein.name}}</td>
+            <td>{{alter}}</td>
+            <td>{{gewicht}}</td>
+            <td><a href="/wettkaempfer/{{ id }}">Bearbeiten</a></td>
+            <td><a href="#" onclick="deleteWK({{ id }})">Löschen</a></td>
           </tr>
+          {{/kaempferListe}}
         </tbody>
     </table>
 </body>
+<script type="text/javascript">
+    const deleteWK = async (id) => {fetch("/wettkaempfer/"+ id, {method: "DELETE"})
+    .then(() => { window.location.reload(); })
+    .catch(error => {
+        console.error("Error deleting user:", error);
+    });};
+</script>
 </html>

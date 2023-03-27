@@ -1,10 +1,13 @@
 import express, { Application } from 'express';
 import { useExpressServer } from 'routing-controllers';
+import httpContext from 'express-http-context';
+import bodyParser from 'body-parser'
 import dotenv from 'dotenv';
 import { getLogger } from './application/logger';
 import 'reflect-metadata';
 import { WettkaempferController } from './adapter/primary/wettkaempfer.controller'
 import { errorHandler } from './application/errorhandler';
+import hbs from 'hbs';
 
 dotenv.config();
 
@@ -18,6 +21,7 @@ export default class AppServer {
     AppServer.app = express();
     this.initConfigs(AppServer.app);
     this.initControllers(AppServer.app);
+    this.initHbsHelperMethods();
   }
 
   public get app(): Application {
@@ -32,6 +36,16 @@ export default class AppServer {
 
   private initControllers(app: Application): void {
     logger.debug("Initialisiere Controller");
+    // all code from here on has access to the same context for each request
+    app.use(httpContext.middleware);
+    app.use((req, res, next) => {
+      // See: https://stackoverflow.com/questions/55611335/node-js-express-unable-to-retrieve-value-from-http-context-for-post-and-put-re/55995352#55995352
+      httpContext.ns.bindEmitter(req);
+      httpContext.ns.bindEmitter(res);
+      next();
+    });
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
     useExpressServer(app, {
       controllers: [
         WettkaempferController
@@ -41,6 +55,16 @@ export default class AppServer {
     app.use(errorHandler);
   }
 
+  private initHbsHelperMethods() {
+    hbs.registerHelper('setChecked', function (value, currentValue) {
+      if ( value == currentValue ) {
+         return "checked";
+      } else {
+         return "";
+      }
+    });
+  }
+
   async start() {
     logger.debug("Starte...");
     AppServer.app.listen(port, () => {
@@ -48,42 +72,3 @@ export default class AppServer {
     });
   }
 }
-// // Datenstruktur für Teilnehmer
-// let participants = [];
-
-// // Middleware zur Verarbeitung von JSON-Body
-// app.use(bodyParser.json());
-
-// // Routing für die Startseite
-// app.get('/', (req, res) => {
-//   res.send('addparticipant.html');
-// });
-
-// // Routing für das Hinzufügen von Teilnehmern
-// app.post('/add-participant', (req, res) => {
-//   const participant = {
-//     name: req.body.name,
-//     weight: req.body.weight,
-//     age: req.body.age,
-//     club: req.body.club
-//   };
-//   participants.push(participant);
-//   res.redirect('/');
-// });
-
-// // Routing für das Hinzufügen von Wettkampfergebnissen
-// app.post('/add-result', (req, res) => {
-//   const result = {
-//     winner: req.body.winner,
-//     fightTime: req.body.fightTime,
-//     score: req.body.score,
-//     penalties: req.body.penalties
-//   };
-//   // Hier kann das Ergebnis weiterverarbeitet werden (z.B. in die nächste Runde übernehmen)
-//   res.redirect('/');
-// });
-
-// // Starten des Servers
-// app.listen(port, () => {
-//   console.log(`Server listening at http://localhost:${port}`)
-// });
