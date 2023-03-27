@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        titel
+    </title>
+</head>
+<body>
+    <table>
+        <thead>
+            <th>Name</th>
+            <th>Geschlecht</th>
+            <th>Verein</th>
+            <th>Alter</th>
+            <th>Gewicht</th>
+        </thead>
+        <tbody>
+          <tr>
+          {{#kaempferListe}}
+          <td>{{name}}</td>
+          <td>{{geschlecht}}</td>
+          <td>{{verein.name}}</td>
+          <td>{{alter}}</td>
+          <td>{{gewicht}}</td>
+          {{/kaempferListe}}
+          </tr>
+        </tbody>
+    </table>
+</body>
+</html>
