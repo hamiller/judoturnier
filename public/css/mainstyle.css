@@ -1,0 +1,8 @@
+.gewichtsklasse {
+  background-color: lightblue;
+  margin: 2px;
+}
+
+.gewichtsklassen {
+  display: flex;
+}

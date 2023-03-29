@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Turnierübersicht</title>
+    <link rel="stylesheet" href="/css/mainstyle.css">
 </head>
 <body>
   {{> nav }}
@@ -9,18 +10,17 @@
   <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
   
   <h2>Gewichtsklassen</h2>
+  <div class="gewichtsklassen">
   {{#each gewichtsklassengruppen}}
     <div class="gewichtsklasse">
       <div>{{gruppenGeschlecht}}</div>
+      <div>{{altersKlasse}}</div>
       <div>Bis {{name}}kg</div>
       <div>Teilnehmer:</div>
       <table>
         <tbody>
         {{#each teilnehmer}}
-          <tr><td>{{id}}</td>
-            <td>{{name}}</td>
-            <td>{{geschlecht}}</td>
-            <td>{{altersklasse}}</td>
+          <tr><td>{{name}}</td>
             <td>{{verein.name}}</td>
             <td>{{gewicht}}</td></tr>
         {{/each}}
@@ -28,7 +28,7 @@
       </table>
     </div>
   {{/each}}
-
+</div>
 
 </body>
 <script type="text/javascript">

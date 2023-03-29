@@ -23,7 +23,7 @@ export default class AppServer {
     AppServer.app = express();
     this.initConfigs(AppServer.app);
     this.initControllers(AppServer.app);
-    this.initHbsHelperMethods();
+    this.initHbsHelperMethods(AppServer.app);
   }
 
   public get app(): Application {
@@ -58,7 +58,8 @@ export default class AppServer {
     app.use(errorHandler);
   }
 
-  private initHbsHelperMethods() {
+  private initHbsHelperMethods(app: Application) {
+    app.use(express.static('public'));
     hbs.registerHelper('setChecked', function (value, currentValue) {
       if ( value == currentValue ) {
         return "checked";
