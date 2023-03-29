@@ -11,7 +11,7 @@ const vereinRepo = new VereinRepository();
 export class WiegenService {
 
   
-  async alleGewogenenKaempfer(): Promise<Wettkaempfer[]> {
+  async alleKaempfer(): Promise<Wettkaempfer[]> {
     let kaempfer = await wettkaempferRepo.all();
     kaempfer.sort((a, b) => {
       if (a.geschlecht === b.geschlecht) {

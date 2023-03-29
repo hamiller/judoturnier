@@ -9,20 +9,12 @@
   <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
   
   <button type="button" onclick="createWKGroups()">Gruppen bilden</button>
+  <a href="/turnier/gewichtsklassen">Gewichtsklassen</a>
 
-
-  {{#each wettkampfGruppen}}
-    <div>Gruppenname: {{name}}</div>
-    <div>Gruppentyp: {{typ}}</div>
-
-    {{#each begegnungen}}
-      <div>{{wettkaempfer1.name}}</div><div>-</div><div>{{wettkaempfer2.name}}</div>
-    {{/each}}
-
-  {{/each}}
 </body>
 <script type="text/javascript">
-  const createWKGroups = () => {fetch("/turnier", {method: "POST"})};
+  const createWKGroups = () => {fetch("/turnier/wettkampfgruppen", {method: "POST"})};
+  
 </script>
 
 </html>

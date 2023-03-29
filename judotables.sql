@@ -1,4 +1,8 @@
+
+
 drop table wettkaempfer;
+
+
 drop table verein;
 
 

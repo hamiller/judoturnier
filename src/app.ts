@@ -60,7 +60,6 @@ export default class AppServer {
 
   private initHbsHelperMethods() {
     hbs.registerHelper('setChecked', function (value, currentValue) {
-      console.log("compare", value, currentValue);
       if ( value == currentValue ) {
         return "checked";
       } else {

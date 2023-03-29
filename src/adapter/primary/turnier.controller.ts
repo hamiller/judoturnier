@@ -22,16 +22,25 @@ export class TurnierController {
   @Render("turnieruebersicht.hbs")
   async ladeTurnieruebersicht(@Res() res: Response) {
     logger.debug('Turnierübersicht angefragt');
-    const wks = await wiegenService.alleGewogenenKaempfer();
-    return { anzahl: wks.length };
+    const wks = await wiegenService.alleKaempfer();
+    return { anzahlwk: wks.length, con: "guble2" };
   }
 
-  @Post('/turnier')
+  @Post('/turnier/wettkampfgruppen')
   @Render("turnieruebersicht.hbs")
   async erstelleWettkampfGruppen(@Res() res: Response) {
     logger.debug('erstelle WettkampfGruppen');
-    const wks = await wiegenService.alleGewogenenKaempfer();
+    const wks = await wiegenService.alleKaempfer();
     const wettkampfGruppen = turnierService.erstelleGruppen(wks);
-    return { wettkampfGruppen: wettkampfGruppen };
+    return { anzahlwk: wks.length, wettkampfgruppen: wettkampfGruppen };
+  }
+
+  @Get('/turnier/gewichtsklassen')
+  @Render("gewichtsklassen.hbs")
+  async erstelleGewichtsklassen(@Res() res: Response) {
+    logger.debug('erstelle Gewichtsklassen');
+    const wks = await wiegenService.alleKaempfer();
+    const gwks = turnierService.teileInGewichtsklassen(wks);
+    return { gewichtsklassengruppen: gwks, anzahlwk: wks.length };
   }
 }

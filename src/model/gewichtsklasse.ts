@@ -1,22 +1,55 @@
-export const Gewichtsklasse = {
-  m: {
-    U13:                [28, 31, 34, 37, 40, 43, 46, 50, 55, -1],
-    U15:                [34, 37, 40, 43, 46, 50, 55, 60, 66, -1],
-    U15_POKAL:          [40, 46, 55, 66, -1],
-    U18:                [46, 50, 55, 60, 66, 73, 81, 90, -1],
-    U18_MEISTERSCHAFT:  [50, 55, 60, 66, 73, -1],
-    U21:                [60, 66, 73, 81, 90, 100, -1],
-    MÄNNER:             [60, 66, 73, 81, 90, 100, -1],
-    BUNDESLIGA:         [60, 66, 73, 81, 90, 100, -1],
-  },
-  w: {
-    U13:                [27, 30, 33, 36, 40, 44, 48, 52, 57, -1],
-    U15:                [33, 36, 40, 44, 48, 52, 57, 63, -1],
-    U15_POKAL:          [40, 48, 57, 63, -1],
-    U18:                [40, 44, 48, 52, 57, 63, 70, 78, -1],
-    U18_MEISTERSCHAFT:  [44, 48, 52, 57, 63, -1],
-    U21:                [48, 52, 57, 63, 70, 78, -1],
-    FRAUEN:             [48, 52, 57, 63, 70, 78, -1],
-    BUNDESLIGA:         [48, 52, 57, 63, 70, 78, -1],
-  },  
+import { Altersklasse } from "../model/altersklasse";
+import { Geschlecht } from "../model/geschlecht";
+
+// ACHTUNG: Keine Unterscheidung zwischen normalen Turnieren, Pokalen, Meisterschaften und Bundesliga!!
+const config: GewichtsklasseConfig = {
+  geschlechter: [
+    {
+      geschlecht: Geschlecht.m,
+      altersKlassenGewichte: [
+        {altersklasse: Altersklasse.U9,       gewichte: [1000]},
+        {altersklasse: Altersklasse.U11,      gewichte: [1000]},
+        {altersklasse: Altersklasse.U13,      gewichte: [28, 31, 34, 37, 40, 43, 46, 50, 55, 1000]},
+        {altersklasse: Altersklasse.U15,      gewichte: [34, 37, 40, 43, 46, 50, 55, 60, 66, 1000]},
+        {altersklasse: Altersklasse.U18,      gewichte: [46, 50, 55, 60, 66, 73, 81, 90, 1000]},
+        {altersklasse: Altersklasse.U21,      gewichte: [60, 66, 73, 81, 90, 100, 1000]},
+        {altersklasse: Altersklasse.Maenner,  gewichte: [60, 66, 73, 81, 90, 100, 1000]},
+      ],
+    },
+    {
+      geschlecht: Geschlecht.w,
+      altersKlassenGewichte: [
+        {altersklasse: Altersklasse.U9,       gewichte: [1000]},
+        {altersklasse: Altersklasse.U11,      gewichte: [1000]},
+        {altersklasse: Altersklasse.U13,      gewichte: [27, 30, 33, 36, 40, 44, 48, 52, 57, 1000]},
+        {altersklasse: Altersklasse.U15,      gewichte: [33, 36, 40, 44, 48, 52, 57, 63, 1000]},
+        {altersklasse: Altersklasse.U18,      gewichte: [40, 44, 48, 52, 57, 63, 70, 78, 1000]},
+        {altersklasse: Altersklasse.U21,      gewichte: [48, 52, 57, 63, 70, 78, 1000]},
+        {altersklasse: Altersklasse.Frauen,   gewichte: [48, 52, 57, 63, 70, 78, 1000]},
+      ]
+    }
+  ]
 }
+
+interface GewichtsklasseConfig {
+  geschlechter: GeschlechtsConfig[];
+}
+
+interface GeschlechtsConfig {
+  geschlecht: Geschlecht,
+  altersKlassenGewichte: GewichtsKlasse[],
+}
+
+export interface GewichtsKlasse {
+  altersklasse: Altersklasse,
+  gewichte: number[]
+}
+
+
+export const getGewichte = (geschlecht: Geschlecht, alter: Altersklasse): number[] => {
+  return config.geschlechter
+    .filter(c => c.geschlecht == geschlecht)
+    .flatMap(c => c.altersKlassenGewichte)
+    .filter(akg => akg.altersklasse == alter)
+    .flatMap(ak => ak.gewichte);
+};

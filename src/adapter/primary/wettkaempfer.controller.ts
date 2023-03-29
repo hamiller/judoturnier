@@ -18,7 +18,7 @@ export class WettkaempferController {
   @Render("wettkaempferliste.hbs")
   async ladeWettkaempferListe(@Res() res: Response) {
     logger.debug('Alle Wettkaempfer angefragt');
-    const wks = await wiegenService.alleGewogenenKaempfer();
+    const wks = await wiegenService.alleKaempfer();
     return { kaempferListe: wks };
   }
 
