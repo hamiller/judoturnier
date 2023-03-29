@@ -5,9 +5,11 @@ import bodyParser from 'body-parser'
 import dotenv from 'dotenv';
 import { getLogger } from './application/logger';
 import 'reflect-metadata';
-import { WettkaempferController } from './adapter/primary/wettkaempfer.controller'
+import { WettkaempferController } from './adapter/primary/wettkaempfer.controller';
+import { TurnierController } from './adapter/primary/turnier.controller';
 import { errorHandler } from './application/errorhandler';
 import hbs from 'hbs';
+import * as path from 'path';
 
 dotenv.config();
 
@@ -31,7 +33,7 @@ export default class AppServer {
   private initConfigs(app: Application): void {
     logger.debug("Setze Rendering Engine");
     app.set('view engine', 'hbs');
-    app.set('views', './src/views')
+    app.set('views', './src/views');
   }
 
   private initControllers(app: Application): void {
@@ -48,7 +50,8 @@ export default class AppServer {
     app.use(bodyParser.urlencoded({ extended: false }));
     useExpressServer(app, {
       controllers: [
-        WettkaempferController
+        WettkaempferController,
+        TurnierController
       ],
       defaultErrorHandler: false,
     });
@@ -57,10 +60,17 @@ export default class AppServer {
 
   private initHbsHelperMethods() {
     hbs.registerHelper('setChecked', function (value, currentValue) {
+      console.log("compare", value, currentValue);
       if ( value == currentValue ) {
-         return "checked";
+        return "checked";
       } else {
-         return "";
+        return "";
+      }
+    });
+    const partialsDir = path.join(__dirname, '../src/views/partials');
+    hbs.registerPartials(partialsDir, (err?: Error) => {
+      if (err) {
+        logger.error(err);
       }
     });
   }

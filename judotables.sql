@@ -1,13 +1,12 @@
 drop table wettkaempfer;
 drop table verein;
 
-CREATE TYPE altersklasse AS ENUM ('U9', 'U11', 'U13');
 
 CREATE TABLE wettkaempfer (
     id SERIAL,
     "name" VARCHAR(50),
     geschlecht VARCHAR(1),
-    alter altersklasse,
+    altersklasse VARCHAR(10),
     verein BIGINT,
     gewicht FLOAT,
     PRIMARY KEY (id)
@@ -21,7 +20,7 @@ CREATE TABLE verein (
 
 insert into verein("name") values ('Verein 1'), ('Verein 2'),('Verein 3'),('Verein 4');
 
-insert into wettkaempfer(name, geschlecht, alter, verein, gewicht) values
+insert into wettkaempfer(name, geschlecht, altersklasse, verein, gewicht) values
     ('Kämpfer 0', 'm', 'U9', 1, 24.6),
     ('Kämpfer 1', 'm', 'U9', 1, 24.7),
     ('Kämpfer 2', 'm', 'U9', 1, 24.8),

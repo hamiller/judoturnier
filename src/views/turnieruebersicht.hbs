@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Turnierübersicht</title>
+</head>
+<body>
+  {{> nav }}
+
+  <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
+  
+  <button type="button" onclick="createWKGroups()">Gruppen bilden</button>
+
+
+  {{#each wettkampfGruppen}}
+    <div>Gruppenname: {{name}}</div>
+    <div>Gruppentyp: {{typ}}</div>
+
+    {{#each begegnungen}}
+      <div>{{wettkaempfer1.name}}</div><div>-</div><div>{{wettkaempfer2.name}}</div>
+    {{/each}}
+
+  {{/each}}
+</body>
+<script type="text/javascript">
+  const createWKGroups = () => {fetch("/turnier", {method: "POST"})};
+</script>
+
+</html>

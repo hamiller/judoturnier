@@ -3,6 +3,7 @@ import { Verein } from "../model/verein";
 import { WettkaempferRepository } from "../adapter/secondary/wettkaempfer.repository";
 import { getLogger } from './logger';
 import { VereinRepository } from "../adapter/secondary/verein.repository";
+import { Geschlecht } from "../model/geschlecht";
 
 const logger = getLogger('WiegenService');
 const wettkaempferRepo = new WettkaempferRepository();
@@ -14,9 +15,13 @@ export class WiegenService {
     let kaempfer = await wettkaempferRepo.all();
     kaempfer.sort((a, b) => {
       if (a.geschlecht === b.geschlecht) {
-        return a.alter - b.alter;
+        if (a.altersklasse < b.altersklasse) 
+          return 1;
+          if (a.altersklasse > b.altersklasse) 
+          return -1;
+        return 0;
       }
-      return a.geschlecht === 'w' ? -1 : 1;
+      return a.geschlecht === Geschlecht.w ? -1 : 1;
     });
     return kaempfer;
   }

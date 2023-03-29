@@ -3,10 +3,13 @@ import { Controller, Get, Post, Delete, OnUndefined, Body, Render, Res, Param } 
 import { getLogger } from "../../application/logger";
 import { WiegenService } from '../../application/wiegen.service';
 import { Wettkaempfer } from '../../model/wettkaempfer';
+import { Altersklasse } from '../../model/altersklasse';
+import { Geschlecht } from '../../model/geschlecht';
+import { type } from 'os';
 
 const logger = getLogger('WettkaempferController');
 const wiegenService = new WiegenService();
-const geschlechter = [{id: 'm', name: 'männlich'}, {id:'w', name: "weiblich"}];
+// const geschlechter = [{id: 'm', name: 'männlich'}, {id:'w', name: "weiblich"}];
 
 @Controller()
 export class WettkaempferController {
@@ -22,17 +25,25 @@ export class WettkaempferController {
   @Post('/wettkaempfer')
   async speichereWettkaempfer(@Body() wk: any, @Res() res: Response) {
     logger.debug('speichere Wettkaempfer ', {wk: wk} );
+    const geschlechtString: keyof typeof Geschlecht = wk.geschlecht;
+    const altersklasseString: keyof typeof Altersklasse = wk.altersklasse;
+    const g: Geschlecht = Geschlecht[geschlechtString];
     const wettkaempfer : Wettkaempfer = { 
       id: (wk.id ? parseInt(wk.id): undefined), 
       name: wk.name, 
       verein: {id: parseInt(wk.vereinsid), name: wk.vereinsname}, 
-      geschlecht: wk.geschlecht, 
-      alter: wk.alter, 
-      gewicht: (wk.gewicht ? parseFloat(wk.gewicht): undefined) };
+      geschlecht: g, 
+      altersklasse: Altersklasse[altersklasseString], 
+      gewicht: (wk.gewicht ? parseFloat(wk.gewicht): undefined) 
+    };
+
     if (!wettkaempfer.name) {
       res.redirect('/wettkaempfer');
       return res;
     }
+    console.log('speichere Wettkaempfer parsed:', {wk: wettkaempfer} );
+    console.log(wettkaempfer.altersklasse, typeof wettkaempfer.altersklasse, typeof g, typeof altersklasseString);
+    
 
     const id = await wiegenService.speichereKaempfer(wettkaempfer);
     res.redirect('wettkaempfer/'+id);
@@ -52,7 +63,7 @@ export class WettkaempferController {
     logger.debug('Wettkaempfer-Seite angefragt ' + id);
     const wk = await wiegenService.ladeKaempfer(id);
     const vs = await wiegenService.alleVereine();
-    return { kaempfer: wk, vereine: vs, geschlechter: geschlechter };
+    return { kaempfer: wk, vereine: vs, geschlechter: Geschlecht, altersklasse: Altersklasse };
   }
 
   @Get('/wettkaempfer-neu')
@@ -60,6 +71,7 @@ export class WettkaempferController {
   async leererWettkaempfer(@Res() res: Response) {
     logger.debug('Wettkaempfer-Seite');
     const vs = await wiegenService.alleVereine();
-    return { kaempfer: {}, vereine: vs, geschlechter: geschlechter };
+    console.log(Altersklasse)
+    return { kaempfer: {}, vereine: vs, geschlechter: Geschlecht, altersklasse: Altersklasse };
   }
 };

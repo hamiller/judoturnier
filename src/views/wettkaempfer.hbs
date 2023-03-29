@@ -1,34 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>
-        titel
-    </title>
+    <title>Wettkämpfer</title>
 </head>
 <body>
-  <a href="/wettkaempfer">Liste aller Wettkämpfer</a>
+  {{> nav }}
+
   <form action="/wettkaempfer" method="POST">
     <input type="hidden" name="id" value="{{kaempfer.id}}"/>
     
-    <div class="">Verein</div>
     {{#each vereine}}
-      {{name}}
-      <label><input type="radio" name="vereinsid" value="{{id}}" {{setChecked ../kaempfer.verein.id id}}/></label>
+      <label><input type="radio" name="vereinsid" value="{{id}}" {{setChecked ../kaempfer.verein.id id}}/>{{name}}</label>
     {{/each}}
 
     <div class="">Name, Vorname</div>
     <div><input type="string" name="name" value="{{kaempfer.name}}"/></div>
 
     <div class="">Alter</div>
-    <div><input type="string" name="alter" value="{{kaempfer.alter}}"/></div>
+    {{#each altersklasse as |name index|}}
+      <label><input type="radio" name="altersklasse" value="{{index}}" {{setChecked ../kaempfer.altersklasse name}}/>{{name}}</label>
+    {{/each}}
+
 
     <div class="">Geschlecht</div>
-    <div>
-      {{#each geschlechter}}
-      {{name}}
-      <label><input type="radio" name="geschlecht" value="{{id}}" {{setChecked ../kaempfer.geschlecht id}}/></label>
-      {{/each}}
-    </div>
+    {{#each geschlechter as |name index|}}
+      <label><input type="radio" name="geschlecht" value="{{index}}" {{setChecked ../kaempfer.geschlecht name}}/>{{name}}</label>
+    {{/each}}
 
     <div class="">Gewicht</div>
     <div><input type="number" name="gewicht" value="{{kaempfer.gewicht}}"/></div>

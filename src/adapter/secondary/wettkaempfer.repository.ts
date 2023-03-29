@@ -1,5 +1,7 @@
 import { pool } from './db.pool';
 import { Wettkaempfer } from "../../model/wettkaempfer";
+import { Geschlecht } from '../../model/geschlecht';
+import { Altersklasse } from '../../model/altersklasse';
 import { getLogger } from '../../application/logger';
 
 const logger = getLogger('WettkaempferRepository');
@@ -11,8 +13,8 @@ export class WettkaempferRepository {
     logger.debug("Fetching all wettkaempfer from db");
     const client = await pool.connect();
     try {
-      const { rows } = await client.query('SELECT w.*, v.name as vereinsname from wettkaempfer w left join verein v on w.verein = v.id');
-      return mapRows(rows);
+      const { rows } = await client.query('SELECT w.*, v.id as vereinsid, v.name as vereinsname from wettkaempfer w left join verein v on w.verein = v.id');
+      return entitiesToDtos(rows);
     } catch (error) {
       logger.error(error);
       throw error;
@@ -27,7 +29,7 @@ export class WettkaempferRepository {
     try {
       const { rows } = await client.query('SELECT w.*, v.id as vereinsid, v.name as vereinsname from wettkaempfer w left join verein v on w.verein = v.id where w.id = $1', [id]);
       if (rows.length > 0) {
-        return mapRow(rows[0]);
+        return entityToDto(rows[0]);
       }
       return null;
     } catch (error) {
@@ -42,18 +44,20 @@ export class WettkaempferRepository {
     logger.debug("Saving wettkaempfer to db");
     const client = await pool.connect();
     try {
+      let entity = dtoToEntity(wettkaempfer);
       let query;
-      if (wettkaempfer.id) {
+      if (entity.id) {
         query = {
-          text: 'UPDATE wettkaempfer w SET name = $2, alter = $3, geschlecht = $4, gewicht = $5, verein = $6 WHERE w.id = $1 RETURNING id',
-          values: [wettkaempfer.id, wettkaempfer.name, wettkaempfer.alter, wettkaempfer.geschlecht, wettkaempfer.gewicht, wettkaempfer.verein.id]
+          text: 'UPDATE wettkaempfer w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6 WHERE w.id = $1 RETURNING id',
+          values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid]
         };
       } else {
         query = {
-          text: 'INSERT INTO wettkaempfer(name, alter, geschlecht, gewicht, verein) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-          values: [wettkaempfer.name, wettkaempfer.alter, wettkaempfer.geschlecht, wettkaempfer.gewicht, wettkaempfer.verein.id]
+          text: 'INSERT INTO wettkaempfer(name, altersklasse, geschlecht, gewicht, verein) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+          values: [entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid]
         };
       }
+      console.log(query);
       const { rows } = await client.query(query);
       return rows[0].id;
     } catch (error) {
@@ -83,18 +87,20 @@ export class WettkaempferRepository {
   }
 }
 
-const mapRows = (rows: any[]): Wettkaempfer[] => {
+const entitiesToDtos = (rows: any[]): Wettkaempfer[] => {
   return rows.map((row) => {
-      return mapRow(row);
+      return entityToDto(row);
   });
 };
 
-const mapRow = (row: any): Wettkaempfer => {
+const entityToDto = (row: any): Wettkaempfer => {
+  const geschlechtValue: keyof typeof Geschlecht = row.geschlecht;
+  const altersklasseValue: keyof typeof Altersklasse = row.altersklasse;
   return {
       id: row.id,
       name: row.name,
-      geschlecht: row.geschlecht,
-      alter: row.alter,
+      geschlecht: Geschlecht[geschlechtValue],
+      altersklasse: Altersklasse[altersklasseValue],
       verein: {
         id: row.vereinsid,
         name: row.vereinsname,
@@ -102,3 +108,16 @@ const mapRow = (row: any): Wettkaempfer => {
       gewicht: row.gewicht,
   };
 };
+
+const dtoToEntity = (dto: Wettkaempfer): any => {
+  const geschlechtKey = Object.keys(Geschlecht).filter(key => Geschlecht[key as keyof typeof Geschlecht] == dto.geschlecht)[0];
+  const altersklasseKey = Object.keys(Altersklasse).filter(key => Altersklasse[key as keyof typeof Altersklasse] == dto.altersklasse)[0];
+  return {
+    id: dto.id,
+    name: dto.name,
+    geschlecht: geschlechtKey,
+    altersklasse: altersklasseKey,
+    vereinsid: dto.verein.id,
+    gewicht: dto.gewicht,
+  };
+}
