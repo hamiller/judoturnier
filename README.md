@@ -1,21 +1,10 @@
-Postgres in Docker
-```
-CREATE TYPE altersklasse AS ENUM ('U9', 'U11', 'U13');
+# Node Express Programm zur Judo-Turnierplanung.
 
-CREATE TABLE wettkaempfer (
-    id SERIAL,
-    "name" VARCHAR(50),
-    geschlecht VARCHAR(1),
-    alter altersklasse,
-    verein BIGINT,
-    gewicht FLOAT,
-    PRIMARY KEY (id)
-);
+Programmiert in Typescript mit handlebars (hbs) als Frontend Templating-Engine.
 
-CREATE TABLE verein (
-    id SERIAL,
-    "name" VARCHAR(50),
-    PRIMARY KEY (id)
-);
+DB ist Postgres in Docker
+siehe Datei `judotables.sql`
 
-```
+## Starten
+Für die Entwicklung einfach `npm run dev` ausführen.
+Dazu muss die DB gestartet sein: `docker-compose up -d`
