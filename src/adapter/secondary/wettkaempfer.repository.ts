@@ -57,7 +57,6 @@ export class WettkaempferRepository {
           values: [entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid]
         };
       }
-      console.log(query);
       const { rows } = await client.query(query);
       return rows[0].id;
     } catch (error) {

@@ -6,37 +6,41 @@
 </head>
 <body>
     {{> nav }}
-    
-    <table>
-        <thead>
-            <th>Name</th>
-            <th>Geschlecht</th>
-            <th>Verein</th>
-            <th>Alter</th>
-            <th>Gewicht</th>
-            <th></th>
-            <th></th>
-        </thead>
-        <tbody>
-          {{#kaempferListe}}
-          <tr>
-            <td>{{name}}</td>
-            <td>{{geschlecht}}</td>
-            <td>{{verein.name}}</td>
-            <td>{{alter}}</td>
-            <td>{{gewicht}}</td>
-            <td><a href="/wettkaempfer/{{ id }}">Bearbeiten</a></td>
-            <td><a href="#" onclick="deleteWK({{ id }})">Löschen</a></td>
-          </tr>
-          {{/kaempferListe}}
-        </tbody>
-    </table>
+
+    <div>
+        <div class="bodyheader">
+            <h2>Gemeldete Wettkämpfer</h2>
+            <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
+            <div class="actions">
+                <a href="/wettkaempfer-neu"><span class="material-icons md-48" title="Weitere Wettkämpfer eintragen">person_add</span></a>
+            </div>
+        </div>
+        
+        <ul class="wettkaempferliste generalcontent">
+            {{#kaempferListe}}
+            <li class="wettkaempferliste-wettkaempfer teilnehmerdaten">
+                <div class="wettkaempferliste-wettkaempfer-name">{{name}}</div>
+                <div>{{geschlecht}}</div>
+                <div>{{verein.name}}</div>
+                <div>{{alter}}</div>
+                <div>{{gewicht}}</div>
+                <div>
+                    <a href="/wettkaempfer/{{ id }}"><span class="material-icons">edit</span></a>
+                    <a href="#" onclick="deleteWK({{ id }})"><span class="material-icons">person_remove</span></a>
+                </div>
+            </li>
+            {{/kaempferListe}}
+        </ul>
+    </div>
 </body>
 <script type="text/javascript">
-    const deleteWK = async (id) => {fetch("/wettkaempfer/"+ id, {method: "DELETE"})
-    .then(() => { window.location.reload(); })
-    .catch(error => {
-        console.error("Error deleting user:", error);
-    });};
+    const deleteWK = async (id) => {
+        var sicher = confirm("Wirklich löschen?");
+        if (sicher) {
+            fetch("/wettkaempfer/"+ id, {method: "DELETE"})
+                .then(() => window.location.reload())
+                .catch(error => console.error("Error deleting user:", error));
+        };
+    };
 </script>
 </html>

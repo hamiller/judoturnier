@@ -4,6 +4,7 @@ import { getLogger } from "../../application/logger";
 import { WiegenService } from '../../application/wiegen.service';
 import { TurnierService } from '../../application/turnier.service';
 import { Wettkaempfer } from '../../model/wettkaempfer';
+import { Geschlecht } from '../../model/geschlecht';
 
 const logger = getLogger('TurnierController');
 const wiegenService = new WiegenService();
@@ -13,12 +14,6 @@ const turnierService = new TurnierService();
 export class TurnierController {
 
   @Get('/')
-  @Render("index.hbs")
-  async default(@Res() res: Response) {
-    return { };
-  }
-
-  @Get('/turnieruebersicht')
   @Render("turnieruebersicht.hbs")
   async ladeTurnieruebersicht(@Res() res: Response) {
     logger.debug('Turnierübersicht angefragt');
@@ -41,6 +36,10 @@ export class TurnierController {
     logger.debug('erstelle Gewichtsklassen');
     const wks = await wiegenService.alleKaempfer();
     const gwks = turnierService.teileInGewichtsklassen(wks);
-    return { gewichtsklassengruppen: gwks, anzahlwk: wks.length };
+    return { 
+      gewichtsklassengruppenWeiblich: gwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 
+      gewichtsklassengruppenMaennlich: gwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.m), 
+      anzahlwk: wks.length 
+    };
   }
 }

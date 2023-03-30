@@ -6,30 +6,53 @@
 </head>
 <body>
   {{> nav }}
-
-  <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
   
-  <h2>Gewichtsklassen</h2>
-  <div class="gewichtsklassen">
-  {{#each gewichtsklassengruppen}}
-    <div class="gewichtsklasse">
-      <div>{{gruppenGeschlecht}}</div>
-      <div>{{altersKlasse}}</div>
-      <div>Bis {{name}}kg</div>
-      <div>Teilnehmer:</div>
-      <table>
-        <tbody>
-        {{#each teilnehmer}}
-          <tr><td>{{name}}</td>
-            <td>{{verein.name}}</td>
-            <td>{{gewicht}}</td></tr>
-        {{/each}}
-        </tbody>
-      </table>
+  <div>
+    <div class="bodyheader">
+      <h2>Gewichtsklassen</h2>
+      <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
     </div>
-  {{/each}}
-</div>
 
+    <div class="grid">
+      <h1>Frauen</h1>
+      <div class="gewichtsklassen">
+      {{#each gewichtsklassengruppenWeiblich}}
+        <div class="generalcontent">
+          <div class="gewichtsklasse-meta">
+            <div>{{altersKlasse}}</div>
+            <div>Bis {{name}}kg</div>
+          </div>
+          <div class="gewichtsklasse-teilnehmer">
+          {{#each teilnehmer}}
+            <div class="teilnehmerdaten">
+            {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
+            </div>
+          {{/each}}
+          </div>
+        </div>
+      {{/each}}
+      </div>
+      
+      <h1>Männer</h1>
+      <div class="gewichtsklassen">
+      {{#each gewichtsklassengruppenMaennlich}}
+        <div class="generalcontent">
+          <div class="gewichtsklasse-meta">
+            <div>{{altersKlasse}}</div>
+            <div>Bis {{name}}kg</div>
+          </div>
+          <div class="gewichtsklasse-teilnehmer">
+          {{#each teilnehmer}}
+            <div class="teilnehmerdaten">
+            {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
+            </div>
+          {{/each}}
+          </div>
+        </div>
+      {{/each}}
+      </div>
+    </div>
+  </div>
 </body>
 <script type="text/javascript">
 

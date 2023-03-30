@@ -8,3 +8,14 @@ export enum Altersklasse {
   Maenner = "Männer",
   Frauen = "Frauen"
 }
+
+export const altersklasseSortOrder: { [key in Altersklasse]: number } = {
+  [Altersklasse.U9]: 0,
+  [Altersklasse.U11]: 1,
+  [Altersklasse.U13]: 2,
+  [Altersklasse.U15]: 3,
+  [Altersklasse.U18]: 4,
+  [Altersklasse.U21]: 5,
+  [Altersklasse.Maenner]: 6,
+  [Altersklasse.Frauen]: 6,
+};

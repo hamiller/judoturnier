@@ -1,8 +1,184 @@
-.gewichtsklasse {
-  background-color: lightblue;
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+:root {
+  --color-dark-grey: #666; 
+  --color-dark-grey2: #222; 
+  --color-grey3: #444;
+  --color-light-grey: #f4f5f7;
+  --color-light-grey2: #ededed;
+  --btn-color-text: white;
+  --box-shadow1: #091e424f;
+  --box-shadow2: #091e4240;
+  --error: #fa7030;
+  --info: #73ffa2;
+}
+
+* {
+  font-family: Roboto;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: white;
+  color: var(--color-dark-grey2);
+  height: 98%;
+  width: 90%;
+  margin-left: 25px;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+h1 {
+  color: black;
+  margin-top: 20px;
+}
+h2 {
+  font-size: 0.8em
+}
+
+.titel {
+  font-weight: bold;
+}
+
+li {
+  list-style: none;
+}
+
+.navbar {
+  background-color: var(--color-light-grey);
+  padding: 20px;
+}
+
+.actions a span {
+  margin: 10px;
+  font-size: 36px;
+}
+
+.navbar ul {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.grid {
+  display: grid;
+}
+
+.bodyheader {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.generalcontent {
+  background-color: var(--color-light-grey);
   margin: 2px;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.gewichtsklasse-meta {
+  font-size: 0.8em;
+}
+
+.teilnehmerdaten {
+  background-color: white;
+  box-shadow: 0 0 1px 0 var(--box-shadow1),0 2px 4px -1px var(--box-shadow2);
+  margin: 2px;
+  padding: 8px;
+  border-radius: 2px;
+}
+
+.gewichtsklasse-teilnehmer-meta {
+  font-size: 0.8em;
+  display: flex;
+  flex-direction: column;
+}
+.gewichtsklasse-teilnehmer-meta span {
+  font-size: 0.8em;
 }
 
 .gewichtsklassen {
   display: flex;
+  overflow: auto;
+}
+
+.gewichtsklassen .teilnehmerliste {
+  width: 150px;
+}
+
+.wettkaempferliste-wettkaempfer {
+  display: flex;
+  font-size: 0.8em
+}
+
+.wettkaempferliste-wettkaempfer > div {
+  width: 120px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.wettkaempferliste-wettkaempfer-name {
+  font-weight: bold;
+  font-size: 1.2em;
+  width: 250px !important;
+}
+
+.errormsg {
+  background-color: var(--error);
+  display: grid;
+  align-items: center;
+  text-align: center;
+  color: white;
+  height: 2em;
+  animation: hideDiv 0.5s forwards 5s;
+}
+
+.infomsg {
+  background-color: var(--info);
+  display: grid;
+  align-items: center;
+  text-align: center;
+  height: 2em;
+  animation: hideDiv 0.2s forwards 5s;
+}
+
+@keyframes hideDiv {
+  to {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.generalcontent form {
+  display: flex;
+  flex-direction: column;
+}
+
+.wettkaempfer {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.wettkaempfer > label {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.wettkaempfer.name {
+  font-weight: bold;
+}
+
+.wd100 {
+  width: 100px;
+}
+
+.wd300 {
+  width: 300px;
 }

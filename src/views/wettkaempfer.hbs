@@ -7,32 +7,53 @@
 <body>
   {{> nav }}
 
-  <form action="/wettkaempfer" method="POST">
-    <input type="hidden" name="id" value="{{kaempfer.id}}"/>
-    
-    {{#each vereine}}
-      <label><input type="radio" name="vereinsid" value="{{id}}" {{setChecked ../kaempfer.verein.id id}}/>{{name}}</label>
-    {{/each}}
+  <div>
+    <div class="bodyheader">
+      <h2>Neuer Wettkämpfer</h2>
+    </div>
+  </div>
 
-    <div class="">Name, Vorname</div>
-    <div><input type="string" name="name" value="{{kaempfer.name}}"/></div>
+  {{#if prevsuccess}}
+    <div class="infomsg">Der vorheriger Wettkämpfer wurde erfolgreich angelegt. Kennung {{prevsuccess}}</div>
+  {{/if}}
+  {{#if preverror}}
+    <div class="errormsg">Der vorheriger Wettkämpfer konnte nicht angelegt werden: {{preverror}}</div>
+  {{/if}}
 
-    <div class="">Alter</div>
-    {{#each altersklasse as |name index|}}
-      <label><input type="radio" name="altersklasse" value="{{index}}" {{setChecked ../kaempfer.altersklasse name}}/>{{name}}</label>
-    {{/each}}
+  <div class="generalcontent">
+    <form action="/wettkaempfer" method="POST">
+      <input type="hidden" name="id" value="{{kaempfer.id}}"/>
+      
+      <div class="wettkaempfer name"><label>Name, Vorname</label><input class="wd300" autofocus type="string" name="name" value="{{kaempfer.name}}"/></div>
 
+      <div class="wettkaempfer verein">
+      <label>Verein</label>
+      <select class="wd300" mode="config[mode]" name="vereinsid">
+      {{#each vereine}}
+        <option value="{{id}}" {{setChecked ../kaempfer.verein.id id}}/>{{name}}</option>
+      {{/each}}
+      </select>
+      </div>
 
-    <div class="">Geschlecht</div>
-    {{#each geschlechter as |name index|}}
-      <label><input type="radio" name="geschlecht" value="{{index}}" {{setChecked ../kaempfer.geschlecht name}}/>{{name}}</label>
-    {{/each}}
+      <div class="wettkaempfer alter">
+      <label>Altersklasse</label>
+      {{#each altersklasse as |name index|}}
+        <input type="radio" name="altersklasse" value="{{index}}" {{setChecked ../kaempfer.altersklasse name}}/>{{name}}
+      {{/each}}
+      </div>
 
-    <div class="">Gewicht</div>
-    <div><input type="number" name="gewicht" value="{{kaempfer.gewicht}}"/></div>
+      <div class="wettkaempfer geschlecht">
+      <label>Geschlecht</label>
+      {{#each geschlechter as |name index|}}
+        <input type="radio" name="geschlecht" value="{{index}}" {{setChecked ../kaempfer.geschlecht name}}/>{{name}}
+      {{/each}}
+      </div>
 
-    <button type="submit">Judoka eintragen</button>
-  </form>
+      <div class="wettkaempfer gewicht"><label>Gewicht</label><input class="wd100" type="number" name="gewicht" value="{{kaempfer.gewicht}}"/></div>
+
+      <button type="submit"><span class="material-icons md-48" title="Wettkämpfer eintragen">person_add</span></button>
+    </form>
+  </div>
 </body>
 <script type="text/javascript">
   

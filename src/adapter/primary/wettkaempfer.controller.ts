@@ -1,15 +1,13 @@
 import { Response } from 'express';
-import { Controller, Get, Post, Delete, OnUndefined, Body, Render, Res, Param } from "routing-controllers";
+import { Controller, Get, Post, Delete, OnUndefined, Body, Render, Res, Param, QueryParam } from "routing-controllers";
 import { getLogger } from "../../application/logger";
 import { WiegenService } from '../../application/wiegen.service';
 import { Wettkaempfer } from '../../model/wettkaempfer';
 import { Altersklasse } from '../../model/altersklasse';
 import { Geschlecht } from '../../model/geschlecht';
-import { type } from 'os';
 
 const logger = getLogger('WettkaempferController');
 const wiegenService = new WiegenService();
-// const geschlechter = [{id: 'm', name: 'männlich'}, {id:'w', name: "weiblich"}];
 
 @Controller()
 export class WettkaempferController {
@@ -19,7 +17,7 @@ export class WettkaempferController {
   async ladeWettkaempferListe(@Res() res: Response) {
     logger.debug('Alle Wettkaempfer angefragt');
     const wks = await wiegenService.alleKaempfer();
-    return { kaempferListe: wks };
+    return { kaempferListe: wks, anzahlwk: wks.length };
   }
 
   @Post('/wettkaempfer')
@@ -38,15 +36,18 @@ export class WettkaempferController {
     };
 
     if (!wettkaempfer.name) {
-      res.redirect('/wettkaempfer');
+      logger.info("Kämpfer hat keinen Namen!");
+      res.redirect('/wettkaempfer-neu?error="Name fehlt"');
       return res;
     }
-    console.log('speichere Wettkaempfer parsed:', {wk: wettkaempfer} );
-    console.log(wettkaempfer.altersklasse, typeof wettkaempfer.altersklasse, typeof g, typeof altersklasseString);
-    
-
-    const id = await wiegenService.speichereKaempfer(wettkaempfer);
-    res.redirect('wettkaempfer/'+id);
+    try {
+      const id = await wiegenService.speichereKaempfer(wettkaempfer);
+      logger.info("Kämpfer erfolgreich angelegt", {id: id});
+      res.redirect('/wettkaempfer-neu?success=' + id);
+    } catch (error) {
+      logger.error("Konnte den Kämpfer nicht anlegen!", {error: error});
+      res.redirect("/wettkaempfer-neu")
+    }
     return res;
   }
 
@@ -68,10 +69,9 @@ export class WettkaempferController {
 
   @Get('/wettkaempfer-neu')
   @Render("wettkaempfer.hbs")
-  async leererWettkaempfer(@Res() res: Response) {
+  async leererWettkaempfer(@QueryParam('success') id: number, @QueryParam('error') error: string, @Res() res: Response) {
     logger.debug('Wettkaempfer-Seite');
     const vs = await wiegenService.alleVereine();
-    console.log(Altersklasse)
-    return { kaempfer: {}, vereine: vs, geschlechter: Geschlecht, altersklasse: Altersklasse };
+    return { kaempfer: {}, vereine: vs, geschlechter: Geschlecht, altersklasse: Altersklasse, prevsuccess: id, preverror: error };
   }
 };

@@ -7,15 +7,23 @@
 <body>
   {{> nav }}
 
-  <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
+  <div>
+    <div class="bodyheader">
+      <h2>Turnierübersicht</h2>
+      <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
+    </div>
+  </div>
   
-  <button type="button" onclick="createWKGroups()">Gruppen bilden</button>
-  <a href="/turnier/gewichtsklassen">Gewichtsklassen</a>
+  <div>
+    <h1>Software des des 1.JC-Großkrotzenburg</h1>
+  </div>
 
+  <div>
+    <button type="button" onclick="createWKGroups()">Gruppen bilden</button>
+  </div>
 </body>
 <script type="text/javascript">
   const createWKGroups = () => {fetch("/turnier/wettkampfgruppen", {method: "POST"})};
-  
 </script>
 
 </html>
