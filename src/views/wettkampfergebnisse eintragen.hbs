@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head>
-      <title>Wettkampf</title>
-      <link rel="stylesheet" href="/css/mainstyle.css">
-  </head>
-  <body>
+<head>
+{{> header}}
+</head>
+<body>
+  {{> title}}
+  {{> nav}}
+
+  <div>
     <form action="/add-result" method="POST">
       <h2>Wettkampfergebnisse eintragen</h2>
       <label>Name des Siegers:</label>
@@ -17,5 +20,8 @@
       <input type="number" name="penalties" required/><br/>
       <button type="submit">Ergebnis eintragen</button>
     </form>
-  </body>
+  </div>
+  
+  {{> footer}}
+</body>
 </html>
