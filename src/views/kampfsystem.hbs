@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  {{> header}}
+<body>
+  {{> title }}
+  {{> nav }}
+  
+  <div>
+    <div class="bodyheader">
+      <h2>Kampfsystem</h2>
+    </div>
+
+          
+    <div>
+      <form>
+      <label>Kampfsystem</label>
+      {{#each gewichtsklassengruppen}}
+        <div class="">
+          {{gewichtsklassengruppen}} {{altersKlasse}} {{gruppenGeschlecht}}
+          {{#each ../kampfsysteme as |name index|}}
+            <input type="radio" name="kampfsystem" id="{{altersKlasse}}-{{gruppenGeschlecht}}-{{index}}" value="{{kampfsystem.index}}" /><label>{{name}}</label>
+          {{/each}}
+          <button type="button" onclick="createWKGroups('w')">Wettkampfgruppen erstellen</button>
+        </div>
+      {{/each}}
+      </form>
+    </div>
+
+  {{> footer}}
+</body>
+<script type="text/javascript">
+  const createWKGroups = (geschlecht) => {fetch("/turnier/wettkampfgruppen?geschlecht=" +geschlecht, {method: "POST"})};
+</script>
+
+</html>

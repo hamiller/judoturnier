@@ -1,10 +1,10 @@
 import { Response } from 'express';
-import { Controller, Get, Post, Delete, OnUndefined, Body, Render, Res, Param } from "routing-controllers";
+import { Controller, Get, Post, QueryParam, Render, Res } from "routing-controllers";
 import { getLogger } from "../../application/logger";
 import { WiegenService } from '../../application/wiegen.service';
 import { TurnierService } from '../../application/turnier.service';
-import { Wettkaempfer } from '../../model/wettkaempfer';
 import { Geschlecht } from '../../model/geschlecht';
+import { Kampfsystem } from '../../model/kampfsystem';
 
 const logger = getLogger('TurnierController');
 const wiegenService = new WiegenService();
@@ -23,9 +23,11 @@ export class TurnierController {
 
   @Post('/turnier/wettkampfgruppen')
   @Render("turnieruebersicht.hbs")
-  async erstelleWettkampfGruppen(@Res() res: Response) {
-    logger.debug('erstelle WettkampfGruppen');
+  async erstelleWettkampfGruppen(@QueryParam('geschlecht') geschlecht: string, @Res() res: Response) {
+    logger.debug('erstelle WettkampfGruppen', {geschlecht: geschlecht});
     const wks = await wiegenService.alleKaempfer();
+    const gwks = turnierService.teileInGewichtsklassen(wks);
+    
     const wettkampfGruppen = turnierService.erstelleGruppen(wks);
     return { anzahlwk: wks.length, wettkampfgruppen: wettkampfGruppen };
   }
@@ -40,6 +42,19 @@ export class TurnierController {
       gewichtsklassengruppenWeiblich: gwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 
       gewichtsklassengruppenMaennlich: gwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.m), 
       anzahlwk: wks.length 
+    };
+  }
+
+  @Get('/turnier/kampfsystem')
+  @Render("kampfsystem.hbs")
+  async konfiguriereKampfsysteme(@Res() res: Response) {
+    logger.debug('Kapmfsystem');
+    const wks = await wiegenService.alleKaempfer();
+    const gwks = turnierService.teileInGewichtsklassen(wks);
+    return { 
+      gewichtsklassengruppen: gwks, 
+      anzahlwk: wks.length,
+      kampfsysteme: Kampfsystem
     };
   }
 }

@@ -5,7 +5,7 @@ import { WettkampfGruppe } from "../model/wettkampfgruppe";
 import { GewichtsklassenGruppe } from "../model/gewichtsklassengruppe";
 import { getLogger } from './logger';
 import { RoundRobin } from "./round-robin";
-import { getGewichte } from "../model/gewichtsklasse";
+import { getGewichte } from "../config/gewichtsklassen.config";
 
 const logger = getLogger('TurnierService');
 const algorithmus = new RoundRobin();
@@ -17,7 +17,7 @@ export class TurnierService {
   erstelleGruppen(wettkaempferListe: Wettkaempfer[]): WettkampfGruppe[] {
     logger.debug("Erstelle Gruppen...");
     // dummy
-    let u9W = this.sortiere(wettkaempferListe, Geschlecht.w, Altersklasse.U9);
+    let u11W = this.sortiere(wettkaempferListe, Geschlecht.w, Altersklasse.U11);
     return [];
   }
 
@@ -77,7 +77,13 @@ export class TurnierService {
       const gewichtsklassenGruppe: Wettkaempfer[] = kaempferListe.filter(k => this.gewichtsKlasse(k) == gewichtsklasse);
       const geschlecht = gewichtsklassenGruppe[0].geschlecht; // alle Mitglieder der Gruppe haben das gleiche Geschlecht, da sie vorher so sortiert wurden
       const altersKlasse = gewichtsklassenGruppe[0].altersklasse; // alle Mitglieder der Gruppe haben das gleiche Alter, da sie vorher so sortiert wurden
-      gewichtsklassenGruppen.push({altersKlasse: altersKlasse, gruppenGeschlecht: geschlecht, teilnehmer: gewichtsklassenGruppe, name: gewichtsklasse.toString()});
+      gewichtsklassenGruppen.push({
+        altersKlasse: altersKlasse, 
+        gruppenGeschlecht: geschlecht, 
+        teilnehmer: gewichtsklassenGruppe, 
+        gewichtsklasse: {}, 
+        name: gewichtsklasse.toString()});
+      console.log("gw:", gewichtsklasse);
     }
 
     return gewichtsklassenGruppen;
