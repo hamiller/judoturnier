@@ -16,7 +16,7 @@
       <label>Kampfsystem</label>
       {{#each gewichtsklassengruppen}}
         <div class="">
-          {{gewichtsklassengruppen}} {{altersKlasse}} {{gruppenGeschlecht}}
+          {{gewichtsklasse.name}} {{altersKlasse}} {{gruppenGeschlecht}}
           {{#each ../kampfsysteme as |name index|}}
             <input type="radio" name="kampfsystem" id="{{altersKlasse}}-{{gruppenGeschlecht}}-{{index}}" value="{{kampfsystem.index}}" /><label>{{name}}</label>
           {{/each}}

@@ -6,7 +6,8 @@ export interface GewichtsklasseConfig {
 }
 
 export interface Gewichtsklasse {
-  
+  name: string;
+  gewicht: number
 }
 
 interface GeschlechtsConfig {
@@ -16,6 +17,6 @@ interface GeschlechtsConfig {
 
 interface AltersKlassenGewicht {
   altersklasse: Altersklasse,
-  gewichte: number[]
+  gewichtsKlassen: Gewichtsklasse[]
 }
 

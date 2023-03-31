@@ -5,7 +5,8 @@ import { WettkampfGruppe } from "../model/wettkampfgruppe";
 import { GewichtsklassenGruppe } from "../model/gewichtsklassengruppe";
 import { getLogger } from './logger';
 import { RoundRobin } from "./round-robin";
-import { getGewichte } from "../config/gewichtsklassen.config";
+import { getGewichtsklasse } from "../config/gewichtsklassen.config";
+import { Gewichtsklasse } from "../model/gewichtsklasse";
 
 const logger = getLogger('TurnierService');
 const algorithmus = new RoundRobin();
@@ -81,23 +82,22 @@ export class TurnierService {
         altersKlasse: altersKlasse, 
         gruppenGeschlecht: geschlecht, 
         teilnehmer: gewichtsklassenGruppe, 
-        gewichtsklasse: {}, 
-        name: gewichtsklasse.toString()});
+        gewichtsklasse: gewichtsklasse, 
+        name: "Irgendwas"});
       console.log("gw:", gewichtsklasse);
     }
 
     return gewichtsklassenGruppen;
   }
 
-  private gewichtsKlasse(wettkaempfer: Wettkaempfer): number {
+  private gewichtsKlasse(wettkaempfer: Wettkaempfer): Gewichtsklasse {
     if (!wettkaempfer.gewicht) {
-      return 0;
+      return {name: "Ohne", gewicht: 0};
     }
-
-    const gewichte: number[] = getGewichte(wettkaempfer.geschlecht, wettkaempfer.altersklasse);
-    for (const grenzGewicht of gewichte) {
-      if (wettkaempfer.gewicht <= grenzGewicht + VARIABLER_GEWICHTSTEIL) {
-        return grenzGewicht;
+    const gewichtsklassen: Gewichtsklasse[] = getGewichtsklasse(wettkaempfer.geschlecht, wettkaempfer.altersklasse);
+    for (const gewichtsklasse of gewichtsklassen) {
+      if (wettkaempfer.gewicht <= gewichtsklasse.gewicht + VARIABLER_GEWICHTSTEIL) {
+        return gewichtsklasse;
       }
     }
     // hier sollten wir nie hinkommen
