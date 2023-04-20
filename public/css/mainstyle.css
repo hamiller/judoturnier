@@ -83,6 +83,11 @@ li {
   background-color: var(--color-light-grey);
 }
 
+.actions button {
+  vertical-align: bottom;
+  font-size: 1em;
+}
+
 .actions a span {
   margin: 10px;
   font-size: 36px;
@@ -125,12 +130,14 @@ li {
   font-size: 0.8em;
 }
 
-.teilnehmerdaten {
+.listeneintrag {
   background-color: white;
   box-shadow: 0 0 1px 0 var(--box-shadow1),0 2px 4px -1px var(--box-shadow2);
   margin: 2px;
   padding: 8px;
   border-radius: 2px;
+  display: flex;
+  font-size: 0.8em;
 }
 
 .gewichtsklasse-teilnehmer-meta {
@@ -151,21 +158,16 @@ li {
   width: 150px;
 }
 
-.wettkaempferliste-wettkaempfer {
-  display: flex;
-  font-size: 0.8em
-}
-
 .wettkaempferliste-wettkaempfer > div {
   width: 120px;
   display: flex;
   align-items: flex-end;
 }
 
-.wettkaempferliste-wettkaempfer-name {
+.listeneintrag-titel {
   font-weight: bold;
   font-size: 1.2em;
-  width: 250px !important;
+  width: 300px !important;
 }
 
 .errormsg {
@@ -220,4 +222,20 @@ li {
 
 .wd300 {
   width: 300px;
+}
+
+.wettkampfgruppe {
+  margin-bottom: 2em;
+}
+
+.vs div{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-grow: 1;
+  flex-basis: 15%;
+}
+
+.vs div.center {
+  width: 40%;
 }

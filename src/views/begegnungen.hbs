@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  {{> header}}
+<body>
+  {{> title }}
+  {{> nav }}
+  
+  <div>
+    <div class="bodyheader">
+      <h2>Begegnungen</h2>
+      <div>
+      {{#each gewichtsklassenGruppe}}
+        <div>{{gruppenGeschlecht}} {{altersKlasse}} {{gewichtsklasse.name}}: {{teilnehmer.length}} Teilnehmer</div>
+      {{/each}}
+      </div>
+    </div>
+    <div class="generalcontent">
+      {{#each wettkampfgruppen}}
+        <div class="wettkampfgruppe">
+          <div class="listeneintrag-titel">{{name}} {{id}} {{typ}} ({{begegnungen.length}})</div>
+          {{#each begegnungen}}
+            <div class="listeneintrag vs">
+              <div class="wettkaempfer name">{{wettkaempfer1.name}}</div><div>({{wettkaempfer1.verein.name}})</div> 
+              <div class="center">vs</div> 
+              <div class="wettkaempfer name">{{wettkaempfer2.name}}</div><div>({{wettkaempfer2.verein.name}})</div>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+      </form>
+    </div>
+
+  {{> footer}}
+</body>
+<script type="text/javascript">
+</script>
+
+</html>

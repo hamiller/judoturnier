@@ -1,6 +1,6 @@
-import { Begegnung } from "../model/begegnung";
-import { Wettkaempfer } from "../model/wettkaempfer";
+import { GewichtsklassenGruppe } from "../model/gewichtsklassengruppe";
+import { WettkampfGruppe } from "../model/wettkampfgruppe";
 
 export interface Algorithmus {
-  berechneMatch(wettkaempferListe: Wettkaempfer[]):  Begegnung[]
+  erstelleWettkampfGruppen(gruppenid: number, gewichtsklassenGruppe: GewichtsklassenGruppe, mattenAnzahl: number):  WettkampfGruppe[]
 }

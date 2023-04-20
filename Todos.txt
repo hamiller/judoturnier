@@ -1,0 +1,16 @@
+(/) Vorab Kämpfer melden, die werden dann nur mit Namen auf die Startliste gesetzt
+(/) Kämpfer werden beim Wiegen mit Gewicht erfasst - bei Vorgemeldeten wird nur das Gewicht ergänzt
+
+(/) Das Programm sortiert die Kämpfer in die angelegten Gewichtsklassen vor, 
+(x) man kann aber auch per Drag/Drop manuell verschieben
+
+(x) Für jede Gewichtsklasse wird ein Kampfsystem ausgewählt: "Pool", "Vorgepoolt", "Ko", "Doppel-KO", "Best-of-three" und die Liste automatisch zur Anzahl der Kämpfer generiert
+
+(x) (Optional: Listen ausdrucken)
+
+(x) Die Kämpfe jeder Gewichtsklassen werden in Runden zusammengefasst, die Runden (z.B. Halbfinale MU -80kg) können dann in beliebiger Reihenfolge den Matten zugeteilt werden.
+
+(x) Am Kampfrichtertisch werden die Kämpfe in dieser Reihenfolge angezeigt, und die Ergebnisse eingetragen: Kampf starten, Sieger+UB eintragen, Bestätigen.
+(x) Wenn eine Gewichtsklasse fertig gekämpft hat, kontrolliert die Turnierleitung die Liste.
+(x) (Optional: Dann Urkunden für die Gewichtsklasse drucken.)
+(x) (Optional: Die Zuschauer können jederzeit den Turnierstatus über ihre Smartphones (Hotspot-Mode) abfragen: Man kann nach Namen, Gewichtsklassen, Vereinen oder Matte suchen.)

@@ -1,15 +1,16 @@
-import { Wettkaempfer } from "../model/wettkaempfer";
-import { WettkampfGruppe } from "../model/wettkampfgruppe";
-import { Begegnung } from "../model/begegnung";
-import { Algorithmus } from "./algorithmus.interface";
+import { Wettkaempfer } from "../../model/wettkaempfer";
+import { Begegnung } from "../../model/begegnung";
+import { Algorithmus } from "../algorithmus.interface";
 
-import { getLogger } from './logger';
+import { getLogger } from '../logger';
+import { WettkampfGruppe } from "../../model/wettkampfgruppe";
+import { GewichtsklassenGruppe } from "../../model/gewichtsklassengruppe";
 
 const logger = getLogger('RoundRobin');
 
 export class RoundRobin implements Algorithmus {
 
-  berechneMatch(wettkaempfer: Wettkaempfer[]): Begegnung[] {
+  erstelleWettkampfGruppen(gruppenid: number, gewichtsklassenGruppe: GewichtsklassenGruppe, mattenAnzahl: number): WettkampfGruppe[] {
     logger.info("Berechne Begenungen mit RoundRobin");
 
     const gruppen: Wettkaempfer[][] = [];
@@ -17,7 +18,7 @@ export class RoundRobin implements Algorithmus {
     const maxGroupSize = 4;
 
     // Group wettkaempfer by club
-    const vereinsGruppen = this.gruppiereWettkaempferBeiVerein(wettkaempfer);
+    const vereinsGruppen = this.gruppiereWettkaempferBeiVerein(gewichtsklassenGruppe.teilnehmer);
     
     // Create groups of up to maxGroupSize wettkaempfer
     for (const vereinsGruppe of vereinsGruppen) {
@@ -44,7 +45,8 @@ export class RoundRobin implements Algorithmus {
     }
     
     console.log(begegnungen);
-    return begegnungen;
+
+    return [];
   }
 
   private gruppiereWettkaempferBeiVerein(wettkaempfer: Wettkaempfer[]): Wettkaempfer[][] {

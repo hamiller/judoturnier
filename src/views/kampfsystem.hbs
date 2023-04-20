@@ -8,19 +8,25 @@
   <div>
     <div class="bodyheader">
       <h2>Kampfsystem</h2>
+      <div>Wettkampfgruppen erstellen:</div>
+      <div class="actions">
+        <a href="/turnier/wettkampfgruppen"><span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></a>
+      </div>
     </div>
+    <div class="generalcontent">
+      <form id="kampfklassenformular" action="/turnier/kampfsystem" method="POST">
+      <div class="actions">
+        <button type="submit">Wettkampfgruppen-Einstellung speichern<span class="material-icons md-48" title="Wettkampfgruppen speichern">save</span></button>
+      </div>
 
-          
-    <div>
-      <form>
-      <label>Kampfsystem</label>
       {{#each gewichtsklassengruppen}}
-        <div class="">
-          {{gewichtsklasse.name}} {{altersKlasse}} {{gruppenGeschlecht}}
+        <div class="kampfsystemklasse listeneintrag">
+          <div class="listeneintrag-titel">{{gewichtsklasse.name}} {{altersKlasse}} {{gruppenGeschlecht}} ({{teilnehmer.length}} Teilnehmer)</div>
+          <div class="kampsystemklasse-auswahlen">
           {{#each ../kampfsysteme as |name index|}}
-            <input type="radio" name="kampfsystem" id="{{altersKlasse}}-{{gruppenGeschlecht}}-{{index}}" value="{{kampfsystem.index}}" /><label>{{name}}</label>
+            <input type="radio" name="{{../gruppenGeschlecht}}-{{../altersKlasse}}-{{../gewichtsklasse.gewicht}}" value="{{index}}" {{setChecked "pool6" index}}/><label>{{name}}</label>
           {{/each}}
-          <button type="button" onclick="createWKGroups('w')">Wettkampfgruppen erstellen</button>
+          </div>
         </div>
       {{/each}}
       </form>
@@ -29,7 +35,6 @@
   {{> footer}}
 </body>
 <script type="text/javascript">
-  const createWKGroups = (geschlecht) => {fetch("/turnier/wettkampfgruppen?geschlecht=" +geschlecht, {method: "POST"})};
 </script>
 
 </html>

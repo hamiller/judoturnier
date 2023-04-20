@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Controller, Get, Post, QueryParam, Render, Res } from "routing-controllers";
+import { Body, Controller, Get, Post, QueryParam, Render, Res } from "routing-controllers";
 import { getLogger } from "../../application/logger";
 import { WiegenService } from '../../application/wiegen.service';
 import { TurnierService } from '../../application/turnier.service';
@@ -21,15 +21,14 @@ export class TurnierController {
     return { anzahlwk: wks.length, con: "guble2" };
   }
 
-  @Post('/turnier/wettkampfgruppen')
-  @Render("turnieruebersicht.hbs")
-  async erstelleWettkampfGruppen(@QueryParam('geschlecht') geschlecht: string, @Res() res: Response) {
-    logger.debug('erstelle WettkampfGruppen', {geschlecht: geschlecht});
+  @Get('/turnier/wettkampfgruppen')
+  @Render("begegnungen.hbs")
+  async erstelleWettkampfGruppen(@Res() res: Response) {
+    logger.debug('erstelle WettkampfGruppen');
     const wks = await wiegenService.alleKaempfer();
     const gwks = turnierService.teileInGewichtsklassen(wks);
-    
-    const wettkampfGruppen = turnierService.erstelleGruppen(wks);
-    return { anzahlwk: wks.length, wettkampfgruppen: wettkampfGruppen };
+    const wettkampfGruppen = turnierService.erstelleGruppen(gwks);
+    return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen };
   }
 
   @Get('/turnier/gewichtsklassen')
@@ -49,6 +48,9 @@ export class TurnierController {
   @Render("kampfsystem.hbs")
   async konfiguriereKampfsysteme(@Res() res: Response) {
     logger.debug('Kapmfsystem');
+
+    // todo: Laden falls vorhanden!
+
     const wks = await wiegenService.alleKaempfer();
     const gwks = turnierService.teileInGewichtsklassen(wks);
     return { 
@@ -57,4 +59,21 @@ export class TurnierController {
       kampfsysteme: Kampfsystem
     };
   }
+
+  @Post('/turnier/kampfsystem')
+  @Render("kampfsystem.hbs")
+  async speichereKampfsystemEinstellungen(@Body() data: any, @Res() res: Response) {
+    logger.debug('speichere WettkampfGruppen-Einstellungen', {data: data});
+
+    // todo: Speichern!
+
+    const wks = await wiegenService.alleKaempfer();
+    const gwks = turnierService.teileInGewichtsklassen(wks);
+    return { 
+      gewichtsklassengruppen: gwks, 
+      anzahlwk: wks.length,
+      kampfsysteme: Kampfsystem
+    };
+  }
+
 }
