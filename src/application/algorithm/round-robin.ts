@@ -43,9 +43,7 @@ export class RoundRobin implements Algorithmus {
       const begegnungen = this.brechneRoundRobinBegegnungen(gruppe);
       begegnungen.push(...begegnungen);
     }
-    
-    console.log(begegnungen);
-
+  
     return [];
   }
 

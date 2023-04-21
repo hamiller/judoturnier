@@ -1,10 +1,9 @@
 
 
+drop table gewichtsklassengruppen_zuordnung;
 drop table wettkaempfer;
-
-
 drop table verein;
-
+drop table gewichtsklassengruppen;
 
 CREATE TABLE wettkaempfer (
     id SERIAL,
@@ -20,6 +19,21 @@ CREATE TABLE verein (
     id SERIAL,
     "name" VARCHAR(50),
     PRIMARY KEY (id)
+);
+
+CREATE TABLE gewichtsklassengruppen (
+  id SERIAL,
+  altersklasse VARCHAR(10),
+  gruppengeschlecht VARCHAR(1),
+  gewichtsklasse VARCHAR(15),
+  "name" VARCHAR(50),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE gewichtsklassengruppen_zuordnung (
+  gruppen_id SERIAL REFERENCES gewichtsklassengruppen(id),
+  kaempfer_id SERIAL REFERENCES wettkaempfer(id),
+  PRIMARY KEY (gruppen_id, kaempfer_id)
 );
 
 

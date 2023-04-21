@@ -15,7 +15,7 @@
       <h1>Frauen</h1>
       <div class="gewichtsklassen">
       {{#each gewichtsklassengruppenWeiblich}}
-        <div class="generalcontent">
+        <div class="generalcontent" id="{{gruppenGeschlecht}}_{{altersKlasse}}_{{gewichtsklasse.name}}" droppable=true>
           <div class="gewichtsklasse-meta">
             <div>{{altersKlasse}}</div>
             <div>{{name}}</div>
@@ -23,7 +23,7 @@
           </div>
           <div class="gewichtsklasse-teilnehmer">
           {{#each teilnehmer}}
-            <div class="listeneintrag">
+            <div class="listeneintrag" id="{{id}}" draggable=true>
             {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
             </div>
           {{/each}}
@@ -35,7 +35,7 @@
       <h1>Männer</h1>
       <div class="gewichtsklassen">
       {{#each gewichtsklassengruppenMaennlich}}
-        <div class="generalcontent">
+        <div class="generalcontent" id="{{gruppenGeschlecht}}_{{altersKlasse}}_{{gewichtsklasse.name}}" droppable=true>
           <div class="gewichtsklasse-meta">
             <div>{{altersKlasse}}</div>
             <div>{{name}}</div>
@@ -43,7 +43,7 @@
           </div>
           <div class="gewichtsklasse-teilnehmer">
           {{#each teilnehmer}}
-            <div class="listeneintrag">
+            <div class="listeneintrag" id="{{id}}" draggable=true>
             {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
             </div>
           {{/each}}
@@ -57,6 +57,36 @@
   {{> footer}}
 </body>
 <script type="text/javascript">
+  const draggableElements = document.querySelectorAll('[draggable=true]');
+  draggableElements.forEach(draggable => {
+    draggable.addEventListener('dragstart', drag);
+  });
+
+  const droppableElements = document.querySelectorAll('[droppable=true]');
+  droppableElements.forEach(droppable => {
+    droppable.addEventListener('dragover', allowDrop);
+    droppable.addEventListener('drop', drop);
+  });
+
+  let draggedElement = null;
+
+  function drag(event) {
+    const draggedElement = event.target;
+    event.dataTransfer.setData('text/plain', draggedElement.id);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
+  function allowDrop(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  };
+
+  function drop(event) {
+    event.preventDefault();
+    const id = event.dataTransfer.getData('text/plain');
+    const draggedElement = document.getElementById(id);
+    event.target.appendChild(draggedElement);
+  };
 
 </script>
 

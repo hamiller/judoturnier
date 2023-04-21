@@ -7,6 +7,7 @@ import { getLogger } from './application/logger';
 import 'reflect-metadata';
 import { WettkaempferController } from './adapter/primary/wettkaempfer.controller';
 import { TurnierController } from './adapter/primary/turnier.controller';
+import { GewichtsklassenController } from './adapter/primary/gewichtsklassen.controller';
 import { errorHandler } from './application/errorhandler';
 import hbs from 'hbs';
 import * as path from 'path';
@@ -50,8 +51,9 @@ export default class AppServer {
     app.use(bodyParser.urlencoded({ extended: false }));
     useExpressServer(app, {
       controllers: [
+        GewichtsklassenController,
+        TurnierController,
         WettkaempferController,
-        TurnierController
       ],
       defaultErrorHandler: false,
     });
