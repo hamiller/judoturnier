@@ -1,0 +1,15 @@
+1. Prüfen ob schon Kampfgruppen gebildet wurden. Info, dass die Kampfgruppen sich ändern, wenn die GewichtsklassenGruppe sich ändert (bei neu Erstellung oder wenn drag&drop)
+
+2. Kampfgruppen laden/speichern, nur erstellen über Button, nicht automatisch
+
+3. Sicherstellen, dass die Wettkämpfer 2 Runden Pause haben
+
+4. Generell Anzahl der Matten bei Einstellungen hinzufügen und bei der Erstellung der Kampfgruppen entsprechend nutzen
+
+5. Möglichkeit die Begenungen zu tracken
+
+6. Druck-Ansicht für die Begegnungen
+
+7. Ansicht der aktuellen Wertung einer Begegnung
+
+8. Ansicht der nächsten Begegnung - je Matte eine eigene Ansicht

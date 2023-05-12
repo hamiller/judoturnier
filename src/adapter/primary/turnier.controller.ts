@@ -22,20 +22,20 @@ export class TurnierController {
     return { anzahlwk: wks.length, con: "guble2" };
   }
 
-  @Get('/turnier/wettkampfgruppen')
+  @Get('/turnier/begegnungen')
   @Render("begegnungen.hbs")
   async erstelleWettkampfGruppen(@Res() res: Response) {
     logger.debug('erstelle WettkampfGruppen');
     const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfGruppen = turnierService.erstelleGruppen(gwks);
     return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen };
   }
 
-  @Get('/turnier/kampfsystem')
-  @Render("kampfsystem.hbs")
+  @Get('/turnier/einstellungen')
+  @Render("einstellungen.hbs")
   async konfiguriereKampfsysteme(@Res() res: Response) {
-    logger.debug('Kapmfsystem');
+    logger.debug('Einstellungen');
 
     // todo: Laden falls vorhanden!
 
@@ -48,8 +48,8 @@ export class TurnierController {
     };
   }
 
-  @Post('/turnier/kampfsystem')
-  @Render("kampfsystem.hbs")
+  @Post('/turnier/einstellungen')
+  @Render("einstellungen.hbs")
   async speichereKampfsystemEinstellungen(@Body() data: any, @Res() res: Response) {
     logger.debug('speichere WettkampfGruppen-Einstellungen', {data: data});
 

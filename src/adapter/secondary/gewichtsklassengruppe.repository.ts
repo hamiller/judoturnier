@@ -15,19 +15,34 @@ export class GewichtsklassenGruppeRepository {
     const client = await pool.connect();
     try {
       const { rows } = await client.query(
-        'SELECT ' +
-        '    g.id, ' +
-        '    g.altersklasse, ' +
-        '    g.gruppengeschlecht, ' +
-        '    g.gewichtsklasse, ' +
-        '    g.name, ' +
-        '    array_agg(row_to_json(w.*) ORDER BY w.id) AS teilnehmer ' +
-        'FROM ' +
-        '    gewichtsklassengruppen g ' +
-        'JOIN ' +
-        '    wettkaempfer w ON w.id = ANY(g.teilnehmer) ' +
-        'GROUP BY ' +
-        '    g.id' 
+        "SELECT  " +
+        "    g.id,  " +
+        "    g.altersklasse,  " +
+        "    g.gruppengeschlecht,  " +
+        "    g.gewichtsklasse,  " +
+        "    g.name,  " +
+        "    array_agg( " +
+        "      jsonb_build_object( " +
+        "         'id', w.id, " +
+        "         'name', w.name, " +
+        "         'geschlecht', w.geschlecht," +
+        "         'altersklasse', w.altersklasse," +
+        "    	    'gewicht', w.gewicht," +
+        "         'verein', ( " +
+        "             SELECT jsonb_build_object( " +
+        "                 'id', v.id, " +
+        "                 'name', v.name " +
+        "             ) " +
+        "             FROM verein v " +
+        "             WHERE v.id = w.verein " +
+        "    	     ) " +
+        "      )  " +
+        "      ORDER BY w.id " +
+        "    ) AS teilnehmer " +
+        "FROM gewichtsklassengruppen g " +
+        "JOIN wettkaempfer w ON w.id = ANY(g.teilnehmer) " +
+        "JOIN verein v ON v.id = w.verein " +
+        "GROUP BY g.id"
         );
       return entitiesToDtos(rows);
     } catch (error) {

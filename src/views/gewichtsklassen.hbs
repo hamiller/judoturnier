@@ -11,7 +11,7 @@
       <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
       
       <div class="actions">
-        <button onclick="window.location.href='/gewichtsklassen-renew';" >Gewichtsklassen neu zuordnen<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">save</span></button>
+        <button onclick="renewGewichtsklassen()" >Gewichtsklassen neu zuordnen<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">autorenew</span></button>
       </div>
     </div>
 
@@ -32,7 +32,7 @@
             </div>
             <div class="gewichtsklasse-teilnehmer">
             {{#each teilnehmer}}
-              <div class="listeneintrag" id="teilnehmer_{{id}}" draggable=true>
+              <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
               {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
               <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
               </div>
@@ -53,7 +53,7 @@
             </div>
             <div class="gewichtsklasse-teilnehmer">
             {{#each teilnehmer}}
-              <div class="listeneintrag" id="teilnehmer_{{id}}" draggable=true>
+              <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
               {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
               <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
               </div>
@@ -96,10 +96,16 @@
   function drop(event) {
     event.preventDefault();
     const id = event.dataTransfer.getData('text/plain');
-    console.log("Dropped", id)
     const draggedElement = document.getElementById(id);
     event.target.appendChild(draggedElement);
     document.getElementById("input_"+id).value = event.target.id + "_" + id;
+  };
+
+  const renewGewichtsklassen = async () => {
+    var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in Gewichtsklassen und alle Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
+    if (sicher) {
+      window.location.href='/gewichtsklassen-renew';
+    };
   };
 
 </script>

@@ -38,7 +38,7 @@
 </body>
 <script type="text/javascript">
   const deleteWK = async (id) => {
-    var sicher = confirm("Wirklich löschen?");
+    var sicher = confirm("ACHTUNG\n\nHiermit wird der Wettkämpfer gelöscht!\n\nSind sie sicher?");
     if (sicher) {
       fetch("/wettkaempfer/"+ id, {method: "DELETE"})
         .then(() => window.location.reload())

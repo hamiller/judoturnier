@@ -44,8 +44,6 @@ export class RoundRobin implements Algorithmus {
       begegnungen.push(...begegnungen);
     }
   
-    console.log(begegnungen);
-
     return [];
   }
 

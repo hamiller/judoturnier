@@ -140,10 +140,15 @@ li {
   font-size: 0.8em;
 }
 
+.justifycontent {
+  justify-content: space-between;
+}
+
 .gewichtsklasse-teilnehmer-meta {
   font-size: 0.8em;
   display: flex;
   flex-direction: column;
+  text-align: right;
 }
 .gewichtsklasse-teilnehmer-meta span {
   font-size: 0.8em;
