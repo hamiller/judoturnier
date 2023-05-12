@@ -1,6 +1,5 @@
 
 
-drop table gewichtsklassengruppen_zuordnung;
 drop table wettkaempfer;
 drop table verein;
 drop table gewichtsklassengruppen;
@@ -25,17 +24,11 @@ CREATE TABLE gewichtsklassengruppen (
   id SERIAL,
   altersklasse VARCHAR(10),
   gruppengeschlecht VARCHAR(1),
-  gewichtsklasse VARCHAR(15),
+  gewichtsklasse json,
   "name" VARCHAR(50),
+  teilnehmer INTEGER[],
   PRIMARY KEY (id)
 );
-
-CREATE TABLE gewichtsklassengruppen_zuordnung (
-  gruppen_id SERIAL REFERENCES gewichtsklassengruppen(id),
-  kaempfer_id SERIAL REFERENCES wettkaempfer(id),
-  PRIMARY KEY (gruppen_id, kaempfer_id)
-);
-
 
 insert into verein("name") values ('Judo Club Hamburg'), ('Judo Club Berlin'),('Judo Club Frankfurt'),('Judo Club Stuttgart'), ('Judo Club Köln'), ('Judo Club München'),('Judo Club Dortmund'),('Judo Club Hannover'),('Judo Club Leipzig'),('Judo Club Nürnberg'),('Judo Club Bremen'),('Judo Club Essen'),('Judo Club Düsseldorf');
 
@@ -161,3 +154,11 @@ insert into wettkaempfer(name, gewicht, altersklasse, geschlecht, verein) values
 ('Andersson, Sofia', 25.9, 'U11', 'w', 2),
 ('Zhang, Mei', 40.6, 'U11', 'w', 6),
 ('Petrova, Maria', 42.1, 'U13', 'w', 1);
+
+
+
+insert into wettkaempfer(name, gewicht, altersklasse, geschlecht, verein) values
+('Schmidt, Lena', 36.2, 'U11', 'w', 1),
+('Fischer, Lisa', 27.8, 'U11', 'w', 2),
+('Müller, Julia', 29.5, 'U11', 'w', 3),
+('Schneider, Sarah', 41.3, 'U11', 'w', 4);

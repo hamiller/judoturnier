@@ -1,13 +1,13 @@
 import { Response } from 'express';
 import { Body, Controller, Get, Post, Render, Res } from "routing-controllers";
-import { GewichtsklassenService } from '../../application/gewichtsklassengruppe.service';
+import { GewichtsklassenGruppeService } from '../../application/gewichtsklassengruppe.service';
 import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
 import { WiegenService } from '../../application/wiegen.service';
 import { Kampfsystem } from '../../model/kampfsystem';
 
 const logger = getLogger('TurnierController');
-const gewichtsklassenService = new GewichtsklassenService();
+const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
 const wiegenService = new WiegenService();
 const turnierService = new TurnierService();
 
@@ -27,7 +27,7 @@ export class TurnierController {
   async erstelleWettkampfGruppen(@Res() res: Response) {
     logger.debug('erstelle WettkampfGruppen');
     const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     const wettkampfGruppen = turnierService.erstelleGruppen(gwks);
     return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen };
   }
@@ -40,7 +40,7 @@ export class TurnierController {
     // todo: Laden falls vorhanden!
 
     const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     return { 
       gewichtsklassengruppen: gwks, 
       anzahlwk: wks.length,
@@ -56,7 +56,7 @@ export class TurnierController {
     // todo: Speichern!
 
     const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     return { 
       gewichtsklassengruppen: gwks, 
       anzahlwk: wks.length,

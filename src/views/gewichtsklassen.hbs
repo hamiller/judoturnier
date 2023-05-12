@@ -9,49 +9,61 @@
     <div class="bodyheader">
       <h2>Gewichtsklassen</h2>
       <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
+      
+      <div class="actions">
+        <button onclick="window.location.href='/gewichtsklassen-renew';" >Gewichtsklassen neu zuordnen<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">save</span></button>
+      </div>
     </div>
 
-    <div class="grid">
-      <h1>Frauen</h1>
-      <div class="gewichtsklassen">
-      {{#each gewichtsklassengruppenWeiblich}}
-        <div class="generalcontent" id="{{gruppenGeschlecht}}_{{altersKlasse}}_{{gewichtsklasse.name}}" droppable=true>
-          <div class="gewichtsklasse-meta">
-            <div>{{altersKlasse}}</div>
-            <div>{{name}}</div>
-            <div>{{gewichtsklasse.name}}</div>
-          </div>
-          <div class="gewichtsklasse-teilnehmer">
-          {{#each teilnehmer}}
-            <div class="listeneintrag" id="{{id}}" draggable=true>
-            {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
-            </div>
-          {{/each}}
-          </div>
+    <form id="gewichtsklassenzuordnungformular" action="/gewichtsklassen" method="POST">
+      <div class="grid">
+        <div class="actions">
+          <button type="submit">Zuordnungen speichern<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">save</span></button>
         </div>
-      {{/each}}
-      </div>
-      
-      <h1>Männer</h1>
-      <div class="gewichtsklassen">
-      {{#each gewichtsklassengruppenMaennlich}}
-        <div class="generalcontent" id="{{gruppenGeschlecht}}_{{altersKlasse}}_{{gewichtsklasse.name}}" droppable=true>
-          <div class="gewichtsklasse-meta">
-            <div>{{altersKlasse}}</div>
-            <div>{{name}}</div>
-            <div>{{gewichtsklasse.name}}</div>
-          </div>
-          <div class="gewichtsklasse-teilnehmer">
-          {{#each teilnehmer}}
-            <div class="listeneintrag" id="{{id}}" draggable=true>
-            {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
+
+        <h1>Frauen</h1>
+        <div class="gewichtsklassen">
+        {{#each gewichtsklassengruppenWeiblich}}
+          <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
+            <div class="gewichtsklasse-meta">
+              <div>{{altersKlasse}}</div>
+              <div>{{name}}</div>
+              <div>{{gewichtsklasse.name}}</div>
             </div>
-          {{/each}}
+            <div class="gewichtsklasse-teilnehmer">
+            {{#each teilnehmer}}
+              <div class="listeneintrag" id="teilnehmer_{{id}}" draggable=true>
+              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
+              <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
+              </div>
+            {{/each}}
+            </div>
           </div>
+        {{/each}}
         </div>
-      {{/each}}
+        
+        <h1>Männer</h1>
+        <div class="gewichtsklassen">
+        {{#each gewichtsklassengruppenMaennlich}}
+          <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
+            <div class="gewichtsklasse-meta">
+              <div>{{altersKlasse}}</div>
+              <div>{{name}}</div>
+              <div>{{gewichtsklasse.name}}</div>
+            </div>
+            <div class="gewichtsklasse-teilnehmer">
+            {{#each teilnehmer}}
+              <div class="listeneintrag" id="teilnehmer_{{id}}" draggable=true>
+              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
+              <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
+              </div>
+            {{/each}}
+            </div>
+          </div>
+        {{/each}}
+        </div>
       </div>
-    </div>
+    </form>
   </div>
 
   {{> footer}}
@@ -84,8 +96,10 @@
   function drop(event) {
     event.preventDefault();
     const id = event.dataTransfer.getData('text/plain');
+    console.log("Dropped", id)
     const draggedElement = document.getElementById(id);
     event.target.appendChild(draggedElement);
+    document.getElementById("input_"+id).value = event.target.id + "_" + id;
   };
 
 </script>

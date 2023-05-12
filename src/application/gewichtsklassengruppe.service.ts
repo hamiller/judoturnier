@@ -1,22 +1,44 @@
 import { GewichtsklassenGruppeRepository } from "../adapter/secondary/gewichtsklassengruppe.repository";
+import { WettkaempferRepository } from "../adapter/secondary/wettkaempfer.repository";
 import { getGewichtsklasse } from "../config/gewichtsklassen.config";
-import { Begegnung } from "../model/begegnung";
 import { Gewichtsklasse } from "../model/gewichtsklasse";
 import { GewichtsklassenGruppe } from "../model/gewichtsklassengruppe";
-import { Kampfsystem } from "../model/kampfsystem";
 import { Wettkaempfer } from "../model/wettkaempfer";
-import { RoundRobin } from "./algorithm/round-robin";
-import { SechserPool } from "./algorithm/sechser-pool";
-import { Algorithmus } from "./algorithmus.interface";
 import { getLogger } from './logger';
 
 const logger = getLogger('GewichtsklassenGruppeService');
-const repo = new GewichtsklassenGruppeRepository();
+const gewichtsklassenGruppeRepo = new GewichtsklassenGruppeRepository();
+const wettkaempferRepo = new WettkaempferRepository();
 const VARIABLER_GEWICHTSTEIL: number = 0.2;
 
 export class GewichtsklassenGruppeService {
-  speichere(gewichtsKlassenGruppen: GewichtsklassenGruppe[]): Promise<Number> {
-    return repo.saveAll(gewichtsKlassenGruppen);
+  
+  async aktualisiere(gruppenTeilnehmer: Map<number, number[]>) {
+    logger.debug("Aktualisieren...");
+    const gewichtsklassenGruppen = await gewichtsklassenGruppeRepo.all();
+    const wettkaempfer = await wettkaempferRepo.all();
+    
+    for (const gewichtsklassenGruppe of gewichtsklassenGruppen) {
+      const teilnehmerIds = gruppenTeilnehmer.get(gewichtsklassenGruppe.id!);
+      const wettkaempferListe = this.getWettkeampferListe(teilnehmerIds, wettkaempfer);
+      gewichtsklassenGruppe.teilnehmer = wettkaempferListe;
+    }
+    
+    gewichtsklassenGruppeRepo.saveAll(gewichtsklassenGruppen);
+  }
+  
+  loesche(): Promise<void> {
+    return gewichtsklassenGruppeRepo.deleteAll();
+  }
+
+  speichere(gewichtsKlassenGruppen: GewichtsklassenGruppe[]): Promise<void> {
+    logger.debug("Speichere Gewichtsklassen...");
+    return gewichtsklassenGruppeRepo.saveAll(gewichtsKlassenGruppen);
+  }
+
+  lade(): Promise<GewichtsklassenGruppe[]> {
+    logger.debug("Lade Gewichtsklassen...");
+    return gewichtsklassenGruppeRepo.all();
   }
 
   teileInGewichtsklassen(wettkaempferListe: Wettkaempfer[]): GewichtsklassenGruppe[] {
@@ -31,6 +53,26 @@ export class GewichtsklassenGruppeService {
     return gruppen;
   }
 
+  private getWettkeampferListe(teilnehmerIds: number[] | undefined, wettkaempfer: Wettkaempfer[]) {
+    if (!teilnehmerIds) return [];
+
+    const wettkaempferListe: Wettkaempfer[] = []; 
+    for (const id of teilnehmerIds) {
+      for (const w of wettkaempfer) {
+        if (id == w.id) wettkaempferListe.push(w);
+      }
+    }
+    return wettkaempferListe;
+  }
+
+  private getGruppe(gruppenId: number, gewichtsklassenGruppen: GewichtsklassenGruppe[]) {
+    for (const gewichtsklassenGruppe of gewichtsklassenGruppen) {
+      if (gewichtsklassenGruppe.id == gruppenId) return gewichtsklassenGruppe;
+    }
+
+    throw new Error("Unbekannt Gruppen-ID:" + gruppenId);
+  }
+  
   private gruppiereNachGeschlecht(kaempferListe: Wettkaempfer[]): Wettkaempfer[][] {
     const geschlechter = new Set(kaempferListe.map(k => k.geschlecht));
     const geschlechtZugehoerige: Wettkaempfer[][] = [];
@@ -82,36 +124,6 @@ export class GewichtsklassenGruppeService {
     }
     // hier sollten wir nie hinkommen
     throw new Error("Unbekanntes Gewicht:" + wettkaempfer.gewicht);
-  }
-
-  private getAlgorithmus(ks: Kampfsystem) : Algorithmus {
-    switch (ks) {
-      case Kampfsystem.pool6:
-        return new SechserPool();
-      default:
-        return new RoundRobin();
-    }
-  }
-
-  private sortiereBegegnungen(begegnungen: Begegnung[], mattenAnzahl: number): Begegnung[] {
-    // Sortiere die Begegnungen nach Kämpfern
-    begegnungen.sort((a, b) => {
-      if (a.wettkaempfer1 === b.wettkaempfer1) {
-        return a.wettkaempfer2.name.localeCompare(b.wettkaempfer2.name);
-      }
-      return a.wettkaempfer1.name.localeCompare(b.wettkaempfer1.name);
-    });
-
-    // Überprüfe jede Begegnung, um sicherzustellen, dass kein Kämpfer in zwei aufeinanderfolgenden Begegnungen auftritt
-    for (let i = 1; i < begegnungen.length; i++) {
-      if (begegnungen[i].wettkaempfer1 === begegnungen[i - 1].wettkaempfer1) {
-        const temp = begegnungen[i];
-        begegnungen[i] = begegnungen[i - 1];
-        begegnungen[i - 1] = temp;
-      }
-    }
-
-    return begegnungen;
   }
 
 }
