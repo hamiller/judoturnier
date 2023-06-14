@@ -9,5 +9,5 @@ export interface GewichtsklassenGruppe {
   gruppenGeschlecht: Geschlecht,
   teilnehmer: Wettkaempfer[],
   gewichtsklasse: Gewichtsklasse,
-  name?: string
+  name: string
 }

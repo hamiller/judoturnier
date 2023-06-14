@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
   {{> header}}
 </head>
@@ -24,7 +24,7 @@
         <div>{{geschlecht}}</div>
         <div>{{verein.name}}</div>
         <div>{{alter}}</div>
-        <div>{{gewicht}}</div>
+        <div>{{formatNumber gewicht}}kg</div>
         <div>
           <a href="/wettkaempfer/{{ id }}"><span class="material-icons">edit</span></a>
           <a href="#" onclick="deleteWK({{ id }})"><span class="material-icons">person_remove</span></a>

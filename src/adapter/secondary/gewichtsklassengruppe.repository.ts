@@ -4,7 +4,7 @@ import { Geschlecht } from '../../model/geschlecht';
 import { Gewichtsklasse } from '../../model/gewichtsklasse';
 import { GewichtsklassenGruppe } from '../../model/gewichtsklassengruppe';
 import { Wettkaempfer } from '../../model/wettkaempfer';
-import { pool } from './db.pool';
+import { pool } from '../../config/db.config';
 
 const logger = getLogger('GewichtsklassenGruppeRepository');
 

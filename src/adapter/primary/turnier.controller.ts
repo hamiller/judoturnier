@@ -29,7 +29,9 @@ export class TurnierController {
     const wks = await wiegenService.alleKaempfer();
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfGruppen = turnierService.erstelleGruppen(gwks);
-    return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen };
+
+  
+    return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen.sort() };
   }
 
   @Get('/turnier/einstellungen')

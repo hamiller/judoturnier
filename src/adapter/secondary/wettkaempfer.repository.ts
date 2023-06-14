@@ -1,4 +1,4 @@
-import { pool } from './db.pool';
+import { pool } from '../../config/db.config';
 import { Wettkaempfer } from "../../model/wettkaempfer";
 import { Geschlecht } from '../../model/geschlecht';
 import { Altersklasse } from '../../model/altersklasse';
@@ -117,6 +117,6 @@ const dtoToEntity = (dto: Wettkaempfer): any => {
     geschlecht: geschlechtKey,
     altersklasse: altersklasseKey,
     vereinsid: dto.verein.id,
-    gewicht: dto.gewicht,
+    gewicht: dto.gewicht?.toFixed(2),
   };
 }

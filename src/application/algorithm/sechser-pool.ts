@@ -26,8 +26,8 @@ export class SechserPool implements Algorithmus {
       const id: string = ((gruppenid+1) * 10).toString() + i.toString(); // ids erstellen und konkatenieren
       const wettkampfGruppe: WettkampfGruppe = {
         id: parseInt(id),
-        name: (gewichtsklassenGruppe.name || "") +"_"+id,
-        typ: gewichtsklassenGruppe.gewichtsklasse.name +"_" + gewichtsklassenGruppe.altersKlasse,
+        name: gewichtsklassenGruppe.name,
+        typ: "(" + gewichtsklassenGruppe.gewichtsklasse.name + " " + gewichtsklassenGruppe.altersKlasse + ")",
         begegnungen: sortedBegegnungen
       }
 
@@ -50,7 +50,6 @@ export class SechserPool implements Algorithmus {
 
   private erstelleBegegnungen(group: Wettkaempfer[]): Begegnung[] {
     const n = group.length;
-    console.log("Kämpfer", n)
     const encounters: Begegnung[] = [];
   
     // Alle möglichen Begegnungen generieren

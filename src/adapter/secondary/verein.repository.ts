@@ -1,4 +1,4 @@
-import { pool } from './db.pool';
+import { pool } from '../../config/db.config';
 import { Verein } from "../../model/verein";
 import { getLogger } from '../../application/logger';
 

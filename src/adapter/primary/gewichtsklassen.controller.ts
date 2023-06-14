@@ -19,7 +19,7 @@ export class GewichtsklassenController {
   async ladeGewichtsklassen(@Res() res: Response) {
     const wks = await wiegenService.alleKaempfer();
     var currentGwks = await gewichtsklassenGruppenService.lade();
-    logger.info("geladen:");//, {data: currentGwks});
+    logger.info(`geladene Gruppen: ${currentGwks.length}`);
     
     return { 
       gewichtsklassengruppenWeiblich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 

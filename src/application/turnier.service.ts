@@ -6,37 +6,34 @@ import { RoundRobin } from "./algorithm/round-robin";
 import { SechserPool } from "./algorithm/sechser-pool";
 import { Algorithmus } from "./algorithmus.interface";
 import { getLogger } from './logger';
+import { randoriTurnier } from "../config/app.config";
 
 const logger = getLogger('TurnierService');
 
-const VARIABLER_GEWICHTSTEIL: number = 0.2;
 const ANZAHL_MATTEN = 3;
 
 export class TurnierService {
 
   erstelleGruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[]): WettkampfGruppe[] {
-    logger.debug("Erstelle Gruppen...");
+    logger.debug(`Erstelle ${gewichtsklassenGruppen.length} Gruppen...`);
 
     // TODO
-    const ks = Kampfsystem.pool6;
-    const algorithmus = this.getAlgorithmus(ks);
+    const ks = Kampfsystem.ko;
+
+    const algorithmus = randoriTurnier ? new SechserPool() : this.getAlgorithmus(ks);
 
     const wettkampfGruppen: WettkampfGruppe[] = [];
     for (let i = 0; i < gewichtsklassenGruppen.length; i++) {
       const gruppe = gewichtsklassenGruppen[i];
       const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, ANZAHL_MATTEN);
       wettkampfGruppen.push(...wkg);
-      break;
     }
 
-    logger.info("Erstellte Gruppen", {data: wettkampfGruppen});
     return wettkampfGruppen;
   }
 
   private getAlgorithmus(ks: Kampfsystem) : Algorithmus {
     switch (ks) {
-      case Kampfsystem.pool6:
-        return new SechserPool();
       default:
         return new RoundRobin();
     }

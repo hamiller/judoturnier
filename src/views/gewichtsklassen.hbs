@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
   {{> header}}
 <body>
   {{> title }}
@@ -33,7 +33,7 @@
             <div class="gewichtsklasse-teilnehmer">
             {{#each teilnehmer}}
               <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
-              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
+              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
               <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
               </div>
             {{/each}}
@@ -54,7 +54,7 @@
             <div class="gewichtsklasse-teilnehmer">
             {{#each teilnehmer}}
               <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
-              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span></div>
+              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span><span>{{geschlecht}}</span></div>
               <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
               </div>
             {{/each}}
