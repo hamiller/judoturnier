@@ -2,15 +2,15 @@
   "name": "judoturnier",
   "version": "1.0.0",
   "description": "Turnierplaner",
-  "main": "main.js",
+  "main": "main/main.js",
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/main.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/main.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./src/test/**/*.test.ts"
   },
   "author": "Florian Miess",
-  "license": "MIT",
+  "license": "GNU General Public License v3.0 only",
   "dependencies": {
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
@@ -30,10 +30,13 @@
     "@types/hbs": "^4.0.1",
     "@types/i18n": "^0.13.6",
     "@types/method-override": "^0.0.32",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^18.15.10",
     "@types/pg": "^8.6.6",
     "concurrently": "^7.6.0",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.2"
   }
 }

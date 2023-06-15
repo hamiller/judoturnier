@@ -36,7 +36,7 @@ export default class AppServer {
   private initConfigs(app: Application): void {
     logger.debug("Setze Rendering Engine");
     app.set('view engine', 'hbs');
-    app.set('views', './src/views');
+    app.set('views', './src/main/views');
   }
 
   private initControllers(app: Application): void {
@@ -76,7 +76,7 @@ export default class AppServer {
       return parseFloat(number).toLocaleString(i18n.getLocale(), {minimumFractionDigits: 2});
     });
     
-    const partialsDir = path.join(__dirname, '../src/views/partials');
+    const partialsDir = path.join(__dirname, '../src/main/views/partials');
     hbs.registerPartials(partialsDir, (err?: Error) => {
       if (err) {
         logger.error(err);

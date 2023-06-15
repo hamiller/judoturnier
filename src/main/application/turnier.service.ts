@@ -27,6 +27,8 @@ export class TurnierService {
       const gruppe = gewichtsklassenGruppen[i];
       const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, ANZAHL_MATTEN);
       wettkampfGruppen.push(...wkg);
+
+      break;
     }
 
     return wettkampfGruppen;

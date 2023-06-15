@@ -244,3 +244,7 @@ li {
 .vs div.center {
   width: 40%;
 }
+
+.hidden {
+  display: none;
+}

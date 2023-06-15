@@ -8,7 +8,8 @@
   <div>
     <div class="bodyheader">
       <h2>Begegnungen</h2>
-      <div>
+      <div onclick="document.getElementById('infobox').classList.toggle('hidden');" ><span class="material-icons md-48" title="Info">info</span></div>
+      <div id="infobox" class="hidden">
       {{#each gewichtsklassenGruppe}}
         <div>{{altersKlasse}} {{gewichtsklasse.name}}: {{teilnehmer.length}} Teilnehmer</div>
       {{/each}}
