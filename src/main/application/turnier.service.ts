@@ -6,23 +6,34 @@ import { RoundRobin } from "./algorithm/round-robin";
 import { SechserPool } from "./algorithm/sechser-pool";
 import { Algorithmus } from "./algorithmus.interface";
 import { getLogger } from './logger';
-import { randoriTurnier } from "../config/app.config";
+import { Einstellungen, TurnierTyp } from "../model/einstellungen";
+import { EinstellungenRepository } from "../adapter/secondary/einstellungen.repository";
 
 const logger = getLogger('TurnierService');
-
+const einstellungenRepo = new EinstellungenRepository();
 const ANZAHL_MATTEN = 3;
+const KAMPFPAUSEN = 2;
 
 export class TurnierService {
+  
+  async speichereTurnierEinstellungen(einstellungen: Einstellungen): Promise<Einstellungen> {
+    logger.debug('Speichere Einstellungen');
+    await einstellungenRepo.save(einstellungen);
+    return einstellungenRepo.load();
+  }
+  
+  async ladeTurnierEinstellungen(): Promise<Einstellungen> {
+    logger.debug('Lade Einstellungen');
+    return einstellungenRepo.load();
+  }
 
-  erstelleGruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[]): WettkampfGruppe[] {
+  async erstelleGruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[]): Promise<WettkampfGruppe[]> {
     logger.debug(`Erstelle ${gewichtsklassenGruppen.length} Gruppen...`);
+    
+    const einstellungen = await einstellungenRepo.load();
+    const algorithmus = einstellungen.turnierTyp == TurnierTyp.randori ? new SechserPool() : this.getAlgorithmus(Kampfsystem.ko);
 
-    // TODO
-    const ks = Kampfsystem.ko;
-
-    const algorithmus = randoriTurnier ? new SechserPool() : this.getAlgorithmus(ks);
-
-    const wettkampfGruppen: WettkampfGruppe[] = [];
+    let wettkampfGruppen: WettkampfGruppe[] = [];
     for (let i = 0; i < gewichtsklassenGruppen.length; i++) {
       const gruppe = gewichtsklassenGruppen[i];
       const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, ANZAHL_MATTEN);
@@ -30,7 +41,13 @@ export class TurnierService {
 
       break;
     }
+    wettkampfGruppen = this.sortiereGruppen(wettkampfGruppen, KAMPFPAUSEN);
 
+    return wettkampfGruppen;
+  }
+
+  sortiereGruppen(wettkampfGruppen: WettkampfGruppe[], KAMPFPAUSEN: number): WettkampfGruppe[] {
+    logger.debug("Sortiere Begegnungen in den Kampfgruppen");
     return wettkampfGruppen;
   }
 

@@ -3,6 +3,7 @@
 drop table wettkaempfer;
 drop table verein;
 drop table gewichtsklassengruppen;
+drop table einstellungen;
 
 CREATE TABLE wettkaempfer (
     id SERIAL,
@@ -29,6 +30,14 @@ CREATE TABLE gewichtsklassengruppen (
   teilnehmer INTEGER[],
   PRIMARY KEY (id)
 );
+
+CREATE TABLE einstellungen (
+  art VARCHAR(50), 
+  wert VARCHAR(250),
+  PRIMARY KEY (art)
+);
+
+insert into einstellungen(art, wert) VALUES ('turniertyp', 'Randori');
 
 insert into verein("name") values ('Judo Club Hamburg'), ('Judo Club Berlin'),('Judo Club Frankfurt'),('Judo Club Stuttgart'), ('Judo Club Köln'), ('Judo Club München'),('Judo Club Dortmund'),('Judo Club Hannover'),('Judo Club Leipzig'),('Judo Club Nürnberg'),('Judo Club Bremen'),('Judo Club Essen'),('Judo Club Düsseldorf');
 

@@ -11,5 +11,3 @@ function convertToBoolean(input: string | undefined): boolean | undefined {
       return undefined;
   }
 }
-
-export const randoriTurnier = convertToBoolean(process.env.RANDORI_TURNIER);

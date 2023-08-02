@@ -9,7 +9,6 @@ import { WettkaempferController } from './adapter/primary/wettkaempfer.controlle
 import { TurnierController } from './adapter/primary/turnier.controller';
 import { GewichtsklassenController } from './adapter/primary/gewichtsklassen.controller';
 import { errorHandler } from './application/errorhandler';
-import { randoriTurnier } from './config/app.config';
 import i18n from './config/i18n.config';
 import hbs from 'hbs';
 import * as path from 'path';
@@ -88,7 +87,6 @@ export default class AppServer {
     logger.debug("Starte...");
     AppServer.app.listen(port, () => {
       logger.info(`Judo-Turniersoftware gestartet an Port *:${port}`)
-      logger.info(`-------- Turnierart Randori: ${randoriTurnier} --------`)
     });
   }
 }

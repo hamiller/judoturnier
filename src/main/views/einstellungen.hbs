@@ -10,8 +10,22 @@
       <h2>Einstellungen</h2>      
     </div>
     <div class="generalcontent">
+      <h2>Einstellung der Systems</h2>
+      <form id="turniereinstellungenformular" action="/turnier/einstellungen" method="POST">
+        <div class="actions">
+          <button type="submit">Turnier-Einstellung speichern<span class="material-icons md-48" title="Turniereinstellungen speichern">save</span></button>
+        </div>
+
+        <div class="listeneintrag">
+          <input type="radio" name="turniertyp" value="Randori" {{setChecked "Randori" turniertyp}}/><label>Randori-Turnier</label>
+          <input type="radio" name="turniertyp" value="Standard" {{setChecked "Standard" turniertyp}}/><label>Standard-Turnier</label>
+        </div>
+      </form>
+    </div>
+
+    <div class="generalcontent">
       <h2>Einstellung der Wettkampfgruppen</h2>
-      <form id="kampfklassenformular" action="/turnier/einstellungen" method="POST">
+      <form id="kampfklassenformular" action="/turnier/einstellungen-wettkampf" method="POST">
       <div class="actions">
         <button type="submit">Wettkampfgruppen-Einstellung speichern<span class="material-icons md-48" title="Wettkampfgruppen speichern">save</span></button>
       </div>

@@ -5,6 +5,7 @@ import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
 import { WiegenService } from '../../application/wiegen.service';
 import { Kampfsystem } from '../../model/kampfsystem';
+import { Einstellungen } from '../../model/einstellungen';
 
 const logger = getLogger('TurnierController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -19,7 +20,8 @@ export class TurnierController {
   async ladeTurnieruebersicht(@Res() res: Response) {
     logger.debug('Turnierübersicht angefragt');
     const wks = await wiegenService.alleKaempfer();
-    return { anzahlwk: wks.length, con: "guble2" };
+    const einstellungen = await turnierService.ladeTurnierEinstellungen();
+    return { anzahlwk: wks.length, con: "guble2", turnierTyp: einstellungen.turnierTyp };
   }
 
   @Get('/turnier/begegnungen')
@@ -31,7 +33,7 @@ export class TurnierController {
     const wettkampfGruppen = turnierService.erstelleGruppen(gwks);
 
   
-    return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen.sort() };
+    return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen };
   }
 
   @Get('/turnier/einstellungen')
@@ -39,30 +41,53 @@ export class TurnierController {
   async konfiguriereKampfsysteme(@Res() res: Response) {
     logger.debug('Einstellungen');
 
-    // todo: Laden falls vorhanden!
-
+    const einstellungen = await turnierService.ladeTurnierEinstellungen();
     const wks = await wiegenService.alleKaempfer();
     const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     return { 
       gewichtsklassengruppen: gwks, 
       anzahlwk: wks.length,
-      kampfsysteme: Kampfsystem
+      kampfsysteme: Kampfsystem,
+      turniertyp: einstellungen.turnierTyp
     };
   }
 
-  @Post('/turnier/einstellungen')
+  @Post('/turnier/einstellungen-wettkampf')
   @Render("einstellungen.hbs")
   async speichereKampfsystemEinstellungen(@Body() data: any, @Res() res: Response) {
     logger.debug('speichere WettkampfGruppen-Einstellungen', {data: data});
 
     // todo: Speichern!
 
+    const einstellungen = await turnierService.ladeTurnierEinstellungen();
     const wks = await wiegenService.alleKaempfer();
     const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     return { 
       gewichtsklassengruppen: gwks, 
       anzahlwk: wks.length,
-      kampfsysteme: Kampfsystem
+      kampfsysteme: Kampfsystem,
+      turniertyp: einstellungen.turnierTyp
+    };
+  }
+
+  @Post('/turnier/einstellungen')
+  @Render("einstellungen.hbs")
+  async speichereTurnierEinstellungen(@Body() data: any, @Res() res: Response) {
+    logger.debug('speichere Turnier-Einstellungen', {data: data});
+
+    // todo: Speichern!
+    var einstellungen : Einstellungen = {
+      turnierTyp: data.turniertyp
+    };
+    einstellungen = await turnierService.speichereTurnierEinstellungen(einstellungen);
+
+    const wks = await wiegenService.alleKaempfer();
+    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
+    return { 
+      gewichtsklassengruppen: gwks, 
+      anzahlwk: wks.length,
+      kampfsysteme: Kampfsystem,
+      turniertyp: einstellungen.turnierTyp
     };
   }
 

@@ -41,7 +41,7 @@ export class GewichtsklassenGruppeService {
     return gewichtsklassenGruppeRepo.saveAll(gewichtsKlassenGruppen);
   }
 
-  lade(): Promise<GewichtsklassenGruppe[]> {
+  async lade(): Promise<GewichtsklassenGruppe[]> {
     logger.debug("Lade Gewichtsklassen...");
     return gewichtsklassenGruppeRepo.all()
       .then(gruppen => gruppen.sort((a, b) => {
