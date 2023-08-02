@@ -23,7 +23,7 @@ export class SechserPool implements Algorithmus {
     for (let i = 0; i < groups.length; i++) {
       const group = groups[i];
       const begegnungen = this.erstelleBegegnungen(group);
-      const sortedBegegnungen = sortierer.sortiereBegegnungen5(begegnungen);
+      const sortedBegegnungen = sortierer.sortiereBegegnungen(begegnungen);
       
       const id: string = ((gruppenid+1) * 10).toString() + i.toString(); // ids erstellen und konkatenieren
       const wettkampfGruppe: WettkampfGruppe = {
