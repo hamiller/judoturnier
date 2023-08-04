@@ -29,14 +29,14 @@ export class JederGegenJeden implements Algorithmus {
         id: parseInt(id),
         name: gewichtsklassenGruppe.name,
         typ: "(" + gewichtsklassenGruppe.gewichtsklasse.name + " " + gewichtsklassenGruppe.altersKlasse + ")",
-        begegnungen: begegnungen
+        begegnungsRunden: begegnungen
       }
       result.push(wettkampfGruppe);
     }
     return result;
   }
 
-  private berechneBegegnungen(teilnehmer: Wettkaempfer[]): Begegnung[] {
+  private berechneBegegnungen(teilnehmer: Wettkaempfer[]): Begegnung[][] {
     if (teilnehmer.length % 2 == 0) {
       return this.berechneBegegnungenMitGeraderAnzahl(teilnehmer);
     }
@@ -44,7 +44,7 @@ export class JederGegenJeden implements Algorithmus {
     return this.berechneBegegnungenMitUngeraderAnzahl(teilnehmer);
   }
 
-  private berechneBegegnungenMitUngeraderAnzahl(teilnehmer: Wettkaempfer[]): Begegnung[] {
+  private berechneBegegnungenMitUngeraderAnzahl(teilnehmer: Wettkaempfer[]): Begegnung[][] {
     const teilnehmerZahl = teilnehmer.length;
     const anzahlRunden = teilnehmerZahl;
     const anzahlBegegnungenJeRunden = Math.floor(teilnehmerZahl / 2);
@@ -75,11 +75,11 @@ export class JederGegenJeden implements Algorithmus {
         }
     }
 
-    return runden.reduce((result, currentArray) => result.concat(currentArray));
+    return runden;
   }
 
 
-  private berechneBegegnungenMitGeraderAnzahl(teilnehmer: Wettkaempfer[]): Begegnung[] {
+  private berechneBegegnungenMitGeraderAnzahl(teilnehmer: Wettkaempfer[]): Begegnung[][] {
     const teilnehmerZahl = teilnehmer.length;
     const anzahlRunden = teilnehmerZahl - 1;
     const anzahlBegegnungenJeRunden = Math.floor(teilnehmerZahl / 2);
@@ -117,7 +117,7 @@ export class JederGegenJeden implements Algorithmus {
         }
     }
 
-    return runden.reduce((result, currentArray) => result.concat(currentArray));
+    return runden;
   }
 
   private splitArray(arr: Wettkaempfer[], chunkSize: number): Wettkaempfer[][] {
