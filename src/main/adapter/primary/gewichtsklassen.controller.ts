@@ -32,7 +32,7 @@ export class GewichtsklassenController {
   async erstelleGewichtsklassenNeu(@Res() res: Response) {
     logger.debug('erstelle Gewichtsklassen');
     const wks = await wiegenService.alleKaempfer();
-    const gwks = gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     await gewichtsklassenGruppenService.loesche();
     await gewichtsklassenGruppenService.speichere(gwks);
     res.redirect("/gewichtsklassen");

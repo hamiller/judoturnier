@@ -5,13 +5,15 @@ import { Gewichtsklasse } from "../model/gewichtsklasse";
 import { GewichtsklassenGruppe } from "../model/gewichtsklassengruppe";
 import { Wettkaempfer } from "../model/wettkaempfer";
 import { getLogger } from './logger';
-import { randoriTurnier } from "../config/app.config";
 import { randomRandoriGruppenNamen} from "../model/randorigruppenname";
 import { Geschlecht } from "../model/geschlecht";
 import { altersklasseSortOrder } from "../model/altersklasse";
+import { TurnierTyp } from "../model/einstellungen";
+import { EinstellungenRepository } from "../adapter/secondary/einstellungen.repository";
 
 const logger = getLogger('GewichtsklassenGruppeService');
 const gewichtsklassenGruppeRepo = new GewichtsklassenGruppeRepository();
+const einstellungenRepo = new EinstellungenRepository();
 const wettkaempferRepo = new WettkaempferRepository();
 const TURNIER_VARIABLER_GEWICHTSTEIL: number = 0.2;
 const RANDORI_GRUPPEN_GROESSE =  6;
@@ -35,7 +37,7 @@ export class GewichtsklassenGruppeService {
   loesche(): Promise<void> {
     return gewichtsklassenGruppeRepo.deleteAll();
   }
-
+  
   speichere(gewichtsKlassenGruppen: GewichtsklassenGruppe[]): Promise<void> {
     logger.debug("Speichere Gewichtsklassen...");
     return gewichtsklassenGruppeRepo.saveAll(gewichtsKlassenGruppen);
@@ -44,21 +46,22 @@ export class GewichtsklassenGruppeService {
   async lade(): Promise<GewichtsklassenGruppe[]> {
     logger.debug("Lade Gewichtsklassen...");
     return gewichtsklassenGruppeRepo.all()
-      .then(gruppen => gruppen.sort((a, b) => {
-        if (altersklasseSortOrder[a.altersKlasse] !== altersklasseSortOrder[b.altersKlasse]) {
-          return altersklasseSortOrder[a.altersKlasse] - altersklasseSortOrder[b.altersKlasse]; // nach Alter sortieren
+    .then(gruppen => gruppen.sort((a, b) => {
+      if (altersklasseSortOrder[a.altersKlasse] !== altersklasseSortOrder[b.altersKlasse]) {
+        return altersklasseSortOrder[a.altersKlasse] - altersklasseSortOrder[b.altersKlasse]; // nach Alter sortieren
         }
         else {
           return a.gewichtsklasse.gewicht - b.gewichtsklasse.gewicht; // wenn Alter gleich, dann Aufsteigend nach Gewicht sortieren
         }
       }));
   }
-
-  teileInGewichtsklassen(wettkaempferListe: Wettkaempfer[]): GewichtsklassenGruppe[] {
+  
+  async teileInGewichtsklassen(wettkaempferListe: Wettkaempfer[]): Promise<GewichtsklassenGruppe[]> {
     logger.debug("Erstelle Gewichtsklassen...");
+    const einstellungen = await einstellungenRepo.load();
     
-    if (randoriTurnier) {
-      logger.info(`Randori-Turnier: ${randoriTurnier}`);
+    if (einstellungen.turnierTyp == TurnierTyp.randori) {
+      logger.info(`Randori-Turnier`);
       logger.debug("Bei einem Randori-Turnier wird nicht nach geschlecht unterschieden, es wird daher keine Einteilung vorgenommen");
       const gruppenNachAlter = this.gruppiereNachAlterklasse(wettkaempferListe);
       return gruppenNachAlter.flatMap(gs => this.erstelleGewichtsklassenGruppenRandori(gs));

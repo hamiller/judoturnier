@@ -15,20 +15,26 @@
       {{/each}}
       </div>
 
-      <div class="actions">
-        <button onclick="window.location.href='/turnier/wettkampfgruppen';" >Wettkampfgruppen erstellen<span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></button>
-      </div>
+      <form id="turniereinstellungenformular" action="/turnier/begegnungen" method="POST">
+        <div class="actions">
+          <button type="submit">Wettkampfgruppen erstellen<span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></button>
+        </div>
+      </form>
     </div>
     <div class="generalcontent">
-      {{#each wettkampfgruppen}}
+      {{#each matten}}
         <div class="wettkampfgruppe">
-          <div class="listeneintrag-titel">{{name}} {{typ}}</div>
-          {{#each begegnungen}}
-            <div class="listeneintrag vs">
-              <div class="wettkaempfer name">{{wettkaempfer1.name}}</div><div>({{wettkaempfer1.verein.name}})</div> 
-              <div class="center">vs</div> 
-              <div class="wettkaempfer name">{{wettkaempfer2.name}}</div><div>({{wettkaempfer2.verein.name}})</div>
-            </div>
+          <div class="listeneintrag-titel">Matte {{id}}</div>
+          {{#each runden}}
+            <div class="listeneintrag-titel">Runde {{runde}}</div>
+            <div>{{gruppe.id}} {{gruppe.name}}</div>
+            {{#each begegnungen}}
+              <div class="listeneintrag vs">
+                <div class="wettkaempfer name">{{wettkaempfer1.name}}</div><div>({{wettkaempfer1.verein.name}})</div> 
+                <div class="center">vs</div> 
+                <div class="wettkaempfer name">{{wettkaempfer2.name}}</div><div>({{wettkaempfer2.verein.name}})</div>
+              </div>
+            {{/each}}
           {{/each}}
         </div>
       {{/each}}

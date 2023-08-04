@@ -43,16 +43,16 @@ describe('Erstellen von Begegnungen', () => {
     name: "GewichtsGruppenname - Die Leichten"
   };
 
-  it('korrekte ', () => {
+  it('Reihenfolge je Matte wird korrekt erstellt ', () => {
     const matten = service.berechneGruppenReihenfolge([gewichtsklassenGruppe], new JederGegenJeden());
     
-    matten.forEach(matte => {
-      console.log("Matte", matte.id);
-      matte.runden.forEach(runde => {
-        console.log("Runde", runde.runde);
-        runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
-      })
-    });
+    // matten.forEach(matte => {
+    //   console.log("Matte", matte.id);
+    //   matte.runden.forEach(runde => {
+    //     console.log("Runde", runde.runde);
+    //     runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
+    //   })
+    // });
     assert.notEqual(matten[0].runden[0].begegnungen[0].wettkaempfer1, matten[0].runden[0].begegnungen[1].wettkaempfer1)
   });
 });

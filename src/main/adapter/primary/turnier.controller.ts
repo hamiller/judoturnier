@@ -26,14 +26,22 @@ export class TurnierController {
 
   @Get('/turnier/begegnungen')
   @Render("begegnungen.hbs")
-  async erstelleWettkampfGruppen(@Res() res: Response) {
-    logger.debug('erstelle WettkampfGruppen');
-    const wks = await wiegenService.alleKaempfer();
+  async ladeWettkampfreihenfolgeJeMatte(@Res() res: Response) {
+    logger.debug('lade Wettkampfreihenfolge je Matte');
     const gwks = await gewichtsklassenGruppenService.lade();
-    const wettkampfGruppen = turnierService.erstelleGruppen(gwks);
-
+    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
   
-    return { anzahlwk: wks.length, gewichtsklassenGruppe: gwks, wettkampfgruppen: wettkampfGruppen };
+    return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
+  }
+
+  @Post('/turnier/begegnungen')
+  @Render("begegnungen.hbs")
+  async erstelleWettkampfreihenfolgeJeMatte(@Res() res: Response) {
+    logger.debug('erstelle Wettkampfreihenfolge je Matte');
+    await turnierService.erstelleWettkampfreihenfolge();
+  
+    res.redirect("/turnier/begegnungen");
+    return res;
   }
 
   @Get('/turnier/einstellungen')

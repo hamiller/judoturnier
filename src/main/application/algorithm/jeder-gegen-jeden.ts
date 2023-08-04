@@ -48,7 +48,6 @@ export class JederGegenJeden implements Algorithmus {
     const teilnehmerZahl = teilnehmer.length;
     const anzahlRunden = teilnehmerZahl;
     const anzahlBegegnungenJeRunden = Math.floor(teilnehmerZahl / 2);
-    console.log("Erstelle ein Array mit ", anzahlRunden, anzahlBegegnungenJeRunden);
     const runden : Begegnung[][] = Array.from({ length: anzahlRunden }, () => Array(anzahlBegegnungenJeRunden).fill(null));
 
     for (let i = 0, k = 0; i < anzahlRunden; i++) {
