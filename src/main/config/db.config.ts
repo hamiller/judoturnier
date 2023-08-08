@@ -2,12 +2,7 @@ import { Pool, PoolClient } from 'pg';
 
 import dotenv from 'dotenv';
 
-export interface Db {
-  connect(): Promise<PoolClient>
-  close(): Promise<void>
-}
-
-export default class DatabasePool implements Db {
+export default class DatabasePool {
   private pool: Pool;
 
   constructor() {
@@ -23,12 +18,10 @@ export default class DatabasePool implements Db {
 
   async connect(): Promise<PoolClient> {
     console.log("connect called")
-    // Greifen Sie auf den Pool zu und rufen Sie eine Verbindung ab
     const client = await this.pool.connect();
     return client;
   }
 
-  // Schließen Sie den Pool, wenn er nicht mehr benötigt wird
   async close(): Promise<void> {
     await this.pool.end();
   }
