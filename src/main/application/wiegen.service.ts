@@ -5,10 +5,12 @@ import { getLogger } from './logger';
 import { VereinRepository } from "../adapter/secondary/verein.repository";
 import { Geschlecht } from "../model/geschlecht";
 import { altersklasseSortOrder } from "../model/altersklasse";
+import DatabasePool from "../config/db.config";
 
 const logger = getLogger('WiegenService');
-const wettkaempferRepo = new WettkaempferRepository();
-const vereinRepo = new VereinRepository();
+const pool: DatabasePool = new DatabasePool();
+const wettkaempferRepo = new WettkaempferRepository(pool);
+const vereinRepo = new VereinRepository(pool);
 export class WiegenService {
 
   

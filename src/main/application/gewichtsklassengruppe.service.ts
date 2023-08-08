@@ -10,11 +10,13 @@ import { Geschlecht } from "../model/geschlecht";
 import { altersklasseSortOrder } from "../model/altersklasse";
 import { TurnierTyp } from "../model/einstellungen";
 import { EinstellungenRepository } from "../adapter/secondary/einstellungen.repository";
+import DatabasePool from "../config/db.config";
 
 const logger = getLogger('GewichtsklassenGruppeService');
-const gewichtsklassenGruppeRepo = new GewichtsklassenGruppeRepository();
-const einstellungenRepo = new EinstellungenRepository();
-const wettkaempferRepo = new WettkaempferRepository();
+const pool: DatabasePool = new DatabasePool();
+const gewichtsklassenGruppeRepo = new GewichtsklassenGruppeRepository(pool);
+const einstellungenRepo = new EinstellungenRepository(pool);
+const wettkaempferRepo = new WettkaempferRepository(pool);
 const TURNIER_VARIABLER_GEWICHTSTEIL: number = 0.2;
 const RANDORI_GRUPPEN_GROESSE =  6;
 

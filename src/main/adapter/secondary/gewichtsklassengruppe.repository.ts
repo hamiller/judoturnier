@@ -1,18 +1,23 @@
 import { getLogger } from '../../application/logger';
+import DatabasePool from '../../config/db.config';
 import { Altersklasse } from '../../model/altersklasse';
 import { Geschlecht } from '../../model/geschlecht';
 import { Gewichtsklasse } from '../../model/gewichtsklasse';
 import { GewichtsklassenGruppe } from '../../model/gewichtsklassengruppe';
 import { Wettkaempfer } from '../../model/wettkaempfer';
-import { pool } from '../../config/db.config';
 
 const logger = getLogger('GewichtsklassenGruppeRepository');
 
 
 export class GewichtsklassenGruppeRepository {
+  private pool: DatabasePool;
   
+  constructor(pool: DatabasePool) {
+    this.pool = pool;
+  }
+    
   async all(): Promise<GewichtsklassenGruppe[]> {
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       const { rows } = await client.query(
         "SELECT  " +
@@ -58,7 +63,7 @@ export class GewichtsklassenGruppeRepository {
   }
 
   async save(gkg: GewichtsklassenGruppe): Promise<Number> {
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       let entity = dtoToEntity(gkg);
       let query;
@@ -85,7 +90,7 @@ export class GewichtsklassenGruppeRepository {
 
   async deleteAll(): Promise<void> {
     logger.debug("Deleting all GewichtsklassenGruppe from db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       let query = {
         text: 'DELETE FROM gewichtsklassengruppen',

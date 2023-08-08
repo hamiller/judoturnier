@@ -1,12 +1,18 @@
 import { getLogger } from '../../application/logger';
-import { pool } from '../../config/db.config';
 import { Einstellungen, TurnierTyp } from '../../model/einstellungen';
+import DatabasePool from '../../config/db.config';
 
 const logger = getLogger('EinstellungenRepository');
 
 export class EinstellungenRepository {
+  private pool: DatabasePool;
+  
+  constructor(pool: DatabasePool) {
+    this.pool = pool;
+  }
+
   async save(einstellungen: Einstellungen): Promise<void> {
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     const entity = dtoToEntity(einstellungen);
     console.log("hier", entity)
     try {
@@ -26,7 +32,7 @@ export class EinstellungenRepository {
   }
 
   async load(): Promise<Einstellungen> {
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       const { rows } = await client.query("SELECT * FROM einstellungen");
       return entityToDto(rows);;

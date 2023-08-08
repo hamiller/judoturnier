@@ -1,15 +1,20 @@
-import { pool } from '../../config/db.config';
 import { Verein } from "../../model/verein";
 import { getLogger } from '../../application/logger';
+import DatabasePool from "../../config/db.config";
 
 const logger = getLogger('VereinRepository');
 
 
 export class VereinRepository {
+  private pool: DatabasePool;
+  
+  constructor(pool: DatabasePool) {
+    this.pool = pool;
+  }
   
   async all(): Promise<Verein[]> {
     logger.debug("Fetching all vereine from db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       const { rows } = await client.query('SELECT v.* from verein v');
       return mapRows(rows);
@@ -23,7 +28,7 @@ export class VereinRepository {
 
   async find(id: Number): Promise<Verein | null> {
     logger.debug("Fetching Verein (" + id + ") from db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       const { rows } = await client.query('SELECT v.* from verein v where v.id = $1', [id]);
       if (rows.length > 0) {
@@ -40,7 +45,7 @@ export class VereinRepository {
 
   async save(verein: Verein): Promise<Number> {
     logger.debug("Saving Verein to db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       let query;
       if (verein.id) {
@@ -66,7 +71,7 @@ export class VereinRepository {
 
   async delete(id: Number): Promise<void> {
     logger.debug("Removing Verein from db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       let query = {
         text: 'DELETE FROM Verein v WHERE v.id = $1',

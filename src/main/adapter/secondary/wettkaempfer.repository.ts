@@ -1,17 +1,23 @@
-import { pool } from '../../config/db.config';
 import { Wettkaempfer } from "../../model/wettkaempfer";
 import { Geschlecht } from '../../model/geschlecht';
 import { Altersklasse } from '../../model/altersklasse';
 import { getLogger } from '../../application/logger';
+import DatabasePool from "../../config/db.config";
 
 const logger = getLogger('WettkaempferRepository');
 
 
 export class WettkaempferRepository {
   
+  private pool: DatabasePool;
+  
+  constructor(pool: DatabasePool) {
+    this.pool = pool;
+  }
+
   async all(): Promise<Wettkaempfer[]> {
     logger.debug("Fetching all wettkaempfer from db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       const { rows } = await client.query('SELECT w.*, v.id as vereinsid, v.name as vereinsname from wettkaempfer w left join verein v on w.verein = v.id');
       return entitiesToDtos(rows);
@@ -25,7 +31,7 @@ export class WettkaempferRepository {
 
   async find(id: Number): Promise<Wettkaempfer | null> {
     logger.debug("Fetching wettkaempfer (" + id + ") from db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       const { rows } = await client.query('SELECT w.*, v.id as vereinsid, v.name as vereinsname from wettkaempfer w left join verein v on w.verein = v.id where w.id = $1', [id]);
       if (rows.length > 0) {
@@ -42,7 +48,7 @@ export class WettkaempferRepository {
 
   async save(wettkaempfer: Wettkaempfer): Promise<Number> {
     logger.debug("Saving wettkaempfer to db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       let entity = dtoToEntity(wettkaempfer);
       let query;
@@ -69,7 +75,7 @@ export class WettkaempferRepository {
 
   async delete(id: Number): Promise<void> {
     logger.debug("Removing wettkaempfer from db");
-    const client = await pool.connect();
+    const client = await this.pool.connect();
     try {
       let query = {
         text: 'DELETE FROM wettkaempfer w WHERE w.id = $1',

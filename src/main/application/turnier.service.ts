@@ -12,10 +12,12 @@ import { Sortierer } from "./sortierer";
 import { Matte, Runde } from "../model/matte";
 import { GewichtsklassenGruppeService } from "./gewichtsklassengruppe.service";
 import { WettkampfRepository } from "../adapter/secondary/wettkampf.repository";
+import DatabasePool from "../config/db.config";
 
 const logger = getLogger('TurnierService');
-const einstellungenRepo = new EinstellungenRepository();
-const wettkampfRepo = new WettkampfRepository();
+const pool: DatabasePool = new DatabasePool();
+const einstellungenRepo = new EinstellungenRepository(pool);
+const wettkampfRepo = new WettkampfRepository(pool);
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
 const sortierer = new Sortierer();
 const ANZAHL_MATTEN = 3;
