@@ -7,7 +7,9 @@ export interface Matte {
 }
 
 export interface Runde {
+  id: number;
   runde: number;
+  matte_id?: number;
   gruppe: WettkampfGruppe;
   begegnungen: Begegnung[];
 }

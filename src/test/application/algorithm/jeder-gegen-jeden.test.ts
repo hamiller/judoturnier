@@ -1,12 +1,11 @@
 import assert from 'assert';
-import { TurnierService } from '../main/application/turnier.service';
-import { Altersklasse } from '../main/model/altersklasse';
-import { Geschlecht } from '../main/model/geschlecht';
-import { Wettkaempfer } from '../main/model/wettkaempfer';
-import { JederGegenJeden } from '../main/application/algorithm/jeder-gegen-jeden';
+import { JederGegenJeden } from '../../../main/application/algorithm/jeder-gegen-jeden';
+import { Altersklasse } from '../../../main/model/altersklasse';
+import { Geschlecht } from '../../../main/model/geschlecht';
+import { Wettkaempfer } from '../../../main/model/wettkaempfer';
 
-describe('Erstellen von Begegnungen', () => {
-  const service = new TurnierService();
+describe('Erstellen von Wettkampfgruppen', () => {
+  const algorithmus = new JederGegenJeden();
   const teilnehmer: Wettkaempfer[] = [
     { name: 'Teilnehmer A', geschlecht: Geschlecht.m, id: 1, verein: { name: "Verein1" }, altersklasse: Altersklasse.U11 },
     { name: 'Teilnehmer B', geschlecht: Geschlecht.m, id: 2, verein: { name: "Verein2" }, altersklasse: Altersklasse.U11 },
@@ -43,16 +42,18 @@ describe('Erstellen von Begegnungen', () => {
     name: "GewichtsGruppenname - Die Leichten"
   };
 
-  it('Reihenfolge je Matte wird korrekt erstellt ', () => {
-    const matten = service.berechneGruppenReihenfolge([gewichtsklassenGruppe], new JederGegenJeden());
+  it('Gruppen korrekt erstellt', () => {
+    const erstellteWettkampfgruppen = algorithmus.erstelleWettkampfGruppen(1, gewichtsklassenGruppe, 10);
     
-    // matten.forEach(matte => {
-    //   console.log("Matte", matte.id);
-    //   matte.runden.forEach(runde => {
-    //     console.log("Runde", runde.runde);
-    //     runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
+    // erstellteWettkampfgruppen.forEach(gruppe => {
+    //   console.log("Gruppe", gruppe.id);
+    //   gruppe.begegnungen.forEach(runde => {
+    //     console.log("Runde");
+    //     runde.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
     //   })
     // });
-    assert.notEqual(matten[0].runden[0].begegnungen[0].wettkaempfer1, matten[0].runden[0].begegnungen[1].wettkaempfer1)
+    
+    assert.notEqual(erstellteWettkampfgruppen[0].begegnungsRunden[0][0].wettkaempfer1.id, erstellteWettkampfgruppen[0].begegnungsRunden[1][0].wettkaempfer1.id);
+    assert(erstellteWettkampfgruppen[0].begegnungsRunden[0].length == 3);
   });
 });

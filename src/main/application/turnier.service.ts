@@ -118,8 +118,8 @@ export class TurnierService {
         const gruppe2 = wettkampfGruppen[1];
         
         for (let r = 0; r < gruppe1.begegnungsRunden.length; r++) {
-          const runde1: Runde = { runde: r+1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
-          const runde2: Runde = { runde: r+1, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
+          const runde1: Runde = { id:r, runde: r+1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
+          const runde2: Runde = { id:r, runde: r+1, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
           matten[m].runden.push(runde1);
           matten[m].runden.push(runde2);
         }
@@ -134,9 +134,9 @@ export class TurnierService {
         const gruppe3 = wettkampfGruppen[2];
         
         for (let r = 0; r < gruppe1.begegnungsRunden.length; r++) {
-          const runde1: Runde = { runde: r+1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
-          const runde2: Runde = { runde: r+1, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
-          const runde3: Runde = { runde: r+1, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r]};
+          const runde1: Runde = { id:r, runde: r+1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
+          const runde2: Runde = { id:r, runde: r+1, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
+          const runde3: Runde = { id:r, runde: r+1, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r]};
           matten[m].runden.push(runde1);
           matten[m].runden.push(runde2);
           matten[m].runden.push(runde3);
