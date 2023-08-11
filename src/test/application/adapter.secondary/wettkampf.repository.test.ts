@@ -75,7 +75,7 @@ const resultJson = [
   },
   {
       "gruppe": 0,
-      "id": 0,
+      "id": 1,
       "matte_id": 0,
       "runde": 0,
       "wettkaempfer1": {
@@ -103,7 +103,7 @@ const resultJson = [
   },
   {
       "gruppe": 0,
-      "id": 0,
+      "id": 2,
       "matte_id": 0,
       "runde": 0,
       "wettkaempfer1": {
@@ -131,7 +131,7 @@ const resultJson = [
   },
   {
       "gruppe": 0,
-      "id": 0,
+      "id": 3,
       "matte_id": 0,
       "runde": 0,
       "wettkaempfer1": {
@@ -159,7 +159,7 @@ const resultJson = [
   },
   {
       "gruppe": 0,
-      "id": 1,
+      "id": 4,
       "matte_id": 0,
       "runde": 0,
       "wettkaempfer1": {
@@ -187,7 +187,7 @@ const resultJson = [
   },
   {
       "gruppe": 0,
-      "id": 1,
+      "id": 5,
       "matte_id": 0,
       "runde": 0,
       "wettkaempfer1": {
@@ -215,7 +215,7 @@ const resultJson = [
   },
   {
       "gruppe": 0,
-      "id": 1,
+      "id": 6,
       "matte_id": 0,
       "runde": 0,
       "wettkaempfer1": {
@@ -243,7 +243,7 @@ const resultJson = [
   },
   {
       "gruppe": 0,
-      "id": 1,
+      "id": 7,
       "matte_id": 0,
       "runde": 0,
       "wettkaempfer1": {

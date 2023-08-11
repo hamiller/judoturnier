@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+{{> header}}
+</head>
+<body>
+  {{> title}}
+  {{> nav}}
+
+  <div>
+    Aktuelle Begegnung {{begegnung}}
+    <form action="/add-result-randori" method="POST">
+      <div class="wettkaempfer name">
+        <label>{{wertung.wettkaempfer1.name}}</label>
+        <label>{{wertung.wettkaempfer1.farbe}}</label>
+        <label>{{wertung.wettkaempfer1.id}}</label>
+      </div>
+      <label>Fairness</label><input type="number" name="fairness1" required/><br/>
+      <label>Kampfgeist</label><input type="number" name="kampfgeist1" required/><br/>
+      <label>Technik</label><input type="number" name="technik1" required/><br/>
+      <label>Stil</label><input type="number" name="stil1" required/><br/>
+
+      <div class="wettkaempfer name">
+        <label>{{wertung.wettkaempfer2.name}}</label>
+        <label>{{wertung.wettkaempfer2.farbe}}</label>
+        <label>{{wertung.wettkaempfer2.id}}</label>
+      </div>
+      <label>Fairness</label><input type="number" name="fairness2" required/><br/>
+      <label>Kampfgeist</label><input type="number" name="kampfgeist2" required/><br/>
+      <label>Technik</label><input type="number" name="technik2" required/><br/>
+      <label>Stil</label><input type="number" name="stil2" required/><br/>
+
+      <button type="submit">Ergebnis eintragen</button>
+    </form>
+  </div>
+
+  <div>
+    Nächste Begegnung auf dieser Matte
+  </div>
+  
+  {{> footer}}
+</body>
+</html>

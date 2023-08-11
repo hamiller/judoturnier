@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Body, Controller, Get, Post, Render, Res } from "routing-controllers";
+import { Body, Controller, Get, Param, Post, Render, Res } from "routing-controllers";
 import { GewichtsklassenGruppeService } from '../../application/gewichtsklassengruppe.service';
 import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
@@ -31,6 +31,14 @@ export class TurnierController {
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
   
+    wettkampfreihenfolgeJeMatte.forEach(matte => {
+      console.log("Matte", matte.id);
+      matte.runden.forEach(runde => {
+        console.log("Runde", runde.runde, runde.id);
+        runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
+      })
+    });
+
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
   }
 
@@ -42,6 +50,14 @@ export class TurnierController {
   
     res.redirect("/turnier/begegnungen");
     return res;
+  }
+
+  @Get('/turnier/begegnungen/randori/:id')
+  @Render("wettkampf_randori.hbs")
+  async begegnungRandori(@Param('id') id: number, @Res() res: Response) {
+    logger.debug('Aktuelle Begegnung ' + id);
+    var wertung = await turnierService.ladeWertungFuerWettkampf(id)
+    return {wertung: wertung, begegnung: id};
   }
 
   @Get('/turnier/einstellungen')

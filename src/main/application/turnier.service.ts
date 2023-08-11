@@ -12,7 +12,9 @@ import { Sortierer } from "./sortierer";
 import { Matte, Runde } from "../model/matte";
 import { GewichtsklassenGruppeService } from "./gewichtsklassengruppe.service";
 import { WettkampfRepository } from "../adapter/secondary/wettkampf.repository";
+
 import DatabasePool from "../config/db.config";
+import { Begegnung } from "../model/begegnung";
 
 const logger = getLogger('TurnierService');
 const pool: DatabasePool = new DatabasePool();
@@ -23,6 +25,9 @@ const sortierer = new Sortierer();
 const ANZAHL_MATTEN = 3;
 
 export class TurnierService {
+  async ladeWertungFuerWettkampf(wettkampfId: number): Promise<Begegnung> {
+    return wettkampfRepo.ladeWertung(wettkampfId);
+  }
   
   async speichereTurnierEinstellungen(einstellungen: Einstellungen): Promise<Einstellungen> {
     logger.debug('Speichere Einstellungen');

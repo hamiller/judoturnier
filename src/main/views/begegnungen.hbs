@@ -26,14 +26,16 @@
         <div class="wettkampfgruppe">
           <div class="listeneintrag-titel">Matte {{id}}</div>
           {{#each runden}}
-            <div class="listeneintrag-titel">Runde {{runde}}</div>
+            <div class="listeneintrag-titel">Kampf {{id}}</div>
             <div>{{gruppe.id}} {{gruppe.name}}</div>
             {{#each begegnungen}}
+              <a href="/turnier/begegnungen/randori/{{ ../id }}">
               <div class="listeneintrag vs">
                 <div class="wettkaempfer name">{{wettkaempfer1.name}}</div><div>({{wettkaempfer1.verein.name}})</div> 
                 <div class="center">vs</div> 
                 <div class="wettkaempfer name">{{wettkaempfer2.name}}</div><div>({{wettkaempfer2.verein.name}})</div>
               </div>
+              </a>
             {{/each}}
           {{/each}}
         </div>

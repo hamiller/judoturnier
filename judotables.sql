@@ -43,11 +43,11 @@ CREATE TABLE wettkampf (
   matte_id INTEGER,
   runde INTEGER,
   gruppe INTEGER,
-  begegnungen INTEGER[],
+  begegnung INTEGER,
   PRIMARY KEY (id)
 );
 
-CREATE TABLE begegnungen (
+CREATE TABLE wertung (
   id INTEGER,
   wettkaempfer1 INTEGER,
   wettkaempfer2 INTEGER,
