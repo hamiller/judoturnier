@@ -26,6 +26,9 @@ const sortierer = new Sortierer();
 const ANZAHL_MATTEN = 3;
 
 export class TurnierService {
+  async isRandori(): Promise<boolean> {
+    return await einstellungenRepo.load().then((einstellung) => einstellung.turnierTyp == TurnierTyp.randori).catch(() => {throw new Error("Turniertyp nicht gefunden")});
+  }
   
   async ladeWertungFuerWettkampf(wettkampfId: number): Promise<Begegnung> {
     return wettkampfRepo.ladeWertung(wettkampfId);
@@ -47,23 +50,31 @@ export class TurnierService {
   }
 
   async ladeWettkampfreihenfolge(): Promise<Matte[]> {
-    return wettkampfRepo.ladeMatten();
+    // return wettkampfRepo.ladeMatten();
+    return this.erstelleWettkampfreihenfolge();
   }
 
-  async erstelleWettkampfreihenfolge(): Promise<void> {
+  async erstelleWettkampfreihenfolge(): Promise<Matte[]> {
     logger.debug(`Erstelle Wettkampfreihenfolge...`);
     
     const einstellungen = await einstellungenRepo.load();
-    const algorithmus = einstellungen.turnierTyp == TurnierTyp.randori ? new JederGegenJeden() : this.getAlgorithmus(Kampfsystem.ko);
     const gwks = await gewichtsklassenGruppenService.lade();
+    if (einstellungen.turnierTyp == TurnierTyp.randori) {
+      const algorithmus = new JederGegenJeden();
+      const matten: Matte[] = await this.berechneGruppenReihenfolgeRandori(gwks, algorithmus);
     
-    const matten: Matte[] = await this.berechneGruppenReihenfolge(gwks, algorithmus);
-    await wettkampfRepo.speichereMatten(matten);
-
-    return;
+      await wettkampfRepo.speichereMatten(matten);
+      return matten;
+    }
+    else {
+      const algorithmus = this.getAlgorithmus(Kampfsystem.ko);
+      logger.error(`Turniermodus noch nicht implementiert!`);
+    }
+    
+    return [];
   }
   
-  berechneGruppenReihenfolge(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus): Matte[] {
+  berechneGruppenReihenfolgeRandori(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus): Matte[] {
     logger.warn("Unvollständig!")
     // TODO:
     // korrektes iterieren über einzelne Gruppen!!!!
@@ -78,6 +89,8 @@ export class TurnierService {
       const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, ANZAHL_MATTEN);
       wettkampfGruppen.push(...wkg);
     }
+
+    console.log("--------------------")
 
     // jetzt haben wir den Aufbau "Wettkampf[Gruppe][Runde][Begegnungen]"
     /*
@@ -125,6 +138,7 @@ export class TurnierService {
 
       // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
       if (wettkampfGruppen.length % 2 == 0) {
+        console.log("gerade Gruppenanzahl:", wettkampfGruppen.length)
         const gruppe1 = wettkampfGruppen[0];
         const gruppe2 = wettkampfGruppen[1];
         
@@ -140,20 +154,24 @@ export class TurnierService {
       }
       // ungerade Anzahl an Gruppen -> 2 Gruppen je Matte und einmal 3 Gruppen je Matte
       else {
-        const gruppe1 = wettkampfGruppen[0];
-        const gruppe2 = wettkampfGruppen[1];
-        const gruppe3 = wettkampfGruppen[2];
-        
-        for (let r = 0; r < gruppe1.begegnungsRunden.length; r++) {
-          const runde1: Runde = { id:r, runde: r+1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
-          const runde2: Runde = { id:r, runde: r+1, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
-          const runde3: Runde = { id:r, runde: r+1, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r]};
-          matten[m].runden.push(runde1);
-          matten[m].runden.push(runde2);
-          matten[m].runden.push(runde3);
+        console.log("ungerade Gruppenanzahl:", wettkampfGruppen.length)
+        for (let gruppenNr = 0; gruppenNr < wettkampfGruppen.length; gruppenNr++) {
+          console.log("Gruppe ", gruppenNr);
+
+          const gruppe = wettkampfGruppen[gruppenNr];
+          for (let r = 0; r < gruppe.begegnungsRunden.length; r++) {
+            const begegnungen = gruppe.begegnungsRunden[r];
+          
+            console.log("Begegnungen in Runde: ", r, begegnungen)
+          
+            const runde: Runde = { id:r, runde: r+1, gruppe: gruppe, begegnungen: begegnungen};
+            matten[m].runden.push(runde);
+          }
+          break;
         }
       }
 
+      console.log("break")
       break;
     }
     

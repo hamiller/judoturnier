@@ -17,7 +17,6 @@ export default class DatabasePool {
   }
 
   async connect(): Promise<PoolClient> {
-    console.log("connect called")
     const client = await this.pool.connect();
     return client;
   }

@@ -25,7 +25,8 @@ export class WettkampfRepository {
         "               'name', w1.name,  " +
         "                'geschlecht', w1.geschlecht, " +
         "                'altersklasse', w1.altersklasse, " +
-        "           	    'gewicht', w1.gewicht, " +
+        "           	   'gewicht', w1.gewicht, " +
+        "           	   'farbe', w1.farbe, " +
         "                'verein', (  " +
         "                    SELECT jsonb_build_object(  " +
         "                        'id', v1.id,  " +
@@ -40,7 +41,8 @@ export class WettkampfRepository {
         "               'name', w2.name,  " +
         "                'geschlecht', w2.geschlecht, " +
         "                'altersklasse', w2.altersklasse, " +
-        "           	    'gewicht', w2.gewicht, " +
+        "           	   'gewicht', w2.gewicht, " +
+        "           	   'farbe', w2.farbe, " +
         "                'verein', (  " +
         "                    SELECT jsonb_build_object(  " +
         "                        'id', v2.id,  " +
@@ -51,7 +53,7 @@ export class WettkampfRepository {
         "           	     ) " +
         ") as wettkaempfer2 " +
         "from wettkampf m  " +
-        "left join wertung b on b.id = m.begegnung " +
+        "left join begegnung b on b.id = m.begegnung " +
         "join wettkaempfer w1 " +
         "on w1.id = b.wettkaempfer1 " +
         "join wettkaempfer w2 " +
@@ -88,16 +90,18 @@ export class WettkampfRepository {
   }
 
   async speichereMatten(matten: Matte[]): Promise<void> {
+    return matten.forEach(matte => this.speichereMatte(matte));
+  }
+
+  async speichereMatte(matte: Matte): Promise<void> {
     logger.debug("Saving wettkampf to db");
     const client = await this.pool.connect();
     try {
-      let entities = mattenDtosToEntities(matten);
-      
-      // let query = {
-      //   text: 'UPDATE wettkaempfer w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6 WHERE w.id = $1 RETURNING id',
-      //   values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid]
-      // };
-      
+      let entity = matteDtoToEntity(matte);
+      let query = {
+        text: 'INSERT INTO wettkampf(matte_id,runde,gruppe,begegnung) VALUES ($1, $2, $3, $4) RETURNING id',
+        values: [entity.matte_id, entity.runde, entity.gruppe, entity.begegnung]
+      };
       // await client.query(query);
       return;
     } catch (error) {
@@ -119,7 +123,8 @@ export class WettkampfRepository {
         "               'name', w1.name,  " +
         "                'geschlecht', w1.geschlecht, " +
         "                'altersklasse', w1.altersklasse, " +
-        "           	    'gewicht', w1.gewicht, " +
+        "           	   'gewicht', w1.gewicht, " +
+        "           	   'farbe', w1.farbe, " +
         "                'verein', (  " +
         "                    SELECT jsonb_build_object(  " +
         "                        'id', v1.id,  " +
@@ -134,7 +139,8 @@ export class WettkampfRepository {
         "               'name', w2.name,  " +
         "                'geschlecht', w2.geschlecht, " +
         "                'altersklasse', w2.altersklasse, " +
-        "           	    'gewicht', w2.gewicht, " +
+        "           	   'gewicht', w2.gewicht, " +
+        "           	   'farbe', w2.farbe, " +
         "                'verein', (  " +
         "                    SELECT jsonb_build_object(  " +
         "                        'id', v2.id,  " +
@@ -145,7 +151,7 @@ export class WettkampfRepository {
         "           	     ) " +
         ") as wettkaempfer2 " +
         "from wettkampf m  " +
-        "left join wertung b on b.id = m.begegnung " +
+        "left join begegnung b on b.id = m.begegnung " +
         "join wettkaempfer w1 " +
         "on w1.id = b.wettkaempfer1 " +
         "join wettkaempfer w2 " +
@@ -198,13 +204,12 @@ const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
   return;
 };
 
-const mattenDtosToEntities = (rows: any[]): any[] => {
-  return rows.map(row => matteDtoToEntity(row));
-}
-
 const matteDtoToEntity = (dto: Matte): any => {
   return {
-  
+    matte_id: dto.id,
+    runde: dto.runden,
+    gruppe: "", 
+    begegnung: ""
   };
 }
 
@@ -213,10 +218,10 @@ const wettkampfEntityToDto = (data: any): Begegnung => {
     id: data.id,
     sieger: data.sieger,
     zeit: data.zeit,
-    strafenWettkaempfer1: data.strafenWettkaempfer1,
-    punkteWettkaempfer1: data.punkteWettkaempfer1,
-    strafenWettkaempfer2: data.strafenWettkaempfer2,
-    punkteWettkaempfer2: data.punkteWettkaempfer2
+    strafenWettkaempfer_weiss: data.strafenWettkaempfer1,
+    punkteWettkaempfer_weiss: data.punkteWettkaempfer1,
+    strafenWettkaempfer_blau: data.strafenWettkaempfer2,
+    punkteWettkaempfer_blau: data.punkteWettkaempfer2
   }
 
   const randori: RandoriWertung = {
@@ -248,10 +253,10 @@ const wettkampfDtoToEntity = (dto: RandoriWertung | TurnierWertung): any => {
       id: dto.id,
       sieger: turnier.sieger,
       zeit: turnier.zeit,
-      strafenWettkaempfer1: turnier.strafenWettkaempfer1,
-      punkteWettkaempfer1: turnier.punkteWettkaempfer1,
-      strafenWettkaempfer2: turnier.strafenWettkaempfer2,
-      punkteWettkaempfer2: turnier.punkteWettkaempfer2,  
+      strafenWettkaempfer1: turnier.strafenWettkaempfer_weiss,
+      punkteWettkaempfer1: turnier.punkteWettkaempfer_weiss,
+      strafenWettkaempfer2: turnier.strafenWettkaempfer_blau,
+      punkteWettkaempfer2: turnier.punkteWettkaempfer_blau,  
     }
   }
 

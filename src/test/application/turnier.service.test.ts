@@ -44,7 +44,7 @@ describe('Erstellen von Begegnungen', () => {
   };
 
   it('Reihenfolge je Matte wird korrekt erstellt ', () => {
-    const matten = service.berechneGruppenReihenfolge([gewichtsklassenGruppe], new JederGegenJeden());
+    const matten = service.berechneGruppenReihenfolgeRandori([gewichtsklassenGruppe], new JederGegenJeden());
     
     // matten.forEach(matte => {
     //   console.log("Matte", matte.id);

@@ -5,6 +5,7 @@ import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
 import { WiegenService } from '../../application/wiegen.service';
 import { RandoriWertung } from '../../model/wertung';
+import { TurnierTyp } from '../../model/einstellungen';
 
 const logger = getLogger('TurnierController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -24,8 +25,33 @@ export class TurnierController {
   }
 
   @Get('/turnier/begegnungen')
-  @Render("begegnungen.hbs")
-  async ladeWettkampfreihenfolgeJeMatte(@Res() res: Response) {
+  async unterscheideBegegungen(@Res() res: Response) {
+    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori");
+    else res.redirect("/turnier/begegnungen/normal");
+    return res;
+  }
+
+  @Get('/turnier/begegnungen/randori')
+  @Render("begegnungen_randori.hbs")
+  async ladeWettkampfreihenfolgeJeMatteRandori(@Res() res: Response) {
+    logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
+    const gwks = await gewichtsklassenGruppenService.lade();
+    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
+  
+    wettkampfreihenfolgeJeMatte.forEach(matte => {
+      console.log("Matte", matte.id);
+      matte.runden.forEach(runde => {
+        console.log("Runde", runde.runde, runde.id);
+        runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
+      })
+    });
+
+    return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
+  }
+
+  @Get('/turnier/begegnungen/normal')
+  @Render("begegnungen_normal.hbs")
+  async ladeWettkampfreihenfolgeJeMatteNormal(@Res() res: Response) {
     logger.debug('lade Wettkampfreihenfolge je Matte');
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
@@ -42,12 +68,12 @@ export class TurnierController {
   }
 
   @Post('/turnier/begegnungen')
-  @Render("begegnungen.hbs")
   async erstelleWettkampfreihenfolgeJeMatte(@Res() res: Response) {
     logger.debug('erstelle Wettkampfreihenfolge je Matte');
     await turnierService.erstelleWettkampfreihenfolge();
   
-    res.redirect("/turnier/begegnungen");
+    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori");
+    else res.redirect("/turnier/begegnungen/normal");
     return res;
   }
 

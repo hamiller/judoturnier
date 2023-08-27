@@ -276,12 +276,28 @@ li {
   margin: 20px;
 }
 
-.rot {
-  background-color: cornflowerblue;
-}
-
 .weiss {
   background-color: ghostwhite;
+}
+
+.braun {
+  background-color: brown;
+}
+
+.gelb {
+  background-color: gold;
+}
+
+.orange {
+  background-color: #fa7030;
+}
+
+.gruen {
+  background-color: forestgreen;
+}
+
+.blau {
+  background-color: cornflowerblue;
 }
 
 .vorhanden {

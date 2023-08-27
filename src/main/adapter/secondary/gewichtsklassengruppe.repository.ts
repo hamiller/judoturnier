@@ -33,6 +33,7 @@ export class GewichtsklassenGruppeRepository {
         "         'geschlecht', w.geschlecht," +
         "         'altersklasse', w.altersklasse," +
         "    	    'gewicht', w.gewicht," +
+        "    	    'farbe', w.farbe," +
         "         'verein', ( " +
         "             SELECT jsonb_build_object( " +
         "                 'id', v.id, " +

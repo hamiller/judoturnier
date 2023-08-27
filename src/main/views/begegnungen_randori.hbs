@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+  {{> header}}
+<body>
+  {{> title }}
+  {{> nav }}
+  
+  <div>
+    <div class="bodyheader">
+      <h2>Begegnungen</h2>
+      <div onclick="document.getElementById('infobox').classList.toggle('hidden');" ><span class="material-icons md-48" title="Info">info</span></div>
+      <div id="infobox" class="hidden">
+      {{#each gewichtsklassenGruppe}}
+        <div>{{altersKlasse}} {{gewichtsklasse.name}}: {{teilnehmer.length}} Teilnehmer</div>
+      {{/each}}
+      </div>
+
+      <form id="turniereinstellungenformular" action="/turnier/begegnungen" method="POST">
+        <div class="actions">
+          <button type="submit">Wettkampfgruppen erstellen<span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></button>
+        </div>
+      </form>
+    </div>
+    <div class="generalcontent">
+      {{#each matten}}
+        <div class="wettkampfgruppe">
+          <div class="listeneintrag-titel">Matte {{id}}</div>
+          {{#each runden}}
+            <div class="listeneintrag-titel">Kampf {{id}}</div>
+            <div>{{gruppe.id}} {{gruppe.name}}</div>
+            {{#each begegnungen}}
+              <a href="/turnier/begegnungen/randori/{{ ../id }}">
+              <div class="listeneintrag vs {{wertungVorhanden randoriWertung turnierWertung}}">
+                <div class="wettkaempfer name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</div><div>({{wettkaempfer1.verein.name}})</div> 
+                <div class="center">vs</div> 
+                <div class="wettkaempfer name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</div><div>({{wettkaempfer2.verein.name}})</div>
+              </div>
+              </a>
+            {{/each}}
+          {{/each}}
+        </div>
+      {{/each}}
+      </form>
+    </div>
+
+  {{> footer}}
+</body>
+<script type="text/javascript">
+</script>
+
+</html>

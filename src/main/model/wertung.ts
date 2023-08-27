@@ -4,10 +4,10 @@ export interface TurnierWertung {
   id: number;
   sieger: Wettkaempfer;
   zeit: number;
-  punkteWettkaempfer1: number;
-  strafenWettkaempfer1: number;
-  punkteWettkaempfer2: number;
-  strafenWettkaempfer2: number;
+  punkteWettkaempfer_weiss: number;
+  strafenWettkaempfer_weiss: number;
+  punkteWettkaempfer_blau: number;
+  strafenWettkaempfer_blau: number;
 }
 
 export interface RandoriWertung {

@@ -8,16 +8,30 @@
   {{> nav}}
 
   <div>
-    <form action="/add-result" method="POST">
-      <h2>Wettkampfergebnisse eintragen</h2>
-      <label>Name des Siegers:</label>
-      <input type="text" name="winner" required/><br/>
-      <label>Kampfzeit:</label>
-      <input type="number" name="fightTime" required/><br/>
-      <label>Wertung:</label>
-      <input type="number" name="score" required/><br/>
-      <label>Strafen:</label>
-      <input type="number" name="penalties" required/><br/>
+    Aktuelle Begegnung {{begegnung}}
+    <form action="/turnier/begegnungen/normal/{{begegnung}}" method="POST">
+      <div class="ergebnis">
+        <div class="ergebnis_eintrag">
+          <div class="wettkaempfer name weiss">
+            <label>{{wertung.wettkaempfer1.name}}</label>
+            <label>{{wertung.wettkaempfer1.farbe}}</label>
+            <label>{{wertung.wettkaempfer1.id}}</label>
+            <label>{{wertung.wettkaempfer1.verein.name}}</label>
+          </div>
+          <div class="wettkaempfer name blau">
+            <label>{{wertung.wettkaempfer2.name}}</label>
+            <label>{{wertung.wettkaempfer2.farbe}}</label>
+            <label>{{wertung.wettkaempfer2.id}}</label>
+            <label>{{wertung.wettkaempfer2.verein.name}}</label>
+          </div>
+          <label>Name des Siegers:</label><input type="text" name="winner" required/><br/>
+          <label>Kampfzeit:</label><input type="number" name="fightTime" required/><br/>
+          <div class="weiss"><label>Wertung Weiß:</label><input type="number" name="score_weiss" required/><br/></div>
+          <div class="weiss"><label>Strafen Weiß:</label><input type="number" name="penalties_weiss" required/><</div>
+          <div class="blau"><label>Wertung Blau:</label><input type="number" name="score_blau" required/></div>
+          <div class="blau"><label>Strafen Blau:</label><input type="number" name="penalties_blau" required/><br/></div>
+        </div>
+      </div>
       <button type="submit">Ergebnis eintragen</button>
     </form>
   </div>

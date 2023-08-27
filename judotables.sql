@@ -5,6 +5,7 @@ drop table verein;
 drop table gewichtsklassengruppen;
 drop table einstellungen;
 drop table wettkampf;
+drop table begegnung;
 
 CREATE TABLE wettkaempfer (
     id SERIAL,
@@ -13,6 +14,7 @@ CREATE TABLE wettkaempfer (
     altersklasse VARCHAR(10),
     verein BIGINT,
     gewicht FLOAT,
+    farbe VARCHAR(10),
     PRIMARY KEY (id)
 );
 
@@ -47,7 +49,7 @@ CREATE TABLE wettkampf (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE wertung (
+CREATE TABLE begegnung (
   id INTEGER,
   wettkaempfer1 INTEGER,
   wettkaempfer2 INTEGER,

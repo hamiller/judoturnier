@@ -31,7 +31,7 @@ describe('WettkampfRepository Test', () => {
     const mockedDbPool = new DatabasePool();
     const repo = new WettkampfRepository(mockedDbPool);
   
-    const result: Matte[] = await repo.load();
+    const result: Matte[] = await repo.ladeMatten();
 
     expect(mockedDbPool.connect).toBeCalledTimes(1)
     expect(result.length).toBe(1)

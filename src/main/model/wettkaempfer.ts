@@ -1,6 +1,7 @@
 import { Verein } from "./verein";
 import { Geschlecht } from "./geschlecht";
 import { Altersklasse } from "./altersklasse";
+import { Farbe } from "./farben";
 
 export interface Wettkaempfer {
   id?: number;
@@ -9,4 +10,5 @@ export interface Wettkaempfer {
   altersklasse: Altersklasse;
   verein: Verein;
   gewicht?: number;
+  farbe?: Farbe;
 }

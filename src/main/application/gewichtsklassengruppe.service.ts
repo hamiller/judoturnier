@@ -11,6 +11,7 @@ import { altersklasseSortOrder } from "../model/altersklasse";
 import { TurnierTyp } from "../model/einstellungen";
 import { EinstellungenRepository } from "../adapter/secondary/einstellungen.repository";
 import DatabasePool from "../config/db.config";
+import { Farbe } from "../model/farben";
 
 const logger = getLogger('GewichtsklassenGruppeService');
 const pool: DatabasePool = new DatabasePool();
@@ -181,6 +182,8 @@ export class GewichtsklassenGruppeService {
     for (let i = 0; i < wettkaempfer.length; i++) {
       const wettkämpferInGruppe = aktuelleGruppe.length;
   
+      wettkaempfer[i].farbe = this.getFarbe(aktuelleGruppe.length)
+      wettkaempferRepo.save(wettkaempfer[i]);
       if (wettkämpferInGruppe === 0 || wettkämpferInGruppe < gruppenGroesse) {
         // Füge den Wettkämpfer zur aktuellen Gruppe hinzu
         aktuelleGruppe.push(wettkaempfer[i]);
@@ -197,5 +200,10 @@ export class GewichtsklassenGruppeService {
     }
   
     return gruppen;
+  }
+
+  private getFarbe(index: number): Farbe {
+    const farben = Object.values(Farbe);
+    return farben[index];
   }
 }
