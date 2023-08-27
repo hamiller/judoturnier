@@ -68,11 +68,31 @@ export class WettkampfRepository {
     }
   }
 
-  async save(matten: Matte[]): Promise<void> {
+  async speichereWertung(wertung: RandoriWertung | TurnierWertung): Promise<void> {
+    logger.debug("Saving Wertung to db");
+    const client = await this.pool.connect();
+    try {
+      let entity = wettkampfDtoToEntity(wertung);
+      let query = {
+        text: 'UPDATE wettkampf w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6 WHERE w.id = $1 RETURNING id',
+        values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid]
+      };
+      await client.query(query);
+      return;
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async speichereMatten(matten: Matte[]): Promise<void> {
     logger.debug("Saving wettkampf to db");
     const client = await this.pool.connect();
     try {
-      let entities = dtosToEntities(matten);
+      let entities = mattenDtosToEntities(matten);
+      
       // let query = {
       //   text: 'UPDATE wettkaempfer w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6 WHERE w.id = $1 RETURNING id',
       //   values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid]
@@ -88,7 +108,7 @@ export class WettkampfRepository {
     }
   }
 
-  async load(): Promise<Matte[]> {
+  async ladeMatten(): Promise<Matte[]> {
     logger.debug("Fetching wettkampf from db");
     const client = await this.pool.connect();
     try {
@@ -178,6 +198,16 @@ const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
   return;
 };
 
+const mattenDtosToEntities = (rows: any[]): any[] => {
+  return rows.map(row => matteDtoToEntity(row));
+}
+
+const matteDtoToEntity = (dto: Matte): any => {
+  return {
+  
+  };
+}
+
 const wettkampfEntityToDto = (data: any): Begegnung => {
   const turnier: TurnierWertung = {
     id: data.id,
@@ -211,12 +241,34 @@ const wettkampfEntityToDto = (data: any): Begegnung => {
   return begegnung;
 };
 
-const dtosToEntities = (rows: any[]): any[] => {
-  return rows.map(row => dtoToEntity(row));
-}
+const wettkampfDtoToEntity = (dto: RandoriWertung | TurnierWertung): any => {
+  if ("sieger" in dto) {
+    const turnier: TurnierWertung = dto;
+    return {
+      id: dto.id,
+      sieger: turnier.sieger,
+      zeit: turnier.zeit,
+      strafenWettkaempfer1: turnier.strafenWettkaempfer1,
+      punkteWettkaempfer1: turnier.punkteWettkaempfer1,
+      strafenWettkaempfer2: turnier.strafenWettkaempfer2,
+      punkteWettkaempfer2: turnier.punkteWettkaempfer2,  
+    }
+  }
 
-const dtoToEntity = (dto: Matte): any => {
-  return {
-  
-  };
+  if ("technikWettkaempfer1" in dto) {
+    const randori: RandoriWertung = dto;
+    return {
+      id: dto.id,
+      kampfgeistWettkaempfer1: randori.kampfgeistWettkaempfer1,
+      technikWettkaempfer1: randori.technikWettkaempfer1,
+      kampfstilWettkaempfer1: randori.kampfstilWettkaempfer1,
+      fairnessWettkaempfer1: randori.fairnessWettkaempfer1,
+      kampfgeistWettkaempfer2: randori.kampfgeistWettkaempfer2,
+      technikWettkaempfer2: randori.technikWettkaempfer2,
+      kampfstilWettkaempfer2: randori.kampfstilWettkaempfer2,
+      fairnessWettkaempfer2: randori.fairnessWettkaempfer2     
+    }
+  }
+
+  throw Error("Wettkampf ist von keinem bekannten Typ - oder hat keine Einträge");
 }

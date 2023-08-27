@@ -4,8 +4,7 @@ import { GewichtsklassenGruppeService } from '../../application/gewichtsklasseng
 import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
 import { WiegenService } from '../../application/wiegen.service';
-import { Kampfsystem } from '../../model/kampfsystem';
-import { Einstellungen } from '../../model/einstellungen';
+import { RandoriWertung } from '../../model/wertung';
 
 const logger = getLogger('TurnierController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -60,59 +59,25 @@ export class TurnierController {
     return {wertung: wertung, begegnung: id};
   }
 
-  @Get('/turnier/einstellungen')
-  @Render("einstellungen.hbs")
-  async konfiguriereKampfsysteme(@Res() res: Response) {
-    logger.debug('Einstellungen');
-
-    const einstellungen = await turnierService.ladeTurnierEinstellungen();
-    const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
-    return { 
-      gewichtsklassengruppen: gwks, 
-      anzahlwk: wks.length,
-      kampfsysteme: Kampfsystem,
-      turniertyp: einstellungen.turnierTyp
-    };
+  @Post('/turnier/begegnungen/randori/:id')
+  @Render("wettkampf_randori.hbs")
+  async speichereBegenungRandori(@Param('id') id: number, @Body() data: any, @Res() res: Response) {
+    logger.debug('Aktuelle Begegnung ' + id);
+    var wertung: RandoriWertung = {
+      id: id,
+      kampfgeistWettkaempfer1: data.kampfgeist1,
+      technikWettkaempfer1: data.technik1,
+      kampfstilWettkaempfer1: data.stil1,
+      fairnessWettkaempfer1: data.fairness1,
+      kampfgeistWettkaempfer2: data.kampfgeist2,
+      technikWettkaempfer2: data.technik2,
+      kampfstilWettkaempfer2: data.stil2,
+      fairnessWettkaempfer2: data.fairness2
+    }
+    await turnierService.speichereRandoriWertung(wertung);
+    
+    const nextId = id +1;
+    res.redirect("/turnier/begegnungen/randori/" + nextId);
+    return res;
   }
-
-  @Post('/turnier/einstellungen-wettkampf')
-  @Render("einstellungen.hbs")
-  async speichereKampfsystemEinstellungen(@Body() data: any, @Res() res: Response) {
-    logger.debug('speichere WettkampfGruppen-Einstellungen', {data: data});
-
-    // todo: Speichern!
-
-    const einstellungen = await turnierService.ladeTurnierEinstellungen();
-    const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
-    return { 
-      gewichtsklassengruppen: gwks, 
-      anzahlwk: wks.length,
-      kampfsysteme: Kampfsystem,
-      turniertyp: einstellungen.turnierTyp
-    };
-  }
-
-  @Post('/turnier/einstellungen')
-  @Render("einstellungen.hbs")
-  async speichereTurnierEinstellungen(@Body() data: any, @Res() res: Response) {
-    logger.debug('speichere Turnier-Einstellungen', {data: data});
-
-    // todo: Speichern!
-    var einstellungen : Einstellungen = {
-      turnierTyp: data.turniertyp
-    };
-    einstellungen = await turnierService.speichereTurnierEinstellungen(einstellungen);
-
-    const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
-    return { 
-      gewichtsklassengruppen: gwks, 
-      anzahlwk: wks.length,
-      kampfsysteme: Kampfsystem,
-      turniertyp: einstellungen.turnierTyp
-    };
-  }
-
 }

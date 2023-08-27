@@ -248,3 +248,42 @@ li {
 .hidden {
   display: none;
 }
+
+.ergebnis {
+  display: flex;
+  justify-content: center; /* Horizontal zentrieren */
+  align-items: center; /* Vertikal zentrieren */
+  gap: 160px;
+}
+
+.ergebnis_eintrag {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stil für die Labels in einem Eintrag */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.row label {
+  margin: 20px;
+}
+
+.rot {
+  background-color: cornflowerblue;
+}
+
+.weiss {
+  background-color: ghostwhite;
+}
+
+.vorhanden {
+  background-color: #73ffa2;
+}

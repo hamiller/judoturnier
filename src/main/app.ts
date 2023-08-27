@@ -12,6 +12,7 @@ import { errorHandler } from './application/errorhandler';
 import i18n from './config/i18n.config';
 import hbs from 'hbs';
 import * as path from 'path';
+import { EinstellungenController } from './adapter/primary/einstellungen.controller';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ export default class AppServer {
         GewichtsklassenController,
         TurnierController,
         WettkaempferController,
+        EinstellungenController,
       ],
       defaultErrorHandler: false,
     });
@@ -73,6 +75,9 @@ export default class AppServer {
     });
     hbs.registerHelper('formatNumber', function(number) {
       return parseFloat(number).toLocaleString(i18n.getLocale(), {minimumFractionDigits: 2});
+    });
+    hbs.registerHelper('wertungVorhanden', function(wertung1, wertung2) {
+      return (wertung1 != null || wertung2 != null) ? "vorhanden": "";
     });
     
     const partialsDir = path.join(__dirname, '../src/main/views/partials');
