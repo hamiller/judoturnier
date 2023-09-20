@@ -13,6 +13,7 @@ import i18n from './config/i18n.config';
 import hbs from 'hbs';
 import * as path from 'path';
 import { EinstellungenController } from './adapter/primary/einstellungen.controller';
+import { Wertung } from './model/wertung';
 
 dotenv.config();
 
@@ -76,8 +77,10 @@ export default class AppServer {
     hbs.registerHelper('formatNumber', function(number) {
       return parseFloat(number).toLocaleString(i18n.getLocale(), {minimumFractionDigits: 2});
     });
-    hbs.registerHelper('wertungVorhanden', function(wertung1, wertung2) {
-      return (wertung1 != null || wertung2 != null) ? "vorhanden": "";
+    hbs.registerHelper('wertungVorhanden', function(wertung: Wertung | null) {
+      var hatWertung = (wertung != null && (wertung.kampfgeistWettkaempfer1 != null || wertung.sieger != null)) ? "vorhanden": "";
+      console.log("hatwertung", wertung, hatWertung)
+      return hatWertung;
     });
     
     const partialsDir = path.join(__dirname, '../src/main/views/partials');

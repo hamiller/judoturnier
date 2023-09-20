@@ -29,7 +29,7 @@
             {{#each begegnungen}}
             <div>Begegnung {{ begegnung_id }}</div>
               <a href="/turnier/begegnungen/randori/{{begegnung_id}}">
-              <div class="listeneintrag vs {{wertungVorhanden randoriWertung turnierWertung}}">
+              <div class="listeneintrag vs {{wertungVorhanden wertung}}">
                 <div class="wettkaempfer name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</div><div>({{wettkaempfer1.verein.name}})</div> 
                 <div class="center">vs</div> 
                 <div class="wettkaempfer name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</div><div>({{wettkaempfer2.verein.name}})</div>

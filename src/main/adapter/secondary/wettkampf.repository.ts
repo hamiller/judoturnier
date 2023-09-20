@@ -161,7 +161,7 @@ export class WettkampfRepository {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query(
-        "SELECT m.id, m.matte_id, m.runde, m.gruppe, m.begegnung as begegnung_id, " +
+        "SELECT m.id, m.matte_id, m.runde, m.gruppe, m.begegnung as begegnung_id, b.*, " +
         " jsonb_build_object(  " +
         "               'id', w1.id,  " +
         "               'name', w1.name,  " +
@@ -221,11 +221,29 @@ const matteEntitiesToDtos = (rows: any[]): Matte[] => {
 };
 
 const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
-  // console.log(data)
+  const wertung: Wertung = {
+    id: data.begegnung_id,
+    sieger: data.sieger,
+    zeit: data.zeit,
+    strafenWettkaempfer_weiss: data.strafenwettkaempfer1,
+    punkteWettkaempfer_weiss: data.punktewettkaempfer1,
+    strafenWettkaempfer_blau: data.strafenwettkaempfer2,
+    punkteWettkaempfer_blau: data.punktewettkaempfer2,
+    kampfgeistWettkaempfer1: data.kampfgeistwettkaempfer1,
+    technikWettkaempfer1: data.technikwettkaempfer1,
+    kampfstilWettkaempfer1: data.kampfstilwettkaempfer1,
+    fairnessWettkaempfer1: data.fairnesswettkaempfer1,
+    kampfgeistWettkaempfer2: data.kampfgeistwettkaempfer2,
+    technikWettkaempfer2: data.technikwettkaempfer2,
+    kampfstilWettkaempfer2: data.kampfstilwettkaempfer2,
+    fairnessWettkaempfer2: data.fairnesswettkaempfer2
+  }
+
   const begegnung: Begegnung = {
     begegnung_id: data.begegnung_id,
     wettkaempfer1: data.wettkaempfer1,
-    wettkaempfer2: data.wettkaempfer2
+    wettkaempfer2: data.wettkaempfer2,
+    wertung: wertung
   };
 
   const runde: Runde = {
