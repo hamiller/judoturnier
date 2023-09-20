@@ -2,7 +2,7 @@ import { Matte, Runde } from '../../model/matte';
 import { getLogger } from '../../application/logger';
 import DatabasePool from '../../config/db.config';
 import { Begegnung } from '../../model/begegnung';
-import { RandoriWertung, TurnierWertung } from '../../model/wertung';
+import { Wertung } from '../../model/wertung';
 
 const logger = getLogger('WettkampfRepository');
 
@@ -19,7 +19,7 @@ export class WettkampfRepository {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query(
-        "SELECT m.id, b.*,  " +
+        "SELECT b.*, b.id as begegnung_id, " +
         " jsonb_build_object(  " +
         "               'id', w1.id,  " +
         "               'name', w1.name,  " +
@@ -52,13 +52,12 @@ export class WettkampfRepository {
         "                    WHERE v2.id = w2.verein " +
         "           	     ) " +
         ") as wettkaempfer2 " +
-        "from wettkampf m  " +
-        "left join begegnung b on b.id = m.begegnung " +
+        "from begegnung b  " +
         "join wettkaempfer w1 " +
         "on w1.id = b.wettkaempfer1 " +
         "join wettkaempfer w2 " +
         "on w2.id = b.wettkaempfer2 " +
-        "where m.id = $1 "  +
+        "where b.id = $1 "  +
         "; ", [wettkampfId]
       );
       return wettkampfEntityToDto(rows[0]);
@@ -70,14 +69,43 @@ export class WettkampfRepository {
     }
   }
 
-  async speichereWertung(wertung: RandoriWertung | TurnierWertung): Promise<void> {
-    logger.debug("Saving Wertung to db");
+  async speichereWertung(wertung: Wertung): Promise<void> {
+    logger.debug("Saving Wertung to db", {data: {wertungid: wertung.id}});
     const client = await this.pool.connect();
     try {
-      let entity = wettkampfDtoToEntity(wertung);
       let query = {
-        text: 'UPDATE wettkampf w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6 WHERE w.id = $1 RETURNING id',
-        values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid]
+        text: "UPDATE begegnung " +
+              "   SET " +
+              "     strafenWettkaempfer1 = $2, " +
+              "     punkteWettkaempfer1 = $3, " +
+              "     strafenWettkaempfer2 = $4, " +
+              "     punkteWettkaempfer2 = $5, " +
+              "     sieger = $6, " +
+              "     zeit = $7, " +
+              "     kampfgeistWettkaempfer1 = $8, " +
+              "     technikWettkaempfer1 = $9, " +
+              "     kampfstilWettkaempfer1 = $10, " +
+              "     fairnessWettkaempfer1 = $11, " +
+              "     kampfgeistWettkaempfer2 = $12, " +
+              "     technikWettkaempfer2 = $13, " +
+              "     kampfstilWettkaempfer2 = $14, " +
+              "     fairnessWettkaempfer2 = $15 " +
+              " WHERE id = $1",
+        values: [wertung.id, 
+          wertung.strafenWettkaempfer_weiss, 
+          wertung.punkteWettkaempfer_weiss, 
+          wertung.strafenWettkaempfer_blau, 
+          wertung.punkteWettkaempfer_blau,
+          wertung.sieger != null ? wertung.sieger.id: null, 
+          wertung.zeit, 
+          wertung.kampfgeistWettkaempfer1, 
+          wertung.technikWettkaempfer1,
+          wertung.kampfstilWettkaempfer1,
+          wertung.fairnessWettkaempfer1,
+          wertung.kampfgeistWettkaempfer2,
+          wertung.technikWettkaempfer2,
+          wertung.kampfstilWettkaempfer2,
+          wertung.fairnessWettkaempfer2]
       };
       await client.query(query);
       return;
@@ -93,16 +121,32 @@ export class WettkampfRepository {
     return matten.forEach(matte => this.speichereMatte(matte));
   }
 
-  async speichereMatte(matte: Matte): Promise<void> {
-    logger.debug("Saving wettkampf to db");
+  async loescheAlleMatten(): Promise<void> {
+    logger.debug("Delete wettkampf from db");
     const client = await this.pool.connect();
     try {
-      let entity = matteDtoToEntity(matte);
-      let query = {
-        text: 'INSERT INTO wettkampf(matte_id,runde,gruppe,begegnung) VALUES ($1, $2, $3, $4) RETURNING id',
-        values: [entity.matte_id, entity.runde, entity.gruppe, entity.begegnung]
-      };
-      // await client.query(query);
+      await client.query('DELETE FROM wettkampf');
+      await client.query('DELETE FROM begegnung');
+      return;
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async speichereMatte(matte: Matte): Promise<void> {
+    logger.debug("Saving wettkampf to db", {data: {mattenid: matte.id}});
+    const client = await this.pool.connect();
+    try {
+      for (const runde of matte.runden) {
+        for (const begegnung of runde.begegnungen) {
+          var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);
+          var begegnung_id = result_begegnung.rows[0].id;
+          var result_wettkampf = await client.query('INSERT INTO wettkampf (matte_id, runde, gruppe, begegnung) VALUES ($1, $2, $3, $4) RETURNING id',  [matte.id, runde.id, runde.gruppe.id, begegnung_id]);
+        }
+      }
       return;
     } catch (error) {
       logger.error(error);
@@ -117,7 +161,7 @@ export class WettkampfRepository {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query(
-        "SELECT m.id, m.matte_id, m.runde, m.gruppe,  " +
+        "SELECT m.id, m.matte_id, m.runde, m.gruppe, m.begegnung as begegnung_id, " +
         " jsonb_build_object(  " +
         "               'id', w1.id,  " +
         "               'name', w1.name,  " +
@@ -177,7 +221,9 @@ const matteEntitiesToDtos = (rows: any[]): Matte[] => {
 };
 
 const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
+  // console.log(data)
   const begegnung: Begegnung = {
+    begegnung_id: data.begegnung_id,
     wettkaempfer1: data.wettkaempfer1,
     wettkaempfer2: data.wettkaempfer2
   };
@@ -208,72 +254,56 @@ const matteDtoToEntity = (dto: Matte): any => {
   return {
     matte_id: dto.id,
     runde: dto.runden,
-    gruppe: "", 
+    gruppe: dto.runden.map(runde => runde.id).join(), 
     begegnung: ""
   };
 }
 
 const wettkampfEntityToDto = (data: any): Begegnung => {
-  const turnier: TurnierWertung = {
+  const wertung: Wertung = {
     id: data.id,
     sieger: data.sieger,
     zeit: data.zeit,
-    strafenWettkaempfer_weiss: data.strafenWettkaempfer1,
-    punkteWettkaempfer_weiss: data.punkteWettkaempfer1,
-    strafenWettkaempfer_blau: data.strafenWettkaempfer2,
-    punkteWettkaempfer_blau: data.punkteWettkaempfer2
+    strafenWettkaempfer_weiss: data.strafenwettkaempfer1,
+    punkteWettkaempfer_weiss: data.punktewettkaempfer1,
+    strafenWettkaempfer_blau: data.strafenwettkaempfer2,
+    punkteWettkaempfer_blau: data.punktewettkaempfer2,
+    kampfgeistWettkaempfer1: data.kampfgeistwettkaempfer1,
+    technikWettkaempfer1: data.technikwettkaempfer1,
+    kampfstilWettkaempfer1: data.kampfstilwettkaempfer1,
+    fairnessWettkaempfer1: data.fairnesswettkaempfer1,
+    kampfgeistWettkaempfer2: data.kampfgeistwettkaempfer2,
+    technikWettkaempfer2: data.technikwettkaempfer2,
+    kampfstilWettkaempfer2: data.kampfstilwettkaempfer2,
+    fairnessWettkaempfer2: data.fairnesswettkaempfer2
   }
-
-  const randori: RandoriWertung = {
-    id: data.id,
-    kampfgeistWettkaempfer1: data.kampfgeistWettkaempfer1,
-    technikWettkaempfer1: data.technikWettkaempfer1,
-    kampfstilWettkaempfer1: data.kampfstilWettkaempfer1,
-    fairnessWettkaempfer1: data.fairnessWettkaempfer1,
-    kampfgeistWettkaempfer2: data.kampfgeistWettkaempfer2,
-    technikWettkaempfer2: data.technikWettkaempfer2,
-    kampfstilWettkaempfer2: data.kampfstilWettkaempfer2,
-    fairnessWettkaempfer2: data.fairnessWettkaempfer2
-  }
-
+  
   const begegnung: Begegnung = {
+    begegnung_id: data.begegnung_id,
     wettkaempfer1: data.wettkaempfer1,
     wettkaempfer2: data.wettkaempfer2,
-    turnierWertung: turnier,
-    randoriWertung: randori
+    wertung: wertung
   };
-
+  
   return begegnung;
 };
 
-const wettkampfDtoToEntity = (dto: RandoriWertung | TurnierWertung): any => {
-  if ("sieger" in dto) {
-    const turnier: TurnierWertung = dto;
-    return {
+const wettkampfDtoToEntity = (dto: Wertung): any => {
+  return {
       id: dto.id,
-      sieger: turnier.sieger,
-      zeit: turnier.zeit,
-      strafenWettkaempfer1: turnier.strafenWettkaempfer_weiss,
-      punkteWettkaempfer1: turnier.punkteWettkaempfer_weiss,
-      strafenWettkaempfer2: turnier.strafenWettkaempfer_blau,
-      punkteWettkaempfer2: turnier.punkteWettkaempfer_blau,  
+      sieger: dto.sieger,
+      zeit: dto.zeit,
+      strafenWettkaempfer1: dto.strafenWettkaempfer_weiss,
+      punkteWettkaempfer1: dto.punkteWettkaempfer_weiss,
+      strafenWettkaempfer2: dto.strafenWettkaempfer_blau,
+      punkteWettkaempfer2: dto.punkteWettkaempfer_blau,  
+      kampfgeistWettkaempfer1: dto.kampfgeistWettkaempfer1,
+      technikWettkaempfer1: dto.technikWettkaempfer1,
+      kampfstilWettkaempfer1: dto.kampfstilWettkaempfer1,
+      fairnessWettkaempfer1: dto.fairnessWettkaempfer1,
+      kampfgeistWettkaempfer2: dto.kampfgeistWettkaempfer2,
+      technikWettkaempfer2: dto.technikWettkaempfer2,
+      kampfstilWettkaempfer2: dto.kampfstilWettkaempfer2,
+      fairnessWettkaempfer2: dto.fairnessWettkaempfer2     
     }
-  }
-
-  if ("technikWettkaempfer1" in dto) {
-    const randori: RandoriWertung = dto;
-    return {
-      id: dto.id,
-      kampfgeistWettkaempfer1: randori.kampfgeistWettkaempfer1,
-      technikWettkaempfer1: randori.technikWettkaempfer1,
-      kampfstilWettkaempfer1: randori.kampfstilWettkaempfer1,
-      fairnessWettkaempfer1: randori.fairnessWettkaempfer1,
-      kampfgeistWettkaempfer2: randori.kampfgeistWettkaempfer2,
-      technikWettkaempfer2: randori.technikWettkaempfer2,
-      kampfstilWettkaempfer2: randori.kampfstilWettkaempfer2,
-      fairnessWettkaempfer2: randori.fairnessWettkaempfer2     
-    }
-  }
-
-  throw Error("Wettkampf ist von keinem bekannten Typ - oder hat keine Einträge");
 }

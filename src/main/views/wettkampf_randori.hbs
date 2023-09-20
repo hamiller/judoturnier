@@ -8,33 +8,33 @@
   {{> nav}}
 
   <div>
-    Aktuelle Begegnung {{begegnung}}
-    <form action="/turnier/begegnungen/randori/{{begegnung}}" method="POST">
+    Aktuelle Begegnung {{begegnungid}}
+    <form action="/turnier/begegnungen/randori/{{begegnungid}}" method="POST">
       <div class="ergebnis">
         <div class="ergebnis_eintrag weiss">
           <div class="wettkaempfer name">
-            <label>{{wertung.wettkaempfer1.name}}</label>
-            <label>{{wertung.wettkaempfer1.farbe}}</label>
-            <label>{{wertung.wettkaempfer1.id}}</label>
-            <label>{{wertung.wettkaempfer1.verein.name}}</label>
+            <label>{{begegnung.wettkaempfer1.name}}</label>
+            <label class="{{begegnung.wettkaempfer1.farbe}}">{{begegnung.wettkaempfer1.farbe}}</label>
+            <label>{{begegnung.wettkaempfer1.id}}</label>
+            <label>{{begegnung.wettkaempfer1.verein.name}}</label>
           </div>
-          <span class="row"><label>Fairness</label><input type="number" name="fairness1" required/><br/></span>
-          <span class="row"><label>Kampfgeist</label><input type="number" name="kampfgeist1" required/><br/></span>
-          <span class="row"><label>Technik</label><input type="number" name="technik1" required/><br/></span>
-          <span class="row"><label>Stil</label><input type="number" name="stil1" required/><br/></span>
+          <span class="row"><label>Fairness</label><input type="number" name="fairness1" required min="1" max="6" value={{ begegnung.wertung.fairnessWettkaempfer1 }} /><br/></span>
+          <span class="row"><label>Kampfgeist</label><input type="number" name="kampfgeist1" required min="1" max="6" value={{ begegnung.wertung.kampfgeistWettkaempfer1 }} /><br/></span>
+          <span class="row"><label>Technik</label><input type="number" name="technik1" required min="1" max="6" value={{ begegnung.wertung.technikWettkaempfer1 }} /><br/></span>
+          <span class="row"><label>Stil</label><input type="number" name="stil1" required min="1" max="6" value={{ begegnung.wertung.kampfstilWettkaempfer1 }} /><br/></span>
         </div>
 
         <div class="ergebnis_eintrag rot">
           <div class="wettkaempfer name">
-            <label>{{wertung.wettkaempfer2.name}}</label>
-            <label>{{wertung.wettkaempfer2.farbe}}</label>
-            <label>{{wertung.wettkaempfer2.id}}</label>
-            <label>{{wertung.wettkaempfer2.verein.name}}</label>
+            <label>{{begegnung.wettkaempfer2.name}}</label>
+            <label class="{{begegnung.wettkaempfer2.farbe}}">{{begegnung.wettkaempfer2.farbe}}</label>
+            <label>{{begegnung.wettkaempfer2.id}}</label>
+            <label>{{begegnung.wettkaempfer2.verein.name}}</label>
           </div>
-          <span class="row"><label>Fairness</label><input type="number" name="fairness2" required/><br/></span>
-          <span class="row"><label>Kampfgeist</label><input type="number" name="kampfgeist2" required/><br/></span>
-          <span class="row"><label>Technik</label><input type="number" name="technik2" required/><br/></span>
-          <span class="row"><label>Stil</label><input type="number" name="stil2" required/><br/></span>
+          <span class="row"><label>Fairness</label><input type="number" name="fairness2" required min="1" max="6" value={{ begegnung.wertung.fairnessWettkaempfer2 }} /><br/></span>
+          <span class="row"><label>Kampfgeist</label><input type="number" name="kampfgeist2" required min="1" max="6" value={{ begegnung.kampfgeistWettkaempfer2 }} /><br/></span>
+          <span class="row"><label>Technik</label><input type="number" name="technik2" required min="1" max="6" value={{ begegnung.wertung.technikWettkaempfer2 }} /><br/></span>
+          <span class="row"><label>Stil</label><input type="number" name="stil2" required min="1" max="6" value={{ begegnung.kampfstilWettkaempfer2 }} /><br/></span>
         </div>
       </div>
       <button type="submit">Ergebnis eintragen</button>

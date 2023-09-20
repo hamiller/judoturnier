@@ -4,7 +4,7 @@ import { GewichtsklassenGruppeService } from '../../application/gewichtsklasseng
 import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
 import { WiegenService } from '../../application/wiegen.service';
-import { RandoriWertung } from '../../model/wertung';
+import { Wertung } from '../../model/wertung';
 import { TurnierTyp } from '../../model/einstellungen';
 
 const logger = getLogger('TurnierController');
@@ -37,15 +37,6 @@ export class TurnierController {
     logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
-  
-    wettkampfreihenfolgeJeMatte.forEach(matte => {
-      console.log("Matte", matte.id);
-      matte.runden.forEach(runde => {
-        console.log("Runde", runde.runde, runde.id);
-        runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
-      })
-    });
-
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
   }
 
@@ -70,6 +61,7 @@ export class TurnierController {
   @Post('/turnier/begegnungen')
   async erstelleWettkampfreihenfolgeJeMatte(@Res() res: Response) {
     logger.debug('erstelle Wettkampfreihenfolge je Matte');
+    await turnierService.loescheWettkampfreihenfolge();
     await turnierService.erstelleWettkampfreihenfolge();
   
     if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori");
@@ -81,16 +73,22 @@ export class TurnierController {
   @Render("wettkampf_randori.hbs")
   async begegnungRandori(@Param('id') id: number, @Res() res: Response) {
     logger.debug('Aktuelle Begegnung ' + id);
-    var wertung = await turnierService.ladeWertungFuerWettkampf(id)
-    return {wertung: wertung, begegnung: id};
+    var begegnung = await turnierService.ladeWertungFuerWettkampf(id)
+    return {begegnung: begegnung, begegnungid: id};
   }
 
   @Post('/turnier/begegnungen/randori/:id')
   @Render("wettkampf_randori.hbs")
   async speichereBegenungRandori(@Param('id') id: number, @Body() data: any, @Res() res: Response) {
     logger.debug('Aktuelle Begegnung ' + id);
-    var wertung: RandoriWertung = {
+    var wertung: Wertung = {
       id: id,
+      punkteWettkaempfer_blau: 0,
+      sieger: null,
+      punkteWettkaempfer_weiss: 0,
+      strafenWettkaempfer_blau: 0,
+      strafenWettkaempfer_weiss: 0,
+      zeit: 0,
       kampfgeistWettkaempfer1: data.kampfgeist1,
       technikWettkaempfer1: data.technik1,
       kampfstilWettkaempfer1: data.stil1,
@@ -100,10 +98,10 @@ export class TurnierController {
       kampfstilWettkaempfer2: data.stil2,
       fairnessWettkaempfer2: data.fairness2
     }
-    await turnierService.speichereRandoriWertung(wertung);
+    await turnierService.speichereWertung(wertung);
     
-    const nextId = id +1;
-    res.redirect("/turnier/begegnungen/randori/" + nextId);
+    ++id;
+    res.redirect("/turnier/begegnungen/randori/" + id);
     return res;
   }
 }

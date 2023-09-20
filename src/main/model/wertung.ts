@@ -1,17 +1,17 @@
 import { Wettkaempfer } from "./wettkaempfer";
 
-export interface TurnierWertung {
+export interface Wertung {
   id: number;
-  sieger: Wettkaempfer;
+
+  // turnier
+  sieger: Wettkaempfer | null;
   zeit: number;
   punkteWettkaempfer_weiss: number;
   strafenWettkaempfer_weiss: number;
   punkteWettkaempfer_blau: number;
   strafenWettkaempfer_blau: number;
-}
 
-export interface RandoriWertung {
-  id: number;
+  // randori
   kampfgeistWettkaempfer1: number;
   technikWettkaempfer1: number;
   kampfstilWettkaempfer1: number;

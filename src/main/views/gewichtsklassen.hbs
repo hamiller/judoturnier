@@ -104,7 +104,8 @@
   const renewGewichtsklassen = async () => {
     var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in Gewichtsklassen und alle Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
     if (sicher) {
-      window.location.href='/gewichtsklassen-renew';
+      fetch('/gewichtsklassen-renew', { method: 'POST' })
+      .then(() => window.location.href='gewichtsklassen')
     };
   };
 

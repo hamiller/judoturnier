@@ -15,11 +15,9 @@
       {{/each}}
       </div>
 
-      <form id="turniereinstellungenformular" action="/turnier/begegnungen" method="POST">
-        <div class="actions">
-          <button type="submit">Wettkampfgruppen erstellen<span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></button>
-        </div>
-      </form>
+      <div class="actions">
+        <button onclick="renewBegegnungen()">Wettkampfgruppen erstellen<span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></button>
+      </div>
     </div>
     <div class="generalcontent">
       {{#each matten}}
@@ -29,7 +27,8 @@
             <div class="listeneintrag-titel">Kampf {{id}}</div>
             <div>{{gruppe.id}} {{gruppe.name}}</div>
             {{#each begegnungen}}
-              <a href="/turnier/begegnungen/randori/{{ ../id }}">
+            <div>Begegnung {{ begegnung_id }}</div>
+              <a href="/turnier/begegnungen/randori/{{begegnung_id}}">
               <div class="listeneintrag vs {{wertungVorhanden randoriWertung turnierWertung}}">
                 <div class="wettkaempfer name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</div><div>({{wettkaempfer1.verein.name}})</div> 
                 <div class="center">vs</div> 
@@ -46,6 +45,14 @@
   {{> footer}}
 </body>
 <script type="text/javascript">
+
+  const renewBegegnungen = async () => {
+    var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
+    if (sicher) {
+      fetch('/turnier/begegnungen', { method: 'POST' })
+        .then(() => window.location.href='/turnier/begegnungen/randori')
+    };
+  };
 </script>
 
 </html>

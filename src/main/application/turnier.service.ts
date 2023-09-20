@@ -15,7 +15,7 @@ import { WettkampfRepository } from "../adapter/secondary/wettkampf.repository";
 
 import DatabasePool from "../config/db.config";
 import { Begegnung } from "../model/begegnung";
-import { RandoriWertung } from "../model/wertung";
+import { Wertung } from "../model/wertung";
 
 const logger = getLogger('TurnierService');
 const pool: DatabasePool = new DatabasePool();
@@ -34,7 +34,7 @@ export class TurnierService {
     return wettkampfRepo.ladeWertung(wettkampfId);
   }
 
-  async speichereRandoriWertung(wertung: RandoriWertung): Promise<void> {
+  async speichereWertung(wertung: Wertung): Promise<void> {
     await wettkampfRepo.speichereWertung(wertung)
   }
   
@@ -50,11 +50,11 @@ export class TurnierService {
   }
 
   async ladeWettkampfreihenfolge(): Promise<Matte[]> {
-    // return wettkampfRepo.ladeMatten();
-    return this.erstelleWettkampfreihenfolge();
+    logger.debug("Lade Wettkampfreihenfolge")
+    return wettkampfRepo.ladeMatten();
   }
 
-  async erstelleWettkampfreihenfolge(): Promise<Matte[]> {
+  async erstelleWettkampfreihenfolge(): Promise<void> {
     logger.debug(`Erstelle Wettkampfreihenfolge...`);
     
     const einstellungen = await einstellungenRepo.load();
@@ -64,14 +64,20 @@ export class TurnierService {
       const matten: Matte[] = await this.berechneGruppenReihenfolgeRandori(gwks, algorithmus);
     
       await wettkampfRepo.speichereMatten(matten);
-      return matten;
+      return;
     }
     else {
       const algorithmus = this.getAlgorithmus(Kampfsystem.ko);
       logger.error(`Turniermodus noch nicht implementiert!`);
     }
     
-    return [];
+    return;
+  }
+
+  async loescheWettkampfreihenfolge(): Promise<void> {
+    logger.debug(`Lösche Wettkampfreihenfolge...`);
+    await wettkampfRepo.loescheAlleMatten();
+    return;
   }
   
   berechneGruppenReihenfolgeRandori(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus): Matte[] {
@@ -167,12 +173,12 @@ export class TurnierService {
             const runde: Runde = { id:r, runde: r+1, gruppe: gruppe, begegnungen: begegnungen};
             matten[m].runden.push(runde);
           }
-          break;
+          // break;
         }
       }
 
-      console.log("break")
-      break;
+      // console.log("break")
+      // break;
     }
     
     return matten;

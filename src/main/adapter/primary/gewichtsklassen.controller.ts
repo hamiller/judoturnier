@@ -28,14 +28,13 @@ export class GewichtsklassenController {
     };
   }
 
-  @Get('/gewichtsklassen-renew')
+  @Post('/gewichtsklassen-renew')
   async erstelleGewichtsklassenNeu(@Res() res: Response) {
     logger.debug('erstelle Gewichtsklassen');
     const wks = await wiegenService.alleKaempfer();
     const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     await gewichtsklassenGruppenService.loesche();
     await gewichtsklassenGruppenService.speichere(gwks);
-    res.redirect("/gewichtsklassen");
     return res;
   }
 

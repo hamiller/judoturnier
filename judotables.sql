@@ -50,7 +50,7 @@ CREATE TABLE wettkampf (
 );
 
 CREATE TABLE begegnung (
-  id INTEGER,
+  id SERIAL,
   wettkaempfer1 INTEGER,
   wettkaempfer2 INTEGER,
   strafenWettkaempfer1 INTEGER,
