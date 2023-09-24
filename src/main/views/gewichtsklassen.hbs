@@ -19,9 +19,18 @@
       <div class="grid">
         <div class="actions">
           <button type="submit">Zuordnungen speichern<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">save</span></button>
+          <br>
+          {{#if standardturnier}}
+          {{else}}
+            <a href="/gewichtsklassen/randori_printview_groups" target="_blank">Druckansicht Gruppen<span class="material-icons md-48" title="Druckansicht Gruppen">print</span></a>
+          {{/if}}
         </div>
 
+        {{#if standardturnier}}
         <h1>Frauen</h1>
+        {{else}}
+        <h1>Mädchen und Jungs</h1>
+        {{/if}}
         <div class="gewichtsklassen">
         {{#each gewichtsklassengruppenWeiblich}}
           <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
@@ -41,6 +50,8 @@
           </div>
         {{/each}}
         </div>
+        
+        {{#if standardturnier}}
         
         <h1>Männer</h1>
         <div class="gewichtsklassen">
@@ -62,6 +73,7 @@
           </div>
         {{/each}}
         </div>
+        {{/if}}
       </div>
     </form>
   </div>

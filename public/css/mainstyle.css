@@ -303,3 +303,19 @@ li {
 .vorhanden {
   background-color: #73ffa2;
 }
+
+@media print {
+  /* Verstecke bestimmte Elemente oder Pseudoelemente im Druckmodus */
+  .no-print {
+    display: none;
+  }
+
+  /* Ändere das Styling für den Druckmodus */
+  body {
+    font-size: 12pt;
+  }
+}
+
+tr {
+  border: 1px solid black;
+}

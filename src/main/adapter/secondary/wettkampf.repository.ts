@@ -3,6 +3,7 @@ import { getLogger } from '../../application/logger';
 import DatabasePool from '../../config/db.config';
 import { Begegnung } from '../../model/begegnung';
 import { Wertung } from '../../model/wertung';
+import { WettkampfGruppe } from '../../model/wettkampfgruppe';
 
 const logger = getLogger('WettkampfRepository');
 
@@ -141,6 +142,7 @@ export class WettkampfRepository {
     const client = await this.pool.connect();
     try {
       for (const runde of matte.runden) {
+        console.log("saving runde", runde)
         for (const begegnung of runde.begegnungen) {
           var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);
           var begegnung_id = result_begegnung.rows[0].id;
@@ -161,7 +163,7 @@ export class WettkampfRepository {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query(
-        "SELECT m.id, m.matte_id, m.runde, m.gruppe, m.begegnung as begegnung_id, b.*, " +
+        "SELECT m.id, m.matte_id, m.runde, m.gruppe as gruppeid, m.begegnung as begegnung_id, b.*, " +
         " jsonb_build_object(  " +
         "               'id', w1.id,  " +
         "               'name', w1.name,  " +
@@ -193,13 +195,22 @@ export class WettkampfRepository {
         "                    FROM verein v2  " +
         "                    WHERE v2.id = w2.verein " +
         "           	     ) " +
-        ") as wettkaempfer2 " +
+        "  ) as wettkaempfer2, " +
+        "  jsonb_build_object(  " +
+        "     'id', gwk.id, " +
+        "     'name', gwk.name, " +
+        "     'altersKlasse', gwk.altersklasse, " +
+        "     'gruppenGeschlecht', gwk.gruppengeschlecht " +
+        // "      'teilnehmer', [] " +
+        // "      'gewichtsklasse', {} " +
+        "  ) as gruppe " +
         "from wettkampf m  " +
         "left join begegnung b on b.id = m.begegnung " +
         "join wettkaempfer w1 " +
         "on w1.id = b.wettkaempfer1 " +
         "join wettkaempfer w2 " +
         "on w2.id = b.wettkaempfer2 " +
+        "join gewichtsklassengruppen gwk on m.gruppe = gwk.id " +
         "; "
       );
       return matteEntitiesToDtos(rows);

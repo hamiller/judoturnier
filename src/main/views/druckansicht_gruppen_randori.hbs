@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+  {{> header}}
+<body>
+  <div>
+    <div class="bodyheader no-print">
+    </div>
+    <div class="generalcontent">
+      
+        <div class="wettkampfgruppe">
+          <table>
+            <th></th>
+          {{#each gruppen}}
+            <tr class="groupsrow">
+              <td>
+                <table>
+              {{#each teilnehmer}}
+                <tr>
+                  <td class="wettkaempfer name ">{{name}}</td><td>{{verein.name}}</td><td>({{farbe}})</td> 
+                  <td>Gruppe {{name}} </td>
+                  <td>Altersklasse {{altersKlasse}}</td>
+                </tr>
+              {{/each}}
+                </table>
+              </td>
+            </tr>
+          {{/each}}
+          </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

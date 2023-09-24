@@ -6,7 +6,7 @@
   {{> nav }}
   
   <div>
-    <div class="bodyheader">
+    <div class="bodyheader no-print">
       <h2>Begegnungen</h2>
       <div onclick="document.getElementById('infobox').classList.toggle('hidden');" ><span class="material-icons md-48" title="Info">info</span></div>
       <div id="infobox" class="hidden">
@@ -17,6 +17,8 @@
 
       <div class="actions">
         <button onclick="renewBegegnungen()">Wettkampfgruppen erstellen<span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></button>
+        <br>
+        <a href="/turnier/begegnungen/randori_printview_matches" target="_blank">Druckansicht Begegnungen<span class="material-icons md-48" title="Druckansicht Begegnungen">print</span></a>
       </div>
     </div>
     <div class="generalcontent">
@@ -25,7 +27,7 @@
           <div class="listeneintrag-titel">Matte {{id}}</div>
           {{#each runden}}
             <div class="listeneintrag-titel">Kampf {{id}}</div>
-            <div>{{gruppe.id}} {{gruppe.name}}</div>
+            <div>Gruppe {{gruppe.id}} {{gruppe.name}} {{gruppe.typ}} </div>
             {{#each begegnungen}}
             <div>Begegnung {{ begegnung_id }}</div>
               <a href="/turnier/begegnungen/randori/{{begegnung_id}}">

@@ -4,10 +4,13 @@ import { GewichtsklassenGruppeService } from '../../application/gewichtsklasseng
 import { getLogger } from "../../application/logger";
 import { WiegenService } from '../../application/wiegen.service';
 import { Geschlecht } from '../../model/geschlecht';
+import { TurnierService } from '../../application/turnier.service';
+import { TurnierTyp } from '../../model/einstellungen';
 
 const logger = getLogger('GewichtsklassenController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
 const wiegenService = new WiegenService();
+const turnierService = new TurnierService();
 
 const regex = /^gruppe_(\d+)_teilnehmer_(\d+)$/;
 
@@ -21,11 +24,23 @@ export class GewichtsklassenController {
     var currentGwks = await gewichtsklassenGruppenService.lade();
     logger.info(`geladene Gruppen: ${currentGwks.length}`);
     
+    const einstellungen = await turnierService.ladeTurnierEinstellungen();
+
     return { 
       gewichtsklassengruppenWeiblich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 
       gewichtsklassengruppenMaennlich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.m), 
-      anzahlwk: wks.length 
+      anzahlwk: wks.length,
+      standardturnier: einstellungen.turnierTyp == TurnierTyp.standard 
     };
+  }
+
+  @Get('/gewichtsklassen/randori_printview_groups')
+  @Render("druckansicht_gruppen_randori.hbs")
+  async ladeDruckAnsichtGruppenRandori(@Res() res: Response) {
+    logger.debug('lade Druckansicht Randori-Gruppen');
+    var currentGwks = await gewichtsklassenGruppenService.lade();
+    console.log(currentGwks)
+    return { gruppen: currentGwks }
   }
 
   @Post('/gewichtsklassen-renew')

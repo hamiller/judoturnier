@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+  {{> header}}
+<body>
+  <div>
+    <div class="bodyheader no-print">
+    </div>
+    <div class="generalcontent">
+      {{#each matten}}
+        <div class="wettkampfgruppe">
+          <div class="listeneintrag-titel">Matte {{id}}</div>
+          <table>
+            <th></th>
+          {{#each runden}}
+            <tr>
+              <td>Gruppe {{gruppe.name}} </td>
+              {{#each begegnungen}}
+                <td class="wettkaempfer name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</td><td>({{wettkaempfer1.verein.name}})</td> 
+                <td class="wettkaempfer name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</td><td>({{wettkaempfer2.verein.name}})</td>
+              {{/each}}
+            </tr>
+          {{/each}}
+          </table>
+        </div>
+      {{/each}}
+    </div>
+
+</body>
+
+</html>

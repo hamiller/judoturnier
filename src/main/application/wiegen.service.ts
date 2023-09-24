@@ -18,7 +18,8 @@ export class WiegenService {
     let kaempfer = await wettkaempferRepo.all();
     kaempfer.sort((a, b) => {
       if (a.geschlecht === b.geschlecht) {
-        return altersklasseSortOrder[a.altersklasse] - altersklasseSortOrder[b.altersklasse];
+        return a.name.localeCompare(b.name);
+        // return altersklasseSortOrder[a.altersklasse] - altersklasseSortOrder[b.altersklasse];
       }
       return a.geschlecht === Geschlecht.w ? -1 : 1;
     });

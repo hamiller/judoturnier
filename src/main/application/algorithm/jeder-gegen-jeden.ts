@@ -26,7 +26,7 @@ export class JederGegenJeden implements Algorithmus {
 
       const id: string = ((gruppenid+1) * 10).toString() + i.toString(); // ids erstellen und konkatenieren
       const wettkampfGruppe: WettkampfGruppe = {
-        id: parseInt(id),
+        id: gewichtsklassenGruppe.id ? gewichtsklassenGruppe.id : parseInt(id),
         name: gewichtsklassenGruppe.name,
         typ: "(" + gewichtsklassenGruppe.gewichtsklasse.name + " " + gewichtsklassenGruppe.altersKlasse + ")",
         begegnungsRunden: begegnungen

@@ -79,7 +79,6 @@ export default class AppServer {
     });
     hbs.registerHelper('wertungVorhanden', function(wertung: Wertung | null) {
       var hatWertung = (wertung != null && (wertung.kampfgeistWettkaempfer1 != null || wertung.sieger != null)) ? "vorhanden": "";
-      console.log("hatwertung", wertung, hatWertung)
       return hatWertung;
     });
     
