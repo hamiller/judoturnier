@@ -99,8 +99,29 @@ export class TurnierService {
     for (let m = 0; m < ANZAHL_MATTEN; m++) {
       matten.push({ id: m+1, runden: []});
 
-      console.log("Matte " + m + ", Gruppen: ",wettkampfGruppenJeMatten[m].length, wettkampfGruppenJeMatten[m].reduce((s, w) => s + w.begegnungsRunden.length + ",", ""))
       
+      
+      
+      console.log("Matte " + m + ", Gruppen: ",wettkampfGruppenJeMatten[m].length, wettkampfGruppenJeMatten[m].reduce((s, w) => s + w.begegnungsRunden.length + ",", ""))
+      wettkampfGruppenJeMatten[m].map(g => {
+        const w = new Set()
+        g.begegnungsRunden.map(ra => ra.map(r => {
+          w.add(r.wettkaempfer1.name)
+          w.add(r.wettkaempfer2!.name)
+        }))
+        const n = w.size;
+        const erwarteteAnzahl = n*(n-1)*1/2;
+
+        console.log("\t Gruppe " + g.name + " (" + n + " Kämpfer, erwartete Kämpfe: " + erwarteteAnzahl + ")")
+        g.begegnungsRunden.map(bArray => {
+          console.log("\t\t Runde")
+          bArray.map(b => console.log("\t\t\t" + b.wettkaempfer1.name +" VS "+b.wettkaempfer2?.name))
+        })
+        console.log()
+      });
+      
+
+
       // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
       if (wettkampfGruppenJeMatten[m].length % 2 == 0) {
 

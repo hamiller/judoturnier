@@ -342,7 +342,10 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of wks) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => w.add(r.wettkaempfer1.name)))
+      g.begegnungsRunden.map(ra => ra.map(r => {
+        w.add(r.wettkaempfer1.name)
+        w.add(r.wettkaempfer2!.name)
+      }))
       const n = w.size;
       const erwarteteAnzahl = n*(n-1)*1/2;
       total += erwarteteAnzahl;
