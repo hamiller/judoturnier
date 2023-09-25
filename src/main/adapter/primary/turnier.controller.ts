@@ -36,7 +36,7 @@ export class TurnierController {
   async ladeWettkampfreihenfolgeJeMatteRandori(@Res() res: Response) {
     logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
     const gwks = await gewichtsklassenGruppenService.lade();
-    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
+    const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((m1, m2) => m1.id - m2.id);
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
   }
 

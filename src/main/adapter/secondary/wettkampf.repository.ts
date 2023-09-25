@@ -211,7 +211,7 @@ export class WettkampfRepository {
         "join wettkaempfer w2 " +
         "on w2.id = b.wettkaempfer2 " +
         "join gewichtsklassengruppen gwk on m.gruppe = gwk.id " +
-        "; "
+        "order by m.id; "
       );
       return matteEntitiesToDtos(rows);
     } catch (error) {
