@@ -184,11 +184,9 @@ export class GewichtsklassenGruppeService {
     let aktuelleGruppe: Wettkaempfer[] = [];
   
     for (let i = 0; i < wettkaempfer.length; i++) {
-      const wettkämpferInGruppe = aktuelleGruppe.length;
+      const wettkaempferInGruppe = aktuelleGruppe.length;
   
-      wettkaempfer[i].farbe = this.getFarbe(aktuelleGruppe.length)
-      wettkaempferRepo.save(wettkaempfer[i]);
-      if (wettkämpferInGruppe === 0 || wettkämpferInGruppe < gruppenGroesse) {
+      if (wettkaempferInGruppe === 0 || wettkaempferInGruppe < gruppenGroesse) {
         // Füge den Wettkämpfer zur aktuellen Gruppe hinzu
         aktuelleGruppe.push(wettkaempfer[i]);
       } else {
@@ -196,6 +194,8 @@ export class GewichtsklassenGruppeService {
         gruppen.push(aktuelleGruppe);
         aktuelleGruppe = [wettkaempfer[i]];
       }
+      wettkaempfer[i].farbe = this.getFarbe(aktuelleGruppe.length);
+      wettkaempferRepo.save(wettkaempfer[i]);
     }
   
     // Füge die letzte Gruppe hinzu, falls sie nicht vollständig ist
@@ -208,6 +208,6 @@ export class GewichtsklassenGruppeService {
 
   private getFarbe(index: number): Farbe {
     const farben = Object.values(Farbe);
-    return farben[index];
+    return farben[--index];
   }
 }

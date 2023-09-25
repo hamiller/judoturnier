@@ -356,3 +356,9 @@ tr {
   border: 1px solid #ccc;
   border-top: none;
 } 
+
+.groupsrow {
+  outline: black;
+  outline-style: auto;
+  
+}

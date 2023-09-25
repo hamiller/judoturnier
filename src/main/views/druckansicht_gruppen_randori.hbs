@@ -8,23 +8,26 @@
     <div class="generalcontent">
       
         <div class="wettkampfgruppe">
-          <table>
-            <th></th>
+          <table style="border-spacing: 20px;">
+            <tbody>
           {{#each gruppen}}
             <tr class="groupsrow">
+              <td>{{altersKlasse}}</td>
+              <td>{{name}} </td>
               <td>
                 <table>
-              {{#each teilnehmer}}
-                <tr>
-                  <td class="wettkaempfer name ">{{name}}</td><td>{{verein.name}}</td><td>({{farbe}})</td> 
-                  <td>Gruppe {{name}} </td>
-                  <td>Altersklasse {{altersKlasse}}</td>
-                </tr>
-              {{/each}}
+                <tbody>
+                {{#each teilnehmer}}
+                  <tr>
+                    <td class="wettkaempfer name " style="width: 220px;">{{name}}</td><td style="width: 180px;">{{verein.name}}</td><td>({{farbe}})</td> 
+                  </tr>
+                {{/each}}
+                </tbody>
                 </table>
               </td>
             </tr>
           {{/each}}
+          </tbody>
           </table>
         </div>
     </div>
