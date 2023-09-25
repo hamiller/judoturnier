@@ -53,6 +53,9 @@ describe('Erstellen von Begegnungen', () => {
     //     runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
     //   })
     // });
+
+    assert.equal(matten.length, 2);
     assert.notEqual(matten[0].runden[0].begegnungen[0].wettkaempfer1, matten[0].runden[0].begegnungen[1].wettkaempfer1)
   });
+
 });

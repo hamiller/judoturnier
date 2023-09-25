@@ -37,6 +37,15 @@ export class TurnierController {
     logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((m1, m2) => m1.id - m2.id);
+
+    // wettkampfreihenfolgeJeMatte.forEach(matte => {
+    //   console.log("Matte", matte.id);
+    //   matte.runden.forEach(runde => {
+    //     console.log("Runde", runde.runde, runde.id, runde.altersklasse);
+    //     // runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
+    //   })
+    // });
+
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
   }
 

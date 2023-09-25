@@ -142,7 +142,6 @@ export class WettkampfRepository {
     const client = await this.pool.connect();
     try {
       for (const runde of matte.runden) {
-        console.log("saving runde", runde)
         for (const begegnung of runde.begegnungen) {
           var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);
           var begegnung_id = result_begegnung.rows[0].id;
@@ -260,6 +259,7 @@ const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
   const runde: Runde = {
     id: data.id,
     runde: data.runde,
+    altersklasse: begegnung.wettkaempfer1.altersklasse,
     gruppe: data.gruppe,
     matte_id: data.matte_id,
     begegnungen: [begegnung]
