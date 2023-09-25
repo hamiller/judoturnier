@@ -59,7 +59,8 @@ export class TurnierService {
     const gwks = await gewichtsklassenGruppenService.lade();
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       const algorithmus = new JederGegenJeden();
-      const matten: Matte[] = await this.berechneGruppenReihenfolgeRandori(gwks, algorithmus);
+      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus);
+      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen);
     
       await wettkampfRepo.speichereMatten(matten);
       return;
@@ -77,10 +78,8 @@ export class TurnierService {
     await wettkampfRepo.loescheAlleMatten();
     return;
   }
-  
-  berechneGruppenReihenfolgeRandori(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus): Matte[] {
-    let matten : Matte[] = [];
 
+  erstelleWettkampfgruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus): WettkampfGruppe[] {
     // erstelle alle Begegnungen in jeder Gruppe
     let wettkampfGruppen: WettkampfGruppe[] = [];
     for (let i = 0; i < gewichtsklassenGruppen.length; i++) {
@@ -88,12 +87,19 @@ export class TurnierService {
       const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, ANZAHL_MATTEN);
       wettkampfGruppen.push(...wkg);
     }
-    
+    return wettkampfGruppen;
+  }
+  
+  erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[]): Matte[] {
+    let matten : Matte[] = [];
+
     // Ausplitten der Begegnungen auf die Matten
     let wettkampfGruppenJeMatten = this.splitArray(wettkampfGruppen, ANZAHL_MATTEN);
     
     for (let m = 0; m < ANZAHL_MATTEN; m++) {
       matten.push({ id: m+1, runden: []});
+
+      console.log("Matte " + m + ", Gruppen: ",wettkampfGruppenJeMatten[m].length, wettkampfGruppenJeMatten[m].reduce((s, w) => s + w.begegnungsRunden.length + ",", ""))
       
       // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
       if (wettkampfGruppenJeMatten[m].length % 2 == 0) {
@@ -117,19 +123,18 @@ export class TurnierService {
       // ungerade Anzahl an Gruppen -> 2 Gruppen je Matte und einmal 3 Gruppen je Matte
       else {
         for (let gruppenNr = 0; gruppenNr < wettkampfGruppenJeMatten[m].length; gruppenNr++) {
-          console.log("entered loop 1b")
           const gruppe = wettkampfGruppenJeMatten[m][gruppenNr];
           for (let r = 0; r < gruppe.begegnungsRunden.length; r++) {
             const begegnungen = gruppe.begegnungsRunden[r];
             const altersKlasse = gruppe.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-
+            
             const runde: Runde = { id:r, runde: r+1, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: begegnungen};
             matten[m].runden.push(runde);
           }
+          console.log("entered loop 1b", gruppenNr, matten[m].runden.reduce((s, w) => w.begegnungen.reduce((s, b) => b.wettkaempfer1.name + "-" + b.wettkaempfer2?.name + ",", ""), ""))
         }
       }
     }
-    console.log("Alle loops done")
     return matten;
   }
 
