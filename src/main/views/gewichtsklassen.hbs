@@ -116,6 +116,7 @@
   });
 
   const droppableElements = document.querySelectorAll('[droppable=true]');
+  console.log("elements", droppableElements.length)
   droppableElements.forEach(droppable => {
     droppable.addEventListener('dragover', allowDrop);
     droppable.addEventListener('drop', drop);
@@ -138,7 +139,9 @@
     event.preventDefault();
     const id = event.dataTransfer.getData('text/plain');
     const draggedElement = document.getElementById(id);
-    event.target.appendChild(draggedElement);
+    const currentElement = event.target;
+    const droppableElement = currentElement.closest('[droppable=true]');
+    droppableElement.appendChild(draggedElement);
     document.getElementById("input_"+id).value = event.target.id + "_" + id;
   };
 
