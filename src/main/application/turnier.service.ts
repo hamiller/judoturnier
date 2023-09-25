@@ -95,8 +95,6 @@ export class TurnierService {
     for (let m = 0; m < ANZAHL_MATTEN; m++) {
       matten.push({ id: m+1, runden: []});
       
-      console.log(wettkampfGruppenJeMatten[m])
-      
       // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
       if (wettkampfGruppenJeMatten[m].length % 2 == 0) {
 
@@ -107,7 +105,6 @@ export class TurnierService {
           const gruppe2 = wettkampfGruppenJeMatten[m][gruppenNr+1];
           const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-          console.log("Altersklasse gerade", altersKlasse1, altersKlasse2)
           
           for (let r = 0; r < gruppe1.begegnungsRunden.length; r++) {
             const runde1: Runde = { id:r, runde: r+1, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
@@ -125,7 +122,6 @@ export class TurnierService {
           for (let r = 0; r < gruppe.begegnungsRunden.length; r++) {
             const begegnungen = gruppe.begegnungsRunden[r];
             const altersKlasse = gruppe.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-            console.log("Altersklasse ungerade", altersKlasse)
 
             const runde: Runde = { id:r, runde: r+1, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: begegnungen};
             matten[m].runden.push(runde);

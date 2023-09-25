@@ -10,13 +10,15 @@ const logger = getLogger('JederGegenJeden');
 
 export class JederGegenJeden implements Algorithmus {
 
+  MAX_TEILNEHMER_JE_GRUPPE = 6;
+
   erstelleWettkampfGruppen(gruppenid: number, gewichtsklassenGruppe: GewichtsklassenGruppe, mattenAnzahl: number): WettkampfGruppe[] {
     logger.debug("JederGegenJeden Algorithmus genutzt");
 
     const result: WettkampfGruppe[] = [];
 
     // erstellt Gruppen mit bis zu 6 Kämpfern
-    const wettkaempferGruppen: Wettkaempfer[][] = this.splitArray(gewichtsklassenGruppe.teilnehmer, 6);
+    const wettkaempferGruppen: Wettkaempfer[][] = this.splitArray(gewichtsklassenGruppe.teilnehmer, this.MAX_TEILNEHMER_JE_GRUPPE);
   
     // Alle möglichen Begegnungen in jeder Gruppe generieren
     for (let i = 0; i < wettkaempferGruppen.length; i++) {
