@@ -138,6 +138,7 @@ li {
   border-radius: 2px;
   display: flex;
   font-size: 0.8em;
+  min-width: 200px;
 }
 
 .justifycontent {

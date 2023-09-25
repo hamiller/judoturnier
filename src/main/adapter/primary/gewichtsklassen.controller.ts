@@ -6,6 +6,9 @@ import { WiegenService } from '../../application/wiegen.service';
 import { Geschlecht } from '../../model/geschlecht';
 import { TurnierService } from '../../application/turnier.service';
 import { TurnierTyp } from '../../model/einstellungen';
+import { GewichtsklassenGruppe } from '../../model/gewichtsklassengruppe';
+import { GewichtsklassenGruppen } from '../../model/gewichtsklassengruppen';
+import { Altersklasse } from '../../model/altersklasse';
 
 const logger = getLogger('GewichtsklassenController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -23,6 +26,8 @@ export class GewichtsklassenController {
     const wks = await wiegenService.alleKaempfer();
     var currentGwks = await gewichtsklassenGruppenService.lade();
     logger.info(`geladene Gruppen: ${currentGwks.length}`);
+
+    var groupedByAge = this.groupByAge(currentGwks);
     
     const einstellungen = await turnierService.ladeTurnierEinstellungen();
 
@@ -30,7 +35,8 @@ export class GewichtsklassenController {
       gewichtsklassengruppenWeiblich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 
       gewichtsklassengruppenMaennlich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.m), 
       anzahlwk: wks.length,
-      standardturnier: einstellungen.turnierTyp == TurnierTyp.standard 
+      standardturnier: einstellungen.turnierTyp == TurnierTyp.standard ,
+      gruppiertBeiAlter: groupedByAge
     };
   }
 
@@ -50,6 +56,23 @@ export class GewichtsklassenController {
     const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
     await gewichtsklassenGruppenService.loesche();
     await gewichtsklassenGruppenService.speichere(gwks);
+    return res;
+  }
+
+  @Post('/gewichtsklasse-renew')
+  async erstelleGewichtsklasseNeu(@Body() ak: any, @Res() res: Response) {
+    logger.debug('erneuere Gewichtsklasse für Altersklasse', {data: ak});
+    const altersklasse: Altersklasse = ak;
+    const wk = (await wiegenService.alleKaempfer()).filter(kaempfer => kaempfer.altersklasse == altersklasse);
+    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wk);
+    
+    await gewichtsklassenGruppenService.loescheAltersklasse(altersklasse);
+    await gewichtsklassenGruppenService.speichere(gwks);
+    
+    // const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
+    // await gewichtsklassenGruppenService.loesche();
+    // await gewichtsklassenGruppenService.speichere(gwks);
+    
     return res;
   }
 
@@ -74,4 +97,16 @@ export class GewichtsklassenController {
     return res;
   }
 
+  groupByAge(gwk: GewichtsklassenGruppe[]): GewichtsklassenGruppen[] {
+    const ageGroups = new Set(gwk.map(g => g.altersKlasse));
+    const groupedByAge = [];
+    for (const ageGroup of ageGroups) {
+      const group = gwk.filter(g => g.altersKlasse == ageGroup);
+      groupedByAge.push({
+        altersKlasse: ageGroup,
+        gruppen: group
+      });
+    } 
+    return groupedByAge;
+  }
 }

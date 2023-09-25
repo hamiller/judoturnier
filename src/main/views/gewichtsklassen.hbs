@@ -11,7 +11,11 @@
       <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
       
       <div class="actions">
-        <button onclick="renewGewichtsklassen()" >Gewichtsklassen neu zuordnen<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">autorenew</span></button>
+        <button onclick="renewGewichtsklassen()" >Alle Gewichtsklassen neu zuordnen<span class="material-icons md-48" title="Alle Gewichtsklassen neu zuordnen">autorenew</span></button>
+        {{#if standardturnier}}
+        {{else}}
+          <a href="/gewichtsklassen/randori_printview_groups" target="_blank">Druckansicht Gruppen<span class="material-icons md-48" title="Druckansicht Gruppen">print</span></a>
+        {{/if}}
       </div>
     </div>
 
@@ -20,59 +24,84 @@
         <div class="actions">
           <button type="submit">Zuordnungen speichern<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">save</span></button>
           <br>
-          {{#if standardturnier}}
-          {{else}}
-            <a href="/gewichtsklassen/randori_printview_groups" target="_blank">Druckansicht Gruppen<span class="material-icons md-48" title="Druckansicht Gruppen">print</span></a>
-          {{/if}}
         </div>
 
         {{#if standardturnier}}
-        <h1>Frauen</h1>
+
+          <h1>Frauen</h1>
+          <div class="gewichtsklassen">
+          {{#each gewichtsklassengruppenWeiblich}}
+            <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
+              <div class="gewichtsklasse-meta">
+                <div>{{altersKlasse}}</div>
+                <div>{{name}}</div>
+                <div>{{gewichtsklasse.name}}</div>
+              </div>
+              <div class="gewichtsklasse-teilnehmer">
+              {{#each teilnehmer}}
+                <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
+                {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
+                <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
+                </div>
+              {{/each}}
+              </div>
+            </div>
+          {{/each}}
+          </div>
+
+          <h1>Männer</h1>
+          <div class="gewichtsklassen">
+          {{#each gewichtsklassengruppenMaennlich}}
+            <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
+              <div class="gewichtsklasse-meta">
+                <div>{{altersKlasse}}</div>
+                <div>{{name}}</div>
+                <div>{{gewichtsklasse.name}}</div>
+              </div>
+              <div class="gewichtsklasse-teilnehmer">
+              {{#each teilnehmer}}
+                <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
+                {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span><span>{{geschlecht}}</span></div>
+                <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
+                </div>
+              {{/each}}
+              </div>
+            </div>
+          {{/each}}
+          </div>
+
         {{else}}
-        <h1>Mädchen und Jungs</h1>
-        {{/if}}
-        <div class="gewichtsklassen">
-        {{#each gewichtsklassengruppenWeiblich}}
-          <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
-            <div class="gewichtsklasse-meta">
-              <div>{{altersKlasse}}</div>
-              <div>{{name}}</div>
-              <div>{{gewichtsklasse.name}}</div>
+
+          <h1>Mädchen und Jungs</h1>
+          {{#each gruppiertBeiAlter}}
+            {{this.altersKlasse}}
+            <div class="actions">
+              <button type="button" onclick="renewGewichtsklasse( '{{this.altersKlasse}}' )" >Einzelne Gewichtsklasse neu zuordnen<span class="material-icons md-48" title="Einzelne Gewichtsklasse neu zuordnen">autorenew</span></button>
             </div>
-            <div class="gewichtsklasse-teilnehmer">
-            {{#each teilnehmer}}
-              <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
-              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
-              <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
+
+            <div class="gewichtsklassen">
+            {{#each gruppen}}
+              <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
+                <div class="gewichtsklasse-meta">
+                  <div>{{altersKlasse}}</div>
+                  <div>{{name}}</div>
+                  <div>{{gewichtsklasse.name}}</div>
+                </div>
+              
+                <div class="gewichtsklasse-teilnehmer">
+                {{#each teilnehmer}}
+                  <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
+                  {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
+                  <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
+                  </div>
+                {{/each}}
+                </div>
               </div>
             {{/each}}
             </div>
-          </div>
-        {{/each}}
-        </div>
-        
-        {{#if standardturnier}}
-        
-        <h1>Männer</h1>
-        <div class="gewichtsklassen">
-        {{#each gewichtsklassengruppenMaennlich}}
-          <div class="generalcontent" id="gruppe_{{id}}" droppable=true>
-            <div class="gewichtsklasse-meta">
-              <div>{{altersKlasse}}</div>
-              <div>{{name}}</div>
-              <div>{{gewichtsklasse.name}}</div>
-            </div>
-            <div class="gewichtsklasse-teilnehmer">
-            {{#each teilnehmer}}
-              <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
-              {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span><span>{{geschlecht}}</span></div>
-              <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
-              </div>
-            {{/each}}
-            </div>
-          </div>
-        {{/each}}
-        </div>
+
+          {{/each}}
+
         {{/if}}
       </div>
     </form>
@@ -117,6 +146,15 @@
     var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in Gewichtsklassen und alle Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
     if (sicher) {
       fetch('/gewichtsklassen-renew', { method: 'POST' })
+      .then(() => window.location.href='gewichtsklassen')
+    };
+  };
+
+  const renewGewichtsklasse = async (data) => {
+    console.log(data);
+    var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in dieser Gewichtsklasse und alle Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
+    if (sicher) {
+      fetch('/gewichtsklasse-renew', { method: 'POST', body: data })
       .then(() => window.location.href='gewichtsklassen')
     };
   };

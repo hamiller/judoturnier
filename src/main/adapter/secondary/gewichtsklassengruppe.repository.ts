@@ -10,6 +10,7 @@ const logger = getLogger('GewichtsklassenGruppeRepository');
 
 
 export class GewichtsklassenGruppeRepository {
+  
   private pool: DatabasePool;
   
   constructor(pool: DatabasePool) {
@@ -96,6 +97,24 @@ export class GewichtsklassenGruppeRepository {
       let query = {
         text: 'DELETE FROM gewichtsklassengruppen',
         values: []
+      };
+      await client.query(query);
+      return;
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async deleteByAltersklasse(altersKlasse: Altersklasse): Promise<void> {
+    logger.debug("Deleting single GewichtsklassenGruppe from db");
+    const client = await this.pool.connect();
+    try {
+      let query = {
+        text: 'DELETE FROM gewichtsklassengruppen where altersklasse = $1',
+        values: [altersKlasse]
       };
       await client.query(query);
       return;

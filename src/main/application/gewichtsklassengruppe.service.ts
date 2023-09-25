@@ -7,7 +7,7 @@ import { Wettkaempfer } from "../model/wettkaempfer";
 import { getLogger } from './logger';
 import { randomRandoriGruppenNamen} from "../model/randorigruppenname";
 import { Geschlecht } from "../model/geschlecht";
-import { altersklasseSortOrder } from "../model/altersklasse";
+import { Altersklasse, altersklasseSortOrder } from "../model/altersklasse";
 import { TurnierTyp } from "../model/einstellungen";
 import { EinstellungenRepository } from "../adapter/secondary/einstellungen.repository";
 import DatabasePool from "../config/db.config";
@@ -39,6 +39,10 @@ export class GewichtsklassenGruppeService {
   
   loesche(): Promise<void> {
     return gewichtsklassenGruppeRepo.deleteAll();
+  }
+
+  loescheAltersklasse(altersKlasse: Altersklasse): Promise<void> {
+    return gewichtsklassenGruppeRepo.deleteByAltersklasse(altersKlasse);
   }
   
   speichere(gewichtsKlassenGruppen: GewichtsklassenGruppe[]): Promise<void> {
