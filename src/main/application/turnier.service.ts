@@ -129,7 +129,11 @@ export class TurnierService {
     for (let m = 0; m < ANZAHL_MATTEN; m++) {
       matten.push({ id: m+1, runden: []});
       const gruppen = wettkampfGruppenJeMatten[m];
+      
+      // sortiere die Gruppen, sodass die Gruppen mit wenigen Kämpfen ganz hinten sind
+      gruppen.sort((gs1, gs2) => gs2.begegnungsRunden.length - gs1.begegnungsRunden.length);
       this.log(gruppen)
+     
       
       let rundenNummer = 0;
 
@@ -156,10 +160,6 @@ export class TurnierService {
           const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           const altersKlasse3 = gruppe3.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-
-          this.log([gruppe1])
-          this.log([gruppe2])
-          this.log([gruppe3])
 
           // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
           for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length, gruppe3.begegnungsRunden.length); r++) {
