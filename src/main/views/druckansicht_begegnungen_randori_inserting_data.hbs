@@ -23,7 +23,7 @@
                 {{#if previous}}
                   {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
                   {{else}}
-                    <div class="gruppentitel" >Gruppe {{gruppe.name}} ({{altersklasse}})</div>
+                    <div class="gruppentitel seitenumbruch" >Gruppe {{gruppe.name}} ({{altersklasse}})</div>
                   {{/if}}
                 {{else}}
                   <div class="gruppentitel" >Gruppe {{gruppe.name}} ({{altersklasse}})</div>
