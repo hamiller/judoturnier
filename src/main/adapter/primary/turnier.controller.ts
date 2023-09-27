@@ -126,8 +126,7 @@ export class TurnierController {
     }
     await turnierService.speichereWertung(wertung);
     
-    ++id;
-    res.redirect("/turnier/begegnungen/randori/" + id);
+    res.redirect("/turnier/begegnungen/randori/");
     return res;
   }
 }
