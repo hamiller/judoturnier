@@ -163,7 +163,6 @@ export class WettkampfRepository {
     logger.debug("Saving wettkampf to db", {data: {mattenid: matte.id}});
     const client = await this.pool.connect();
     try {
-      if (matte.id == 2) console.log("matte db", matte.id, matte.runden)
       for (const runde of matte.runden) {
         for (const begegnung of runde.begegnungen) {
           var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);

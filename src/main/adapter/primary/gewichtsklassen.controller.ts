@@ -45,7 +45,7 @@ export class GewichtsklassenController {
   async ladeDruckAnsichtGruppenRandori(@Res() res: Response) {
     logger.debug('lade Druckansicht Randori-Gruppen');
     var currentGwks = await gewichtsklassenGruppenService.lade();
-    console.log(currentGwks)
+    logger.debug("Gewchtsklassen", {data: currentGwks});
     return { gruppen: currentGwks }
   }
 

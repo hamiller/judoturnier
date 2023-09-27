@@ -39,7 +39,6 @@ describe('WettkampfRepository Test', () => {
     expect(result[0].runden[0].begegnungen.length).toBe(1)
     expect(result[0].runden[0].begegnungen[0].wettkaempfer1.id).toBe(3)
     expect(result[0].runden[0].begegnungen[0].wettkaempfer2!.id).toBe(1)
-    // console.log(result)
   });
 });
 

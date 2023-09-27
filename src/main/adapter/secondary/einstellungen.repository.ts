@@ -14,7 +14,7 @@ export class EinstellungenRepository {
   async save(einstellungen: Einstellungen): Promise<void> {
     const client = await this.pool.connect();
     const entity = dtoToEntity(einstellungen);
-    console.log("hier", entity)
+    logger.debug("speichere Einstellungen", {data: entity});
     try {
       let query = {
         text: 'UPDATE einstellungen SET wert = $2 where art = $1',

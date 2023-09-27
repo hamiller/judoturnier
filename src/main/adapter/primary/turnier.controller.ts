@@ -41,15 +41,7 @@ export class TurnierController {
 
     const altersklassen = new Set()
     gwks.map(gwk => altersklassen.add(gwk.altersKlasse))
-    console.log("altersklassen", altersklassen)
-    // wettkampfreihenfolgeJeMatte.forEach(matte => {
-    //   console.log("Matte", matte.id);
-    //   matte.runden.forEach(runde => {
-    //     console.log("Runde", runde.runde, runde.id, runde.altersklasse);
-    //     // runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
-    //   })
-    // });
-
+    logger.debug("altersklassen", {data: altersklassen});
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte, altersklassen: altersklassen };
   }
 
@@ -59,14 +51,6 @@ export class TurnierController {
     logger.debug('lade Wettkampfreihenfolge je Matte');
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
-  
-    wettkampfreihenfolgeJeMatte.forEach(matte => {
-      console.log("Matte", matte.id);
-      matte.runden.forEach(runde => {
-        console.log("Runde", runde.runde, runde.id);
-        runde.begegnungen.forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
-      })
-    });
 
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
   }
@@ -107,7 +91,7 @@ export class TurnierController {
   async begegnungRandori(@Param('id') id: number, @Res() res: Response) {
     logger.debug('Aktuelle Begegnung ' + id);
     var begegnung = await turnierService.ladeWertungFuerWettkampf(id)
-    console.log("begegnung", begegnung)
+    logger.debug("begegnung", {data: begegnung});
     return {begegnung: begegnung, begegnungid: id};
   }
 

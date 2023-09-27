@@ -10,7 +10,6 @@ export class Sortierer {
     
     for (let i = 0; i < sortedBegegnungen.length - 2; i++) {
       for (let j = 0; j < sortedBegegnungen.length - i - 2; j++) {
-        // console.log(`${i} ${j}: `, sortedBegegnungen[j], begegnungen[j]);
         const wettkaempfer1Jetzt = sortedBegegnungen[j].wettkaempfer1;
         const wettkaempfer2Jetzt = sortedBegegnungen[j].wettkaempfer2;
         const wettkaempfer1Danach = sortedBegegnungen[j + 1].wettkaempfer1;
