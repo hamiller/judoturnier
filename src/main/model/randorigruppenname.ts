@@ -40,6 +40,10 @@ export enum RandoriGruppenName {
   Schnabeltier
 }
 
+export function alleGruppenNamen(): RandoriGruppenName[] {
+  return Object.values(RandoriGruppenName).filter((item) => isNaN(Number(item))) as RandoriGruppenName[];
+}
+
 export function randomRandoriGruppenNamen(count: number): RandoriGruppenName[] {
   const enumValues = Object.values(RandoriGruppenName).filter((item) => isNaN(Number(item))) as RandoriGruppenName[]; // Alle Enum-Werte abrufen
   const result: RandoriGruppenName[] = [];

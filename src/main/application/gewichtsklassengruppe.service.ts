@@ -5,7 +5,7 @@ import { Gewichtsklasse } from "../model/gewichtsklasse";
 import { GewichtsklassenGruppe } from "../model/gewichtsklassengruppe";
 import { Wettkaempfer } from "../model/wettkaempfer";
 import { getLogger } from './logger';
-import { randomRandoriGruppenNamen} from "../model/randorigruppenname";
+import { RandoriGruppenName, randomRandoriGruppenNamen, alleGruppenNamen} from "../model/randorigruppenname";
 import { Geschlecht } from "../model/geschlecht";
 import { Altersklasse, altersklasseSortOrder } from "../model/altersklasse";
 import { TurnierTyp } from "../model/einstellungen";
@@ -84,8 +84,20 @@ export class GewichtsklassenGruppeService {
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       logger.info(`Randori-Turnier`);
       logger.debug("Bei einem Randori-Turnier wird nicht nach geschlecht unterschieden, es wird daher keine Einteilung vorgenommen");
-      const gruppenNachAlter = this.gruppiereNachAlterklasse(wettkaempferListe);
-      return gruppenNachAlter.flatMap(gs => this.erstelleGewichtsklassenGruppenRandori(gs));
+      const wettkaempferNachAlter = this.gruppiereNachAlterklasse(wettkaempferListe);
+
+      // erstelle random Namen für die Gruppen
+      let gruppenNamen = alleGruppenNamen();
+
+      // erstelle die GewichtsklassenGruppen
+      let result: GewichtsklassenGruppe[] = [];
+      for (const wks of wettkaempferNachAlter) {
+        const aktuelleGruppenNamen = gruppenNamen.slice(0,  Math.ceil(wks.length / RANDORI_GRUPPEN_GROESSE));
+        gruppenNamen = gruppenNamen.slice(Math.ceil(wks.length / RANDORI_GRUPPEN_GROESSE));
+        result = result.concat(this.erstelleGewichtsklassenGruppenRandori(wks, aktuelleGruppenNamen));
+      } 
+      // return gruppenNachAlter.flatMap(gs => this.erstelleGewichtsklassenGruppenRandori(gs));
+      return result;
     }
     
     logger.info(`Normales-Turnier`);
@@ -150,11 +162,10 @@ export class GewichtsklassenGruppeService {
     return gewichtsklassenGruppen;
   }
 
-  private erstelleGewichtsklassenGruppenRandori(kaempferListe: Wettkaempfer[]): GewichtsklassenGruppe[] {
+  private erstelleGewichtsklassenGruppenRandori(kaempferListe: Wettkaempfer[], gruppenNamen: RandoriGruppenName[]): GewichtsklassenGruppe[] {
     const gewichtsklassenGruppen: GewichtsklassenGruppe[] = [];
     const anzahlRandoriGruppen = Math.ceil(kaempferListe.length / RANDORI_GRUPPEN_GROESSE);   // Wir haben immer 6er Pools im Wettkampf
     logger.info(`erstelle ${anzahlRandoriGruppen} Gruppen...`);
-    const gruppenNamen = randomRandoriGruppenNamen(anzahlRandoriGruppen);
     const wettkaempferGruppen: Wettkaempfer[][] = this.randoriKlassen(kaempferListe, RANDORI_GRUPPEN_GROESSE);
     
     for (let current: number = 0; current < anzahlRandoriGruppen; current++) {
