@@ -154,13 +154,13 @@ export class GewichtsklassenGruppeService {
     const gewichtsklassenGruppen: GewichtsklassenGruppe[] = [];
     const anzahlRandoriGruppen = Math.ceil(kaempferListe.length / RANDORI_GRUPPEN_GROESSE);   // Wir haben immer 6er Pools im Wettkampf
     logger.info(`erstelle ${anzahlRandoriGruppen} Gruppen...`);
-    const randoriGruppen = randomRandoriGruppenNamen(anzahlRandoriGruppen);
+    const gruppenNamen = randomRandoriGruppenNamen(anzahlRandoriGruppen);
     const wettkaempferGruppen: Wettkaempfer[][] = this.randoriKlassen(kaempferListe, RANDORI_GRUPPEN_GROESSE);
     
     for (let current: number = 0; current < anzahlRandoriGruppen; current++) {
       const gewichtsklassenGruppe = wettkaempferGruppen[current];
       const altersKlasse = gewichtsklassenGruppe[0].altersklasse; // alle Mitglieder der Gruppe haben das gleiche Alter, da sie vorher so sortiert wurden
-      const randoriGruppe = randoriGruppen[current].toString();
+      const randoriGruppe = gruppenNamen[current].toString();
       const leichtestesGruppenGewicht = gewichtsklassenGruppe[0].gewicht!
       const hoechstesGruppenGewicht = gewichtsklassenGruppe[gewichtsklassenGruppe.length -1].gewicht!
       

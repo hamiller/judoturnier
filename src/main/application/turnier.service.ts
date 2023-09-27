@@ -149,12 +149,17 @@ export class TurnierService {
           const andereGruppen = gruppen.slice(0, gruppen.length-3)
           rundenNummer = gruppiereAbwechselnd(andereGruppen, rundenNummer, m);
           
+          // jetzt die letzten drei Gruppen
           const gruppe1 = letztenDreiGruppen[0];
           const gruppe2 = letztenDreiGruppen[1];
           const gruppe3 = letztenDreiGruppen[2];
           const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           const altersKlasse3 = gruppe3.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
+
+          this.log([gruppe1])
+          this.log([gruppe2])
+          this.log([gruppe3])
 
           // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
           for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length, gruppe3.begegnungsRunden.length); r++) {
@@ -191,6 +196,7 @@ export class TurnierService {
     return matten;
 
     function gruppiereAbwechselnd(gruppen: WettkampfGruppe[], rundenNummer: number, m: number) {
+      logger.debug("Gruppiere abwechselnd...");
       for (let gruppenNr = 0; gruppenNr < Math.floor(gruppen.length / 2); gruppenNr += 2) {
         const gruppe1 = gruppen[gruppenNr];
         const gruppe2 = gruppen[gruppenNr + 1];
@@ -245,7 +251,7 @@ export class TurnierService {
       g.begegnungsRunden.map(bArray => {
         bArray.map(b => runden.push({Begegnung: b.wettkaempfer1.name +" VS " + b.wettkaempfer2?.name}))
       });
-      
+  
       const w = new Set();
       g.begegnungsRunden.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
@@ -256,6 +262,7 @@ export class TurnierService {
       groups.push(
         {
           Name: g.name,
+          Typ: g.typ,
           AnzahlKaempfer: n,
           erwarteteWettkaempfe: erwarteteAnzahl,
           Runden: runden
@@ -263,8 +270,10 @@ export class TurnierService {
         );
     });
     
+
     let logmessage: any = {
-      GruppenInfo: gruppe.length + "(" + gruppe.reduce((s, w) => s + w.begegnungsRunden.length + ",", "") + ")",
+      AnzahlDerGruppen: gruppe.length,
+      AnzahlBegegnungenJeGruppe: gruppe.reduce((s, w) => s + w.begegnungsRunden.length + ",", ""),
       Gruppen: groups
     };
 
