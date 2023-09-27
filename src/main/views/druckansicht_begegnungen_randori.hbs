@@ -12,15 +12,21 @@
           <table>
             <th></th>
           {{#each (vorherigesElement runden)}}
+            {{#if previous}}
+              {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
+              {{else}}
+                <tr><td style="height: 50px;"></td></tr>
+              {{/if}}
+            {{/if}}
             <tr>
               <td>
                 {{#if previous}}
                   {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
                   {{else}}
-                    Gruppe {{gruppe.name}} ({{altersklasse}})
+                    <div class="gruppentitel">Gruppe {{gruppe.name}} ({{altersklasse}})</div>
                   {{/if}}
                 {{else}}
-                  Gruppe {{gruppe.name}} ({{altersklasse}})
+                  <div class="gruppentitel">Gruppe {{gruppe.name}} ({{altersklasse}})</div>
                 {{/if}}
               </td>
               {{#each begegnungen}}

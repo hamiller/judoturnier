@@ -362,3 +362,10 @@ tr {
   outline-style: auto;
   
 }
+
+.emptyTableCell {
+  background-color: white;
+  border-style: dotted;
+  width: 200px;
+  height: 50px;
+}

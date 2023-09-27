@@ -19,6 +19,8 @@
         <button onclick="renewBegegnungen()">Alle Wettkampfgruppen neu erstellen<span class="material-icons md-48" title="Alle Wettkampfgruppen neu erstellen">create_new_folder</span></button>
         <br>
         <a href="/turnier/begegnungen/randori_printview_matches" target="_blank">Druckansicht Begegnungen<span class="material-icons md-48" title="Druckansicht Begegnungen">print</span></a>
+        <br>
+        <a href="/turnier/begegnungen/randori_printview_matches_inserting_data" target="_blank">Druckansicht Begegnungen-Eintragen<span class="material-icons md-48" title="Druckansicht Begegnungen-Eintragen">print</span></a>
         {{#each altersklassen}}
           <div class="actions">
             <button type="button" onclick="renewBegegnung( '{{this}}' )" >Wettkampfgruppen {{this}} neu zuordnen<span class="material-icons md-48" title="Einzelne Wettkampfgruppen neu zuordnen">autorenew</span></button>

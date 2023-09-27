@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+  {{> header}}
+<body>
+  <div>
+    <div class="bodyheader no-print">
+    </div>
+    <div class="generalcontent">
+      {{#each matten}}
+        <div class="wettkampfgruppe">
+          <div class="listeneintrag-titel">Matte {{id}}</div>
+          <table>
+            <th></th>
+          {{#each (vorherigesElement runden)}}
+            {{#if previous}}
+              {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
+              {{else}}
+                <tr><td style="height: 50px;"></td></tr>
+              {{/if}}
+            {{/if}}
+            <tr>
+              <td style="vertical-align: top;">
+                {{#if previous}}
+                  {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
+                  {{else}}
+                    <div class="gruppentitel" >Gruppe {{gruppe.name}} ({{altersklasse}})</div>
+                  {{/if}}
+                {{else}}
+                  <div class="gruppentitel" >Gruppe {{gruppe.name}} ({{altersklasse}})</div>
+                {{/if}}
+              </td>
+              {{#each begegnungen}}
+                <td>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td class="wettkaempfer name" style="width: 200px;">{{wettkaempfer1.name}}</td>
+                        <td class="{{wettkaempfer1.farbe}}" style="width: 60px;">{{wettkaempfer1.farbe}}</td>
+                        <td style="width: 200px;">({{wettkaempfer1.verein.name}})</td> 
+                        <td style="width: 50px;"></td>
+                        <td class="wettkaempfer name" style="width: 200px;">{{wettkaempfer2.name}}</td>
+                        <td class="{{wettkaempfer2.farbe}}" style="width: 60px;">{{wettkaempfer2.farbe}}</td>
+                        <td style="width: 200px;">({{wettkaempfer2.verein.name}})</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table>
+                            <tbody>
+                              <tr>
+                                <td>Kampfgeist</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                              <tr>
+                                <td>Technik</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                              <tr>
+                                <td>Kampfstil</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                              <tr>
+                                <td>Fairness</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          <table>
+                            <tbody>
+                              <tr>
+                                <td>Kampfgeist</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                              <tr>
+                                <td>Technik</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                              <tr>
+                                <td>Kampfstil</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                              <tr>
+                                <td>Fairness</td>
+                                <td class="emptyTableCell"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr><td>----------</td></tr>
+                    </tbody>
+                  </table>
+                </td>
+              {{/each}}
+            </tr>
+          {{/each}}
+          </table>
+        </div>
+      {{/each}}
+    </div>
+
+</body>
+
+</html>

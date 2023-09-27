@@ -86,6 +86,14 @@ export class TurnierController {
     return { matten: wettkampfreihenfolgeJeMatte }
   }
 
+  @Get('/turnier/begegnungen/randori_printview_matches_inserting_data')
+  @Render("druckansicht_begegnungen_randori_inserting_data.hbs")
+  async ladeDruckAnsichtBegegnungenRandoriDateneintrag(@Res() res: Response) {
+    logger.debug('lade Druckansicht Randori-Begegnungen zum Dateneintragen');
+    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
+    return { matten: wettkampfreihenfolgeJeMatte }
+  }
+
   @Get('/turnier/begegnungen/randori/:id')
   @Render("wettkampf_randori.hbs")
   async begegnungRandori(@Param('id') id: number, @Res() res: Response) {
