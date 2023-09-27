@@ -15,6 +15,7 @@ import { WettkampfRepository } from "../adapter/secondary/wettkampf.repository";
 import DatabasePool from "../config/db.config";
 import { Begegnung } from "../model/begegnung";
 import { Wertung } from "../model/wertung";
+import { Altersklasse } from "../model/altersklasse";
 
 const logger = getLogger('TurnierService');
 const pool: DatabasePool = new DatabasePool();
@@ -73,13 +74,41 @@ export class TurnierService {
     return;
   }
 
+  async erstelleWettkampfreihenfolgeAltersklasse(altersKlasse: Altersklasse): Promise<void> {
+    logger.debug(`Erstelle Wettkampfreihenfolge für altersklasse...`, {data: altersKlasse});
+    
+    const einstellungen = await einstellungenRepo.load();
+    const gwks = await gewichtsklassenGruppenService.ladeAltersklasse(altersKlasse);
+    if (einstellungen.turnierTyp == TurnierTyp.randori) {
+      const algorithmus = new JederGegenJeden();
+      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus);
+      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen);
+    
+      await wettkampfRepo.speichereMatten(matten);
+      return;
+    }
+    else {
+      const algorithmus = this.getAlgorithmus(Kampfsystem.ko);
+      logger.error(`Turniermodus noch nicht implementiert!`);
+    }
+    
+    return;
+  }
+
   async loescheWettkampfreihenfolge(): Promise<void> {
     logger.debug(`Lösche Wettkampfreihenfolge...`);
     await wettkampfRepo.loescheAlleMatten();
     return;
   }
 
+  async loescheWettkampfreihenfolgeAltersklasse(altersKlasse: Altersklasse): Promise<void> {
+    logger.debug(`Lösche Wettkampfreihenfolge für altersklasse...`, {data: altersKlasse});
+    await wettkampfRepo.loescheWettkaempfe(altersKlasse);
+    return;
+  }
+
   erstelleWettkampfgruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus): WettkampfGruppe[] {
+    logger.debug("erstelle alle Begegnungen in jeder gegebenen Gruppe");
     // erstelle alle Begegnungen in jeder Gruppe
     let wettkampfGruppen: WettkampfGruppe[] = [];
     for (let i = 0; i < gewichtsklassenGruppen.length; i++) {
@@ -91,6 +120,7 @@ export class TurnierService {
   }
   
   erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[]): Matte[] {
+    logger.debug("erstelle Reihenfolge der Begegnungen");
     let matten : Matte[] = [];
 
     // Ausplitten der Begegnungen auf die Matten
@@ -98,61 +128,68 @@ export class TurnierService {
     
     for (let m = 0; m < ANZAHL_MATTEN; m++) {
       matten.push({ id: m+1, runden: []});
-
+      const gruppen = wettkampfGruppenJeMatten[m];
+      this.log(gruppen)
       
-      
-      
-      console.log("Matte " + m + ", Gruppen: ",wettkampfGruppenJeMatten[m].length, wettkampfGruppenJeMatten[m].reduce((s, w) => s + w.begegnungsRunden.length + ",", ""))
-      wettkampfGruppenJeMatten[m].map(g => {
-        const w = new Set()
-        g.begegnungsRunden.map(ra => ra.map(r => {
-          w.add(r.wettkaempfer1.name)
-          w.add(r.wettkaempfer2!.name)
-        }))
-        const n = w.size;
-        const erwarteteAnzahl = n*(n-1)*1/2;
-
-        console.log("\t Gruppe " + g.name + " (" + n + " Kämpfer, erwartete Kämpfe: " + erwarteteAnzahl + ")")
-        g.begegnungsRunden.map(bArray => {
-          console.log("\t\t Runde")
-          bArray.map(b => console.log("\t\t\t" + b.wettkaempfer1.name +" VS "+b.wettkaempfer2?.name))
-        })
-        console.log()
-      });
-      
-
 
       // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
-      if (wettkampfGruppenJeMatten[m].length % 2 == 0) {
+      if (gruppen.length % 2 == 0) {
+        logger.debug("Berechne gerade Anzahl an Gruppen");
 
-
-        for (let gruppenNr = 0; gruppenNr < wettkampfGruppenJeMatten[m].length /2; gruppenNr+=2) {
-          console.log("entered loop 1a")
-          const gruppe1 = wettkampfGruppenJeMatten[m][gruppenNr];
-          const gruppe2 = wettkampfGruppenJeMatten[m][gruppenNr+1];
+        let rundenNummer = 0;
+        for (let gruppenNr = 0; gruppenNr < gruppen.length /2; gruppenNr+=2) {
+          const gruppe1 = gruppen[gruppenNr];
+          const gruppe2 = gruppen[gruppenNr+1];
           const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           
-          for (let r = 0; r < gruppe1.begegnungsRunden.length; r++) {
-            const runde1: Runde = { id:r, runde: r+1, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
-            const runde2: Runde = { id:r, runde: r+1, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
-            matten[m].runden.push(runde1);
-            matten[m].runden.push(runde2);
+          // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
+          for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length); r++) {
+            if (gruppe1.begegnungsRunden[r]) {
+              const runde1: Runde = { id:rundenNummer, runde: rundenNummer+1, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
+              matten[m].runden.push(runde1);
+              rundenNummer +=1;
+            }
+            if (gruppe2.begegnungsRunden[r]) {
+              const runde2: Runde = { id:rundenNummer, runde: rundenNummer+1, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
+              matten[m].runden.push(runde2);
+              rundenNummer +=1;
+            }
           }
         }          
       }
       // ungerade Anzahl an Gruppen -> 2 Gruppen je Matte und einmal 3 Gruppen je Matte
       else {
-        for (let gruppenNr = 0; gruppenNr < wettkampfGruppenJeMatten[m].length; gruppenNr++) {
-          const gruppe = wettkampfGruppenJeMatten[m][gruppenNr];
-          for (let r = 0; r < gruppe.begegnungsRunden.length; r++) {
-            const begegnungen = gruppe.begegnungsRunden[r];
-            const altersKlasse = gruppe.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
+        logger.debug("Berechne ungerade Anzahl an Gruppen");
+        let rundenNummer = 0;
+        if (gruppen.length >= 3) {
+          for (let gruppenNr = 0; gruppenNr < Math.floor(gruppen.length /2); gruppenNr+=2) {
+            const gruppe1 = gruppen[gruppenNr];
+            const gruppe2 = gruppen[gruppenNr+1];
+            const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
+            const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
             
-            const runde: Runde = { id:r, runde: r+1, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: begegnungen};
-            matten[m].runden.push(runde);
-          }
-          console.log("entered loop 1b", gruppenNr, matten[m].runden.reduce((s, w) => w.begegnungen.reduce((s, b) => b.wettkaempfer1.name + "-" + b.wettkaempfer2?.name + ",", ""), ""))
+            // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
+            for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length); r++) {
+              if (gruppe1.begegnungsRunden[r]) {
+                const runde1: Runde = { id:rundenNummer, runde: rundenNummer+1, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r]};
+                matten[m].runden.push(runde1);
+                rundenNummer +=1;
+              }
+              if (gruppe2.begegnungsRunden[r]) {
+                const runde2: Runde = { id:rundenNummer, runde: rundenNummer+1, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r]};
+                matten[m].runden.push(runde2);
+                rundenNummer +=1;
+              }
+            }
+          } 
+        }
+        const gruppeZuletzt = gruppen[gruppen.length-1];
+        for (let r = 0; r < gruppeZuletzt.begegnungsRunden.length; r++) {
+          const altersKlasseZuletzt = gruppeZuletzt.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
+          const rundeZuletzt: Runde = { id:rundenNummer, runde: rundenNummer+1, altersklasse: altersKlasseZuletzt, gruppe: gruppeZuletzt, begegnungen: gruppeZuletzt.begegnungsRunden[r]};
+          matten[m].runden.push(rundeZuletzt);
+          rundenNummer +=1;
         }
       }
     }
@@ -180,4 +217,25 @@ export class TurnierService {
   
     return parts;
   } 
+
+  private log(gruppe: WettkampfGruppe[]): void {
+    console.log("Gruppen: ",gruppe.length, gruppe.reduce((s, w) => s + w.begegnungsRunden.length + ",", ""))
+    gruppe.map(g => {
+        const w = new Set()
+        g.begegnungsRunden.map(ra => ra.map(r => {
+          w.add(r.wettkaempfer1.name)
+          w.add(r.wettkaempfer2!.name)
+        }))
+        const n = w.size;
+        const erwarteteAnzahl = n*(n-1)*1/2;
+
+        console.log("\t Gruppe " + g.name + " (" + n + " Kämpfer, erwartete Kämpfe: " + erwarteteAnzahl + ")")
+        g.begegnungsRunden.map(bArray => {
+          console.log("\t\t Runde")
+          bArray.map(b => console.log("\t\t\t" + b.wettkaempfer1.name +" VS "+b.wettkaempfer2?.name))
+        })
+        console.log()
+      });
+      
+  }
 }

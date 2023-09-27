@@ -4,6 +4,7 @@ import DatabasePool from '../../config/db.config';
 import { Begegnung } from '../../model/begegnung';
 import { Wertung } from '../../model/wertung';
 import { WettkampfGruppe } from '../../model/wettkampfgruppe';
+import { Altersklasse } from '../../model/altersklasse';
 
 const logger = getLogger('WettkampfRepository');
 
@@ -137,10 +138,32 @@ export class WettkampfRepository {
     }
   }
 
+  async loescheWettkaempfe(altersKlasse: Altersklasse): Promise<void> {
+    logger.debug("Delete some wettkampf from db");
+    const client = await this.pool.connect();
+    try {
+      const { rows } = await client.query('SELECT distinct(b.id) FROM begegnung b join wettkaempfer w1 on w1.id = b.wettkaempfer1 join wettkaempfer w2 on w2.id = b.wettkaempfer2 where w1.altersklasse = $1 or w2.altersklasse = $1',
+        [altersKlasse]);
+      const begegnungIdSet = new Set();
+      rows.forEach(r => begegnungIdSet.add(r.id));
+      const begegnungIds = Array.from(begegnungIdSet.values());
+      
+      await client.query('DELETE FROM wettkampf where begegnung = ANY ($1)', [begegnungIds]);
+      await client.query('DELETE FROM begegnung where id = ANY ($1)', [begegnungIds]);
+      return;
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   async speichereMatte(matte: Matte): Promise<void> {
     logger.debug("Saving wettkampf to db", {data: {mattenid: matte.id}});
     const client = await this.pool.connect();
     try {
+      if (matte.id == 2) console.log("matte db", matte.id, matte.runden)
       for (const runde of matte.runden) {
         for (const begegnung of runde.begegnungen) {
           var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);

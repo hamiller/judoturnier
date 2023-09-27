@@ -6,6 +6,7 @@ import { TurnierService } from '../../application/turnier.service';
 import { WiegenService } from '../../application/wiegen.service';
 import { Wertung } from '../../model/wertung';
 import { TurnierTyp } from '../../model/einstellungen';
+import { Altersklasse } from '../../model/altersklasse';
 
 const logger = getLogger('TurnierController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -38,6 +39,9 @@ export class TurnierController {
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((m1, m2) => m1.id - m2.id);
 
+    const altersklassen = new Set()
+    gwks.map(gwk => altersklassen.add(gwk.altersKlasse))
+    console.log("altersklassen", altersklassen)
     // wettkampfreihenfolgeJeMatte.forEach(matte => {
     //   console.log("Matte", matte.id);
     //   matte.runden.forEach(runde => {
@@ -46,7 +50,7 @@ export class TurnierController {
     //   })
     // });
 
-    return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte };
+    return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte, altersklassen: altersklassen };
   }
 
   @Get('/turnier/begegnungen/normal')
@@ -72,6 +76,18 @@ export class TurnierController {
     logger.debug('erstelle Wettkampfreihenfolge je Matte');
     await turnierService.loescheWettkampfreihenfolge();
     await turnierService.erstelleWettkampfreihenfolge();
+  
+    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori");
+    else res.redirect("/turnier/begegnungen/normal");
+    return res;
+  }
+
+  @Post('/turnier/begegnung')
+  async erneuerWettkampfreihenfolgeFuerAltersklasse(@Body() ak: any,@Res() res: Response) {
+    logger.debug('erstelle Wettkampfreihenfolge für altersklasse', {data: ak});
+    const altersklasse: Altersklasse = ak;
+    await turnierService.loescheWettkampfreihenfolgeAltersklasse(altersklasse);
+    await turnierService.erstelleWettkampfreihenfolgeAltersklasse(altersklasse);
   
     if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori");
     else res.redirect("/turnier/begegnungen/normal");

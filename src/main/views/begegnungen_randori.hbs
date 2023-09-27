@@ -16,9 +16,14 @@
       </div>
 
       <div class="actions">
-        <button onclick="renewBegegnungen()">Wettkampfgruppen erstellen<span class="material-icons md-48" title="Wettkampfgruppen erstellen">create_new_folder</span></button>
+        <button onclick="renewBegegnungen()">Alle Wettkampfgruppen neu erstellen<span class="material-icons md-48" title="Alle Wettkampfgruppen neu erstellen">create_new_folder</span></button>
         <br>
         <a href="/turnier/begegnungen/randori_printview_matches" target="_blank">Druckansicht Begegnungen<span class="material-icons md-48" title="Druckansicht Begegnungen">print</span></a>
+        {{#each altersklassen}}
+          <div class="actions">
+            <button type="button" onclick="renewBegegnung( '{{this}}' )" >Wettkampfgruppen {{this}} neu zuordnen<span class="material-icons md-48" title="Einzelne Wettkampfgruppen neu zuordnen">autorenew</span></button>
+          </div>
+        {{/each}}
       </div>
     </div>
     <div class="generalcontent">
@@ -62,6 +67,15 @@
         .then(() => window.location.href='/turnier/begegnungen/randori')
     };
   };
+
+  const renewBegegnung = async (altersklasse) => {
+    var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in der Altersklasse\n\t" + altersklasse + "\nin Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
+    if (sicher) {
+      console.log("Erstelle die Begegnungen neu", altersklasse);
+      fetch('/turnier/begegnung', { method: 'POST', body: altersklasse })
+        .then(() => window.location.href='/turnier/begegnungen/randori')
+    };
+  }
 
   const openMatte = (evt, id) => {
     // Declare all variables

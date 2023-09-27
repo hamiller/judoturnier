@@ -62,6 +62,20 @@ export class GewichtsklassenGruppeService {
         }
       }));
   }
+
+  async ladeAltersklasse(altersKlasse: Altersklasse): Promise<GewichtsklassenGruppe[]> {
+    logger.debug("Lade Gewichtsklassen...");
+    return gewichtsklassenGruppeRepo.all()
+    .then(gruppen => gruppen.filter(g => g.altersKlasse == altersKlasse))
+    .then(gruppen => gruppen.sort((a, b) => {
+      if (altersklasseSortOrder[a.altersKlasse] !== altersklasseSortOrder[b.altersKlasse]) {
+        return altersklasseSortOrder[a.altersKlasse] - altersklasseSortOrder[b.altersKlasse]; // nach Alter sortieren
+        }
+        else {
+          return a.gewichtsklasse.gewicht - b.gewichtsklasse.gewicht; // wenn Alter gleich, dann Aufsteigend nach Gewicht sortieren
+        }
+      }));
+  }  
   
   async teileInGewichtsklassen(wettkaempferListe: Wettkaempfer[]): Promise<GewichtsklassenGruppe[]> {
     logger.debug("Erstelle Gewichtsklassen...");
