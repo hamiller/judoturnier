@@ -36,9 +36,15 @@
         <div class="matte tabcontent" id="{{id}}">
           <div class="listeneintrag-titel">Matte {{id}}</div>
           <div class="wettkampfgruppe">
-          {{#each runden}}
-            <div class="listeneintrag-titel">{{gruppe.name}} ({{altersklasse}})</div>
-            
+          {{#each (vorherigesElement runden)}}
+            {{#if previous}}
+              {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
+              {{else}}
+              <div class="listeneintrag-titel">{{gruppe.name}} ({{altersklasse}}) </div>
+              {{/if}}
+            {{else}}
+              <div class="listeneintrag-titel">{{gruppe.name}} ({{altersklasse}}) </div>
+            {{/if}}
             {{#each begegnungen}}
               <a href="/turnier/begegnungen/randori/{{begegnung_id}}">
               <div class="listeneintrag vs {{wertungVorhanden wertung}}">

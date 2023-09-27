@@ -11,9 +11,18 @@
           <div class="listeneintrag-titel">Matte {{id}}</div>
           <table>
             <th></th>
-          {{#each runden}}
+          {{#each (vorherigesElement runden)}}
             <tr>
-              <td>Gruppe {{gruppe.name}} </td>
+              <td>
+                {{#if previous}}
+                  {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
+                  {{else}}
+                    Gruppe {{gruppe.name}} ({{altersklasse}})
+                  {{/if}}
+                {{else}}
+                  Gruppe {{gruppe.name}} ({{altersklasse}})
+                {{/if}}
+              </td>
               {{#each begegnungen}}
                 <td class="wettkaempfer name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</td><td>({{wettkaempfer1.verein.name}})</td> 
                 <td class="wettkaempfer name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</td><td>({{wettkaempfer2.verein.name}})</td>

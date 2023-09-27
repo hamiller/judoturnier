@@ -81,6 +81,23 @@ export default class AppServer {
       var hatWertung = (wertung != null && (wertung.kampfgeistWettkaempfer1 != null || wertung.sieger != null)) ? "vorhanden": "";
       return hatWertung;
     });
+    hbs.registerHelper('vorherigesElement', function(items) {
+      for (let i = 0; i < items.length; i++) {
+        if (i > 0) {
+          items[i].previous = items[i - 1];
+        } else {
+          items[i].previous = null;
+        }
+      }
+      return items;
+    });
+    hbs.registerHelper('gleichesElement', function(element1, element2) {
+      return element1 == element2;
+    });
+    hbs.registerHelper('concat', function() {
+      return [...arguments].join('');
+    });
+    
     
     const partialsDir = path.join(__dirname, '../src/main/views/partials');
     hbs.registerPartials(partialsDir, (err?: Error) => {
