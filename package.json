@@ -18,6 +18,7 @@
     "express-http-context": "^1.2.4",
     "hbs": "^4.2.0",
     "i18n": "^0.15.1",
+    "material-icons": "^1.13.12",
     "method-override": "^3.0.0",
     "mongodb": "^5.1.0",
     "pg": "^8.10.0",

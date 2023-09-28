@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+@import 'material-icons/iconfont/material-icons.css';
 
 :root {
   --color-dark-grey: #666; 
@@ -83,14 +83,23 @@ li {
   background-color: var(--color-light-grey);
 }
 
-.actions button {
-  vertical-align: bottom;
+button {
+  vertical-align: middle;
   font-size: 1em;
+  padding: 5px;
+}
+
+.centered {
+  vertical-align: middle;
 }
 
 .actions a span {
   margin: 10px;
-  font-size: 36px;
+  /* font-size: 36px; */
+}
+
+.sameline {
+  display: flex;
 }
 
 .navbar ul {
@@ -116,7 +125,19 @@ li {
 
 .bodyheader {
   margin-top: 20px;
-  margin-bottom: 20px;
+}
+
+.buttonlink {
+  background-color: #e9e9ed;
+  padding: 10px 10px 10px 0px;
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 1px;
+  border-color: #8f8f9d;
+}
+
+.buttonlink span {
+  font-size: 24px;
 }
 
 .generalcontent {

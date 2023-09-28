@@ -16,16 +16,18 @@
       </div>
 
       <div class="actions">
-        <button onclick="renewBegegnungen()">Alle Wettkampfgruppen neu erstellen<span class="material-icons md-48" title="Alle Wettkampfgruppen neu erstellen">create_new_folder</span></button>
+        <button onclick="renewBegegnungen()"><span class="material-icons md-48 centered" title="Alle Wettkampfgruppen neu erstellen">create_new_folder</span> Alle Wettkampfgruppen neu erstellen</button>
         <br>
-        <a href="/turnier/begegnungen/randori_printview_matches" target="_blank">Druckansicht Begegnungen<span class="material-icons md-48" title="Druckansicht Begegnungen">print</span></a>
+        <a href="/turnier/begegnungen/randori_printview_matches" target="_blank" class="buttonlink"><span class="material-icons md-48 centered" title="Druckansicht Begegnungen">print</span> Druckansicht Begegnungen</a>
         <br>
-        <a href="/turnier/begegnungen/randori_printview_matches_inserting_data" target="_blank">Druckansicht Begegnungen-Eintragen<span class="material-icons md-48" title="Druckansicht Begegnungen-Eintragen">print</span></a>
+        <a href="/turnier/begegnungen/randori_printview_matches_inserting_data" target="_blank" class="buttonlink"><span class="material-icons md-48 centered" title="Druckansicht Begegnungen-Eintragen">print</span> Druckansicht Begegnungen-Eintragen</a>
+        <div class="sameline">
         {{#each altersklassen}}
-          <div class="actions">
-            <button type="button" onclick="renewBegegnung( '{{this}}' )" >Wettkampfgruppen {{this}} neu zuordnen<span class="material-icons md-48" title="Einzelne Wettkampfgruppen neu zuordnen">autorenew</span></button>
+          <div class="actions ">
+            <button type="button" onclick="renewBegegnung( '{{this}}' )" ><span class="material-icons md-48 centered" title="Einzelne Wettkampfgruppen neu zuordnen">autorenew</span> Wettkampfgruppen {{this}} neu zuordnen</button>
           </div>
         {{/each}}
+        </div>
       </div>
     </div>
     <div class="generalcontent">

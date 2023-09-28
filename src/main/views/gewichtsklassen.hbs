@@ -11,20 +11,21 @@
       <div>Anzahl der Kämpfer: {{anzahlwk}}</div>
       
       <div class="actions">
-        <button onclick="renewGewichtsklassen()" >Alle Gewichtsklassen neu zuordnen<span class="material-icons md-48" title="Alle Gewichtsklassen neu zuordnen">autorenew</span></button>
+        <button onclick="renewGewichtsklassen()" ><span class="material-icons md-48 centered" title="Alle Gewichtsklassen neu zuordnen">autorenew</span> Alle Gewichtsklassen neu zuordnen</button>
         {{#if standardturnier}}
         {{else}}
-          <a href="/gewichtsklassen/randori_printview_groups" target="_blank">Druckansicht Gruppen<span class="material-icons md-48" title="Druckansicht Gruppen">print</span></a>
+          <br>
+          <a href="/gewichtsklassen/randori_printview_groups" target="_blank" class="buttonlink"><span class="material-icons md-48 centered" title="Druckansicht Gruppen">print</span> Druckansicht Gruppen</a>
         {{/if}}
       </div>
     </div>
 
     <form id="gewichtsklassenzuordnungformular" action="/gewichtsklassen" method="POST">
+      <div class="actions">
+        <button type="submit"><span class="material-icons md-48 centered" title="Gewichtsklassen-Zuordnung speichern">save</span> Zuordnungen speichern</button>
+        <br>
+      </div>
       <div class="grid">
-        <div class="actions">
-          <button type="submit">Zuordnungen speichern<span class="material-icons md-48" title="Gewichtsklassen-Zuordnung speichern">save</span></button>
-          <br>
-        </div>
 
         {{#if standardturnier}}
 
@@ -76,7 +77,7 @@
           {{#each gruppiertBeiAlter}}
             {{this.altersKlasse}}
             <div class="actions">
-              <button type="button" onclick="renewGewichtsklasse( '{{this.altersKlasse}}' )" >Einzelne Gewichtsklasse neu zuordnen<span class="material-icons md-48" title="Einzelne Gewichtsklasse neu zuordnen">autorenew</span></button>
+              <button type="button" onclick="renewGewichtsklasse( '{{this.altersKlasse}}' )" ><span class="material-icons md-48 centered" title="Einzelne Gewichtsklasse neu zuordnen">autorenew</span> Einzelne Gewichtsklasse neu zuordnen</button>
             </div>
 
             <div class="gewichtsklassen">
