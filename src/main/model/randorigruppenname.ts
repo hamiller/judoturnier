@@ -1,5 +1,4 @@
 export enum RandoriGruppenName {
-  Löwen,
   Igel,
   Tiger,
   Elefant,

@@ -1,4 +1,5 @@
 export enum Altersklasse {
+  U9 = "U9",
   U11 = "U11",
   U13 = "U13",
   U15 = "U15",
@@ -9,11 +10,12 @@ export enum Altersklasse {
 }
 
 export const altersklasseSortOrder: { [key in Altersklasse]: number } = {
-  [Altersklasse.U11]: 0,
-  [Altersklasse.U13]: 1,
-  [Altersklasse.U15]: 2,
-  [Altersklasse.U18]: 3,
-  [Altersklasse.U21]: 4,
-  [Altersklasse.Maenner]: 5,
-  [Altersklasse.Frauen]: 6,
+  [Altersklasse.U9]: 0,
+  [Altersklasse.U11]: 1,
+  [Altersklasse.U13]: 2,
+  [Altersklasse.U15]: 3,
+  [Altersklasse.U18]: 4,
+  [Altersklasse.U21]: 5,
+  [Altersklasse.Maenner]: 6,
+  [Altersklasse.Frauen]: 7,
 };
