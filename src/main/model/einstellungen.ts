@@ -4,5 +4,6 @@ export enum TurnierTyp {
 }
 
 export interface Einstellungen {
-  turnierTyp: TurnierTyp;
+  turnierTyp: TurnierTyp,
+  mattenAnzahl: number
 }

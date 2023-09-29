@@ -20,9 +20,14 @@
           <input type="radio" name="turniertyp" value="Randori" {{setChecked "Randori" turniertyp}}/><label>Randori-Turnier</label>
           <input type="radio" name="turniertyp" value="Standard" {{setChecked "Standard" turniertyp}}/><label>Standard-Turnier</label>
         </div>
+
+        <div class="listeneintrag">
+          <div class=""><label>Anzahl der Matten </label><input class="wd100" type="number" name="mattenanzahl" value="{{mattenanzahl}}"/></div>
+        </div>
       </form>
     </div>
 
+    {{#if standardturnier}}
     <div class="generalcontent">
       <h2>Einstellung der Wettkampfgruppen</h2>
       <form id="kampfklassenformular" action="/turnier/einstellungen-wettkampf" method="POST">
@@ -42,7 +47,7 @@
       {{/each}}
       </form>
     </div>
-
+    {{/if}}
   {{> footer}}
 </body>
 <script type="text/javascript">

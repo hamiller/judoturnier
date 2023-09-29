@@ -16,7 +16,7 @@ describe('Erstellen von Begegnungen', () => {
   const service = new TurnierService();
 
   it ('Simple: korrekte Wettkampfgruppen aus Gewichtsgruppen', () => {
-    const wettkampfGruppen = service.erstelleWettkampfgruppen(Hilfsdaten.gwks2, new JederGegenJeden());
+    const wettkampfGruppen = service.erstelleWettkampfgruppen(Hilfsdaten.gwks2, new JederGegenJeden(), 2);
     
     assert.equal(wettkampfGruppen.length, 1);
     assert.equal(wettkampfGruppen[0].begegnungsRunden.reduce((sum, g) => sum + g.length, 0), 6);
@@ -26,7 +26,7 @@ describe('Erstellen von Begegnungen', () => {
   });
 
   it ('Komplex: korrekte Wettkampfgruppen aus Gewichtsgruppen', () => {    
-    const wettkampfGruppen = service.erstelleWettkampfgruppen(Hilfsdaten.gewichtsklassenGruppen, new JederGegenJeden());
+    const wettkampfGruppen = service.erstelleWettkampfgruppen(Hilfsdaten.gewichtsklassenGruppen, new JederGegenJeden(), 2);
     
     console.log(wettkampfGruppen)
     assert.equal(wettkampfGruppen.length, 5);
@@ -57,7 +57,7 @@ describe('Erstellen von Begegnungen', () => {
   });
 
   it('Simple: korrekte Anzahl an Begegnungen', () => {
-    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks2);
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks2, 2);
 
     assert.equal(matten.length, 2);
     assert.equal(matten[0].runden.length, 3)
@@ -73,7 +73,7 @@ describe('Erstellen von Begegnungen', () => {
   });
 
   it('Komplex: korrekte Anzahl an Begegnungen', () => {
-    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks);
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2);
     
     assert.equal(matten.length, 2);
     
@@ -94,7 +94,7 @@ describe('Erstellen von Begegnungen', () => {
   });
 
   it('abwechselnde Reihenfolge der Gruppen', () => {
-    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks);
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2);
     
     assert.equal(matten.length, 2);
     

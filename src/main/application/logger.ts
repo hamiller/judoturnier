@@ -12,8 +12,8 @@ export function getLogger(name: string, meta?: any): Logger {
         winston.format.printf(({ timestamp, level, message, data }) => {
           // Hier formatieren wir das Haupt-JSON und das innere JSON mit prettyPrint.
           const innerJson = JSON.stringify(data, null, 2); // Hier wird prettyPrint auf das innere JSON angewendet.
-          if (innerJson) return `${timestamp} [${level}]: ${message}\nvvv\n${innerJson}\n---`;
-          else return `${timestamp} [${level}]: ${message}`;
+          if (innerJson) return `${timestamp} [${level}]: [${name}] ${message}\nvvv\n${innerJson}\n---`;
+          else return `${timestamp} [${level}]: [${name}] ${message}`;
         })
       ),
       transports: [new winston.transports.Console({ level: LOG_LEVEL })],

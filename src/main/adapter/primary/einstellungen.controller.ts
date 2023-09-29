@@ -5,7 +5,7 @@ import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
 import { WiegenService } from '../../application/wiegen.service';
 import { Kampfsystem } from '../../model/kampfsystem';
-import { Einstellungen } from '../../model/einstellungen';
+import { Einstellungen, TurnierTyp } from '../../model/einstellungen';
 
 const logger = getLogger('TurnierController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -17,17 +17,18 @@ export class EinstellungenController {
   
   @Get('/turnier/einstellungen')
   @Render("einstellungen.hbs")
-  async konfiguriereKampfsysteme(@Res() res: Response) {
+  async ladeEinstellungen(@Res() res: Response) {
     logger.debug('Einstellungen');
 
     const einstellungen = await turnierService.ladeTurnierEinstellungen();
     const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.lade();
     return { 
       gewichtsklassengruppen: gwks, 
       anzahlwk: wks.length,
       kampfsysteme: Kampfsystem,
-      turniertyp: einstellungen.turnierTyp
+      turniertyp: einstellungen.turnierTyp,
+      mattenanzahl: einstellungen.mattenAnzahl
     };
   }
 
@@ -40,7 +41,7 @@ export class EinstellungenController {
 
     const einstellungen = await turnierService.ladeTurnierEinstellungen();
     const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.lade();
     return { 
       gewichtsklassengruppen: gwks, 
       anzahlwk: wks.length,
@@ -54,19 +55,21 @@ export class EinstellungenController {
   async speichereTurnierEinstellungen(@Body() data: any, @Res() res: Response) {
     logger.debug('speichere Turnier-Einstellungen', {data: data});
 
-    // todo: Speichern!
     var einstellungen : Einstellungen = {
-      turnierTyp: data.turniertyp
+      turnierTyp: data.turniertyp,
+      mattenAnzahl: data.mattenanzahl
     };
     einstellungen = await turnierService.speichereTurnierEinstellungen(einstellungen);
 
     const wks = await wiegenService.alleKaempfer();
-    const gwks = await gewichtsklassenGruppenService.teileInGewichtsklassen(wks);
+    const gwks = await gewichtsklassenGruppenService.lade();
     return { 
       gewichtsklassengruppen: gwks, 
       anzahlwk: wks.length,
       kampfsysteme: Kampfsystem,
-      turniertyp: einstellungen.turnierTyp
+      turniertyp: einstellungen.turnierTyp,
+      mattenanzahl: einstellungen.mattenAnzahl,
+      standardturnier: einstellungen.turnierTyp == TurnierTyp.standard
     };
   }
 

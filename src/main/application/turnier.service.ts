@@ -22,7 +22,6 @@ const pool: DatabasePool = new DatabasePool();
 const einstellungenRepo = new EinstellungenRepository(pool);
 const wettkampfRepo = new WettkampfRepository(pool);
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
-const ANZAHL_MATTEN = 2;
 
 export class TurnierService {
   async isRandori(): Promise<boolean> {
@@ -60,8 +59,8 @@ export class TurnierService {
     const gwks = await gewichtsklassenGruppenService.lade();
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       const algorithmus = new JederGegenJeden();
-      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus);
-      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen);
+      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
+      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl);
     
       await wettkampfRepo.speichereMatten(matten);
       return;
@@ -81,8 +80,8 @@ export class TurnierService {
     const gwks = await gewichtsklassenGruppenService.ladeAltersklasse(altersKlasse);
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       const algorithmus = new JederGegenJeden();
-      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus);
-      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen);
+      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
+      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl);
     
       await wettkampfRepo.speichereMatten(matten);
       return;
@@ -107,26 +106,26 @@ export class TurnierService {
     return;
   }
 
-  erstelleWettkampfgruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus): WettkampfGruppe[] {
+  erstelleWettkampfgruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus, anzahlMatten: number): WettkampfGruppe[] {
     logger.debug("erstelle alle Begegnungen in jeder gegebenen Gruppe");
     // erstelle alle Begegnungen in jeder Gruppe
     let wettkampfGruppen: WettkampfGruppe[] = [];
     for (let i = 0; i < gewichtsklassenGruppen.length; i++) {
       const gruppe = gewichtsklassenGruppen[i];
-      const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, ANZAHL_MATTEN);
+      const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, anzahlMatten);
       wettkampfGruppen.push(...wkg);
     }
     return wettkampfGruppen;
   }
   
-  erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[]): Matte[] {
+  erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[], anzahlMatten: number): Matte[] {
     logger.debug("erstelle Reihenfolge der Begegnungen");
     let matten : Matte[] = [];
 
     // Ausplitten der Begegnungen auf die Matten
-    let wettkampfGruppenJeMatten = this.splitArray(wettkampfGruppen, ANZAHL_MATTEN);
+    let wettkampfGruppenJeMatten = this.splitArray(wettkampfGruppen, anzahlMatten);
     
-    for (let m = 0; m < ANZAHL_MATTEN; m++) {
+    for (let m = 0; m < anzahlMatten; m++) {
       matten.push({ id: m+1, runden: []});
       const gruppen = wettkampfGruppenJeMatten[m];
       

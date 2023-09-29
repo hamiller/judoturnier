@@ -14,14 +14,10 @@ export class EinstellungenRepository {
   async save(einstellungen: Einstellungen): Promise<void> {
     const client = await this.pool.connect();
     const entity = dtoToEntity(einstellungen);
-    logger.debug("speichere Einstellungen", {data: entity});
+    logger.debug("speichere Einstellungen in DB", {data: entity});
     try {
-      let query = {
-        text: 'UPDATE einstellungen SET wert = $2 where art = $1',
-        values: ['turniertyp', entity.turnierTypKey]
-      };
-      
-      await client.query(query);
+      await client.query("UPDATE einstellungen SET wert = $2 where art = $1", ['turniertyp', entity.turniertyp]);
+      await client.query("UPDATE einstellungen SET wert = $2 where art = $1", ['mattenanzahl', entity.anzahlmatten]);
       return;
     } catch (error) {
       logger.error(error);
@@ -49,13 +45,16 @@ export class EinstellungenRepository {
 const dtoToEntity = (dto: Einstellungen): any => {
   const turnierTypKey = Object.keys(TurnierTyp).filter(key => TurnierTyp[key as keyof typeof TurnierTyp] == dto.turnierTyp)[0];
   return {
-    turnierTypKey: turnierTypKey
-  }
+    turniertyp: turnierTypKey,
+    anzahlmatten: dto.mattenAnzahl
+  };
 }
 
 const entityToDto = (rows: any[]): Einstellungen => {
+  let m = rows.filter(row => row.art == "mattenanzahl").map(row => row.wert) as unknown as string;
   return {
-    turnierTyp: turnierTyp(rows)
+    turnierTyp: turnierTyp(rows),
+    mattenAnzahl: m ? parseInt(m) : 1
   }
 }
 const turnierTyp = (rows: any[]): TurnierTyp => {

@@ -6,7 +6,7 @@ export interface GewichtsklasseConfig {
 }
 
 export interface Gewichtsklasse {
-  name: string;
+  name: string,
   gewicht: number
 }
 
