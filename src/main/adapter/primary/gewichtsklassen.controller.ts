@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Body, Controller, Get, Post, Render, Res } from "routing-controllers";
+import { Body, Controller, Get, Param, Post, Render, Res } from "routing-controllers";
 import { GewichtsklassenGruppeService } from '../../application/gewichtsklassengruppe.service';
 import { getLogger } from "../../application/logger";
 import { WiegenService } from '../../application/wiegen.service';
@@ -40,13 +40,12 @@ export class GewichtsklassenController {
     };
   }
 
-  @Get('/gewichtsklassen/randori_printview_groups')
+  @Get('/gewichtsklassen/randori_printview_groups/:altersklasse')
   @Render("druckansicht_gruppen_randori.hbs")
-  async ladeDruckAnsichtGruppenRandori(@Res() res: Response) {
-    logger.debug('lade Druckansicht Randori-Gruppen');
+  async ladeDruckAnsichtGruppenRandori(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
+    logger.debug('lade Druckansicht Randori-Gruppen', {data: altersklasse});
     var currentGwks = await gewichtsklassenGruppenService.lade();
-    logger.debug("Gewchtsklassen", {data: currentGwks});
-    return { gruppen: currentGwks }
+    return { gruppen: currentGwks.filter(gwk => gwk.altersKlasse == altersklasse) }
   }
 
   @Post('/gewichtsklassen-renew')

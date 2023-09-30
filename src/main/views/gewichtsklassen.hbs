@@ -12,11 +12,6 @@
       
       <div class="actions">
         <button onclick="renewGewichtsklassen()" ><span class="material-icons md-48 centered" title="Alle Gewichtsklassen neu zuordnen">autorenew</span> Alle Gewichtsklassen neu zuordnen</button>
-        {{#if standardturnier}}
-        {{else}}
-          <br>
-          <a href="/gewichtsklassen/randori_printview_groups" target="_blank" class="buttonlink"><span class="material-icons md-48 centered" title="Druckansicht Gruppen">print</span> Druckansicht Gruppen</a>
-        {{/if}}
       </div>
     </div>
 
@@ -78,6 +73,8 @@
             {{this.altersKlasse}}
             <div class="actions">
               <button type="button" onclick="renewGewichtsklasse( '{{this.altersKlasse}}' )" ><span class="material-icons md-48 centered" title="Einzelne Gewichtsklasse neu zuordnen">autorenew</span> Einzelne Gewichtsklasse neu zuordnen</button>
+              <br>
+              <a href="/gewichtsklassen/randori_printview_groups/{{this.altersKlasse}}" target="_blank" class="buttonlink"><span class="material-icons md-48 centered" title="Druckansicht">print</span> Druckansicht Gruppen {{altersKlasse}}</a>
             </div>
 
             <div class="gewichtsklassen">
