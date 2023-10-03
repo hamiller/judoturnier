@@ -7,6 +7,7 @@ import { WiegenService } from '../../application/wiegen.service';
 import { Wertung } from '../../model/wertung';
 import { TurnierTyp } from '../../model/einstellungen';
 import { Altersklasse } from '../../model/altersklasse';
+import { Matte } from '../../model/matte';
 
 const logger = getLogger('TurnierController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -78,20 +79,35 @@ export class TurnierController {
     return res;
   }
 
-  @Get('/turnier/begegnungen/randori_printview_matches')
+  @Get('/turnier/begegnungen/randori_printview_matches/:altersklasse')
   @Render("druckansicht_begegnungen_randori.hbs")
-  async ladeDruckAnsichtBegegnungenRandori(@Res() res: Response) {
-    logger.debug('lade Druckansicht Randori-Begegnungen');
+  async ladeDruckAnsichtBegegnungenRandori(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
+    logger.debug('lade Druckansicht Randori-Begegnungen', {data: altersklasse});
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
-    return { matten: wettkampfreihenfolgeJeMatte }
+    
+    let filteredMatten: Matte[] = [];
+    for (let mat of wettkampfreihenfolgeJeMatte) {
+      const filteredRunden = mat.runden.filter(r => r.altersklasse == altersklasse)
+      filteredMatten.push({id: mat.id, runden: filteredRunden})
+    }
+
+    return { matten: filteredMatten }
   }
 
-  @Get('/turnier/begegnungen/randori_printview_matches_inserting_data')
+  @Get('/turnier/begegnungen/randori_printview_matches_inserting_data/:altersklasse')
   @Render("druckansicht_begegnungen_randori_inserting_data.hbs")
-  async ladeDruckAnsichtBegegnungenRandoriDateneintrag(@Res() res: Response) {
-    logger.debug('lade Druckansicht Randori-Begegnungen zum Dateneintragen');
+  async ladeDruckAnsichtBegegnungenRandoriDateneintrag(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
+    logger.debug('lade Druckansicht Randori-Begegnungen zum Dateneintragen', {data: altersklasse});
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
-    return { matten: wettkampfreihenfolgeJeMatte }
+
+    let filteredMatten: Matte[] = [];
+    for (let mat of wettkampfreihenfolgeJeMatte) {
+      const filteredRunden = mat.runden.filter(r => r.altersklasse == altersklasse)
+      filteredMatten.push({id: mat.id, runden: filteredRunden})
+    }
+
+    return { matten: filteredMatten }
+
   }
 
   @Get('/turnier/begegnungen/randori/:id')
