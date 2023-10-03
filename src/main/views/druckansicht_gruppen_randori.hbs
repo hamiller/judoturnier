@@ -1,11 +1,36 @@
 <!DOCTYPE html>
 <html lang="de">
-  {{> header}}
+  <head>
+  <title>Judo-Turniersoftware</title>
+  <link rel="stylesheet" href="/css/interface.css">
+  <link rel="stylesheet" href="/css/mainstyle.css">
+  <style type="text/css">
+      @page {
+        size: A4;
+        margin: 20mm 30mm 20mm 20mm;
+        
+        @bottom-right-corner {
+          content: "Seite " counter(page);
+        }
+      }
+
+      tr {
+        vertical-align: middle;
+      }
+
+      .groupsrow {
+        break-inside: avoid;
+      }
+
+  </style>
+</head>
 <body>
-  <div>
+  <script src="/js/paged.polyfill.min.js"></script>
+
+  <div id="content">
     <div class="bodyheader no-print">
     </div>
-    <div class="generalcontent">
+    <div class="">
       
         <div class="wettkampfgruppe">
           <table style="border-spacing: 20px;">
@@ -31,7 +56,6 @@
           </table>
         </div>
     </div>
-
 </body>
 
 </html>

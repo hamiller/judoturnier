@@ -103,6 +103,7 @@ export class GewichtsklassenController {
       const group = gwk.filter(g => g.altersKlasse == ageGroup);
       groupedByAge.push({
         altersKlasse: ageGroup,
+        anzahlTeilnehmer: group.reduce((sum, g) => sum + g.teilnehmer.length, 0),
         gruppen: group
       });
     } 

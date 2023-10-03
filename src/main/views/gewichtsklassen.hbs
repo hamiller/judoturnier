@@ -36,7 +36,7 @@
               <div class="gewichtsklasse-teilnehmer">
               {{#each teilnehmer}}
                 <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
-                {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
+                {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span class="gewicht">{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
                 <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
                 </div>
               {{/each}}
@@ -57,7 +57,7 @@
               <div class="gewichtsklasse-teilnehmer">
               {{#each teilnehmer}}
                 <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
-                {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{gewicht}}kg</span><span>{{geschlecht}}</span></div>
+                {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span class="gewicht">{{gewicht}}kg</span><span>{{geschlecht}}</span></div>
                 <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
                 </div>
               {{/each}}
@@ -70,7 +70,7 @@
 
           <h1>Mädchen und Jungs</h1>
           {{#each gruppiertBeiAlter}}
-            {{this.altersKlasse}}
+            {{this.altersKlasse}} (Anzahl Kämpfer: {{this.anzahlTeilnehmer}})
             <div class="actions">
               <button type="button" onclick="renewGewichtsklasse( '{{this.altersKlasse}}' )" ><span class="material-icons md-48 centered" title="Einzelne Gewichtsklasse neu zuordnen">autorenew</span> Einzelne Gewichtsklasse neu zuordnen</button>
               <br>
@@ -89,7 +89,7 @@
                 <div class="gewichtsklasse-teilnehmer">
                 {{#each teilnehmer}}
                   <div class="listeneintrag justifycontent" id="teilnehmer_{{id}}" draggable=true>
-                  {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span>{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
+                  {{name}}<div class="gewichtsklasse-teilnehmer-meta"><span>{{verein.name}}</span><span class="gewicht">{{formatNumber gewicht}}kg</span><span>{{geschlecht}}</span></div>
                   <input type="hidden" name="gruppen_teilnehmer" id="input_teilnehmer_{{id}}" value="gruppe_{{../id}}_teilnehmer_{{id}}"/>
                   </div>
                 {{/each}}
