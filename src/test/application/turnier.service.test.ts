@@ -53,7 +53,7 @@ describe('Erstellen von Begegnungen', () => {
     
   });
 
-  it('Simple: korrekte Anzahl an Begegnungen', () => {
+  it('Simple: korrekte Anzahl an Begegnungen, WettkampfReihenfolge.abwechselnd', () => {
     const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks2, 2, WettkampfReihenfolge.abwechselnd);
 
     assert.equal(matten.length, 2);
@@ -69,7 +69,7 @@ describe('Erstellen von Begegnungen', () => {
     assert.equal(gesamtKaempfe, 6);
   });
 
-  it('Komplex: korrekte Anzahl an Begegnungen', () => {
+  it('Komplex: korrekte Anzahl an Begegnungen, WettkampfReihenfolge.abwechselnd', () => {
     const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2, WettkampfReihenfolge.abwechselnd);
     
     assert.equal(matten.length, 2);
@@ -90,7 +90,7 @@ describe('Erstellen von Begegnungen', () => {
     assert.equal(gesamtKaempfe, total);
   });
 
-  it('abwechselnde Reihenfolge der Gruppen ungerade Anzahl', () => {
+  it('Reihenfolge der Gruppen ungerade Anzahl, WettkampfReihenfolge.abwechselnd', () => {
     const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2, WettkampfReihenfolge.abwechselnd);
     
     assert.equal(matten.length, 2);
@@ -111,7 +111,7 @@ describe('Erstellen von Begegnungen', () => {
     assert.equal(gesamtKaempfe, total);
   });
 
-  it('abwechselnde Reihenfolge der Gruppen gerade Anzahl', () => {
+  it('Reihenfolge der Gruppen gerade Anzahl, WettkampfReihenfolge.abwechselnd', () => {
     const data = Hilfsdaten.wks_gerade;
     const mattenZahl = 1
     const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.abwechselnd);
@@ -135,10 +135,116 @@ describe('Erstellen von Begegnungen', () => {
   });
 
 
-  it('abwechselnde Reihenfolge der Gruppen unterschiedlich viele Begegnungen', () => {
+  it('Reihenfolge der Gruppen unterschiedlich viele Begegnungen, WettkampfReihenfolge.abwechselnd', () => {
     const data = Hilfsdaten.wks_gerade_unterschiedlich;
     const mattenZahl = 1
     const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.abwechselnd);
+    
+    assert.equal(matten.length, mattenZahl);
+    
+    var total = 0;
+    for (const g of data) {
+      const w = new Set()
+      g.begegnungsRunden.map(ra => ra.map(r => {
+        w.add(r.wettkaempfer1.name)
+        w.add(r.wettkaempfer2!.name)
+      }))
+      const n = w.size;
+      const erwarteteAnzahl = n*(n-1)*1/2;
+      total += erwarteteAnzahl;
+    }
+    const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
+      .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
+    assert.equal(gesamtKaempfe, total);
+  });
+
+
+  it('Simple: korrekte Anzahl an Begegnungen, WettkampfReihenfolge.alle', () => {
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks2, 2, WettkampfReihenfolge.alle);
+
+    assert.equal(matten.length, 2);
+    assert.equal(matten[0].runden.length, 3)
+    assert.equal(matten[0].runden[0].begegnungen.length, 2)
+    assert.equal(matten[0].runden[1].begegnungen.length, 2)
+    assert.equal(matten[0].runden[2].begegnungen.length, 2)
+    assert.equal(matten[1].runden.length, 0)
+    
+    const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
+      .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
+
+    assert.equal(gesamtKaempfe, 6);
+  });
+
+  it('Komplex: korrekte Anzahl an Begegnungen, WettkampfReihenfolge.alle', () => {
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2, WettkampfReihenfolge.alle);
+    
+    assert.equal(matten.length, 2);
+    
+    var total = 0;
+    for (const g of Hilfsdaten.wks) {
+      const w = new Set()
+      g.begegnungsRunden.map(ra => ra.map(r => {
+        w.add(r.wettkaempfer1.name)
+        w.add(r.wettkaempfer2!.name)
+      }))
+      const n = w.size;
+      const erwarteteAnzahl = n*(n-1)*1/2;
+      total += erwarteteAnzahl;
+    }
+    const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
+      .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
+    assert.equal(gesamtKaempfe, total);
+  });
+
+  it('Reihenfolge der Gruppen ungerade Anzahl, WettkampfReihenfolge.alle', () => {
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2, WettkampfReihenfolge.alle);
+    
+    assert.equal(matten.length, 2);
+    
+    var total = 0;
+    for (const g of Hilfsdaten.wks) {
+      const w = new Set()
+      g.begegnungsRunden.map(ra => ra.map(r => {
+        w.add(r.wettkaempfer1.name)
+        w.add(r.wettkaempfer2!.name)
+      }))
+      const n = w.size;
+      const erwarteteAnzahl = n*(n-1)*1/2;
+      total += erwarteteAnzahl;
+    }
+    const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
+      .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
+    assert.equal(gesamtKaempfe, total);
+  });
+
+  it('Reihenfolge der Gruppen gerade Anzahl, WettkampfReihenfolge.alle', () => {
+    const data = Hilfsdaten.wks_gerade;
+    const mattenZahl = 1
+    const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.alle);
+    
+    assert.equal(matten.length, mattenZahl);
+    
+    var total = 0;
+    for (const g of data) {
+      const w = new Set()
+      g.begegnungsRunden.map(ra => ra.map(r => {
+        w.add(r.wettkaempfer1.name)
+        w.add(r.wettkaempfer2!.name)
+      }))
+      const n = w.size;
+      const erwarteteAnzahl = n*(n-1)*1/2;
+      total += erwarteteAnzahl;
+    }
+    const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
+      .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
+    assert.equal(gesamtKaempfe, total);
+  });
+
+
+  it('Reihenfolge der Gruppen unterschiedlich viele Begegnungen, WettkampfReihenfolge.alle', () => {
+    const data = Hilfsdaten.wks_gerade_unterschiedlich;
+    const mattenZahl = 1
+    const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.alle);
     
     assert.equal(matten.length, mattenZahl);
     
