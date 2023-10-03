@@ -17,7 +17,8 @@ export class Hilfsdaten {
       { name: 'Teilnehmer E', geschlecht: Geschlecht.m, id: 5, verein: { name: "Verein5" }, altersklasse: Altersklasse.U11 },
       { name: 'Teilnehmer F', geschlecht: Geschlecht.w, id: 6, verein: { name: 'Verein2' }, altersklasse: Altersklasse.U11 }
     ],
-    gewichtsklasse: { name: "Gewichtskl.1", gewicht: 24.8 },
+    maxGewicht: 24.8 ,
+    minGewicht: 23.8,
     name: "Antilope"
   },
   {
@@ -31,7 +32,8 @@ export class Hilfsdaten {
       { name: 'Teilnehmer K', geschlecht: Geschlecht.w, id: 11, verein: { name: 'Verein3' }, altersklasse: Altersklasse.U11 },
       { name: 'Teilnehmer L', geschlecht: Geschlecht.m, id: 12, verein: { name: 'Verein2' }, altersklasse: Altersklasse.U11 }
     ],
-    gewichtsklasse: { name: "Gewichtskl.1", gewicht: 24.8 },
+    maxGewicht: 25.8 ,
+    minGewicht: 24.8,
     name: "Eule"
   },
   {
@@ -45,7 +47,8 @@ export class Hilfsdaten {
       { name: 'Teilnehmer Q', geschlecht: Geschlecht.m, id: 17, verein: { name: 'Verein2' }, altersklasse: Altersklasse.U11 },
       { name: 'Teilnehmer R', geschlecht: Geschlecht.w, id: 18, verein: { name: 'Verein1' }, altersklasse: Altersklasse.U11 }
     ],
-    gewichtsklasse: { name: "Gewichtskl.1", gewicht: 24.8 },
+    maxGewicht: 26.8 ,
+    minGewicht: 25.8,
     name: "Katze"
   },
   {
@@ -57,7 +60,8 @@ export class Hilfsdaten {
       { name: 'Teilnehmer U', geschlecht: Geschlecht.m, id: 21, verein: { name: 'Verein2' }, altersklasse: Altersklasse.U11 },
       { name: 'Teilnehmer V', geschlecht: Geschlecht.w, id: 22, verein: { name: 'Verein3' }, altersklasse: Altersklasse.U11 }
     ],
-    gewichtsklasse: { name: "Gewichtskl.1", gewicht: 24.8 },
+    maxGewicht: 27.8 ,
+    minGewicht: 26.8,
     name: "Maus"
   },
   {
@@ -68,7 +72,8 @@ export class Hilfsdaten {
       { name: 'Teilnehmer X', geschlecht: Geschlecht.w, id: 24, verein: { name: 'Verein4' }, altersklasse: Altersklasse.U11 },
       { name: 'Teilnehmer Y', geschlecht: Geschlecht.m, id: 25, verein: { name: 'Verein5' }, altersklasse: Altersklasse.U11 }
     ],
-    gewichtsklasse: { name: "Gewichtskl.1", gewicht: 24.8 },
+    maxGewicht: 28.8 ,
+    minGewicht: 27.8,
     name: "Tiger"
   },
 ];
@@ -377,7 +382,7 @@ static wks_gerade: WettkampfGruppe[] = [
   }
 ];
 
-  static gwks2 = [
+  static gwks2: GewichtsklassenGruppe[] = [
   {
     altersKlasse: Altersklasse.U11,
     gruppenGeschlecht: Geschlecht.m,
@@ -387,7 +392,8 @@ static wks_gerade: WettkampfGruppe[] = [
       { name: 'Teilnehmer C', geschlecht: Geschlecht.m, id: 3, verein: { name: "Verein3" }, altersklasse: Altersklasse.U11 },
       { name: 'Teilnehmer D', geschlecht: Geschlecht.m, id: 4, verein: { name: "Verein4" }, altersklasse: Altersklasse.U11 },
     ],
-    gewichtsklasse: { name: "Gewichtskl.1", gewicht: 24.8 },
+    maxGewicht: 26.8,
+    minGewicht: 24.8,
     name: "Antilope"
   }];
 

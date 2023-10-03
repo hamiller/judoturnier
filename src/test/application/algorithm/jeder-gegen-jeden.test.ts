@@ -3,6 +3,7 @@ import { JederGegenJeden } from '../../../main/application/algorithm/jeder-gegen
 import { Altersklasse } from '../../../main/model/altersklasse';
 import { Geschlecht } from '../../../main/model/geschlecht';
 import { Wettkaempfer } from '../../../main/model/wettkaempfer';
+import { GewichtsklassenGruppe } from '../../../main/model/gewichtsklassengruppe';
 
 describe('Erstellen von Wettkampfgruppen', () => {
   const algorithmus = new JederGegenJeden();
@@ -33,12 +34,13 @@ describe('Erstellen von Wettkampfgruppen', () => {
     { name: 'Teilnehmer X', geschlecht: Geschlecht.w, id: 24, verein: { name: 'Verein4' }, altersklasse: Altersklasse.U11 },
     { name: 'Teilnehmer Y', geschlecht: Geschlecht.m, id: 25, verein: { name: 'Verein5' }, altersklasse: Altersklasse.U11 }
   ];
-  const gewichtsklassenGruppe = {
+  const gewichtsklassenGruppe: GewichtsklassenGruppe = {
     id: 1,
     altersKlasse: Altersklasse.U11,
     gruppenGeschlecht: Geschlecht.m,
     teilnehmer: teilnehmer,
-    gewichtsklasse: { name: "Gewichtskl.1", gewicht: 24.8 },
+    maxGewicht: 26.9,
+    minGewicht: 24.8,
     name: "GewichtsGruppenname - Die Leichten"
   };
 

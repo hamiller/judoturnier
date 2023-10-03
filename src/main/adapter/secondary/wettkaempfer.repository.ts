@@ -55,7 +55,7 @@ export class WettkaempferRepository {
       let query;
       if (entity.id) {
         query = {
-          text: 'UPDATE wettkaempfer w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6, farbe = $7 WHERE w.id = $1 RETURNING id',
+          text: 'UPDATE wettkaempfer w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6, farbe = $7 WHERE w.id = $1 RETURNING $1',
           values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid, entity.farbe]
         };
       } else {

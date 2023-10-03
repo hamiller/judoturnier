@@ -1,11 +1,7 @@
 import assert from 'assert';
-import { TurnierService } from '../../main/application/turnier.service';
-import { Altersklasse } from '../../main/model/altersklasse';
-import { Geschlecht } from '../../main/model/geschlecht';
 import { JederGegenJeden } from '../../main/application/algorithm/jeder-gegen-jeden';
-import { GewichtsklassenGruppe } from '../../main/model/gewichtsklassengruppe';
-import { WettkampfGruppe } from '../../main/model/wettkampfgruppe';
-import { Hilfsdaten } from './hilfsdaten'
+import { TurnierService } from '../../main/application/turnier.service';
+import { Hilfsdaten } from './hilfsdaten';
 
 describe('Erstellen von Begegnungen', () => {
 
