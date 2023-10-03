@@ -30,7 +30,6 @@ export class GewichtsklassenController {
     var groupedByAge = this.groupByAge(currentGwks);
     
     const einstellungen = await turnierService.ladeTurnierEinstellungen();
-
     return { 
       gewichtsklassengruppenWeiblich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 
       gewichtsklassengruppenMaennlich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.m), 

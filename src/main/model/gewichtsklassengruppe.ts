@@ -8,6 +8,7 @@ export interface GewichtsklassenGruppe {
   altersKlasse: Altersklasse,
   gruppenGeschlecht: Geschlecht,
   teilnehmer: Wettkaempfer[],
-  gewichtsklasse: Gewichtsklasse,
   name: string
+  minGewicht: number,
+  maxGewicht: number,
 }

@@ -24,14 +24,19 @@ const RANDORI_GRUPPEN_GROESSE =  6;
 export class GewichtsklassenGruppeService {
   
   async aktualisiere(gruppenTeilnehmer: Map<number, number[]>) {
-    logger.debug("Aktualisieren...");
+    logger.debug("Aktualisiere Gewichtsklassenzuordnung...");
     const gewichtsklassenGruppen = await gewichtsklassenGruppeRepo.all();
     const wettkaempfer = await wettkaempferRepo.all();
     
     for (const gewichtsklassenGruppe of gewichtsklassenGruppen) {
       const teilnehmerIds = gruppenTeilnehmer.get(gewichtsklassenGruppe.id!);
+
+      if (!teilnehmerIds) continue;  // benötigt für die leere Gruppe
+
       const wettkaempferListe = this.getWettkeampferListe(teilnehmerIds, wettkaempfer);
       gewichtsklassenGruppe.teilnehmer = wettkaempferListe;
+      gewichtsklassenGruppe.maxGewicht = gewichtsklassenGruppe.teilnehmer.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2));
+      gewichtsklassenGruppe.minGewicht = gewichtsklassenGruppe.teilnehmer.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2));
     }
     
     gewichtsklassenGruppeRepo.saveAll(gewichtsklassenGruppen);
@@ -53,14 +58,14 @@ export class GewichtsklassenGruppeService {
   async lade(): Promise<GewichtsklassenGruppe[]> {
     logger.debug("Lade Gewichtsklassen...");
     return gewichtsklassenGruppeRepo.all()
-    .then(gruppen => gruppen.sort((a, b) => {
-      if (altersklasseSortOrder[a.altersKlasse] !== altersklasseSortOrder[b.altersKlasse]) {
-        return altersklasseSortOrder[a.altersKlasse] - altersklasseSortOrder[b.altersKlasse]; // nach Alter sortieren
-        }
-        else {
-          return a.gewichtsklasse.gewicht - b.gewichtsklasse.gewicht; // wenn Alter gleich, dann Aufsteigend nach Gewicht sortieren
-        }
-      }));
+      .then(gruppen => gruppen.sort((a, b) => {
+        if (altersklasseSortOrder[a.altersKlasse] !== altersklasseSortOrder[b.altersKlasse]) {
+          return altersklasseSortOrder[a.altersKlasse] - altersklasseSortOrder[b.altersKlasse]; // nach Alter sortieren
+          }
+          else {
+            return a.maxGewicht - b.maxGewicht; // wenn Alter gleich, dann Aufsteigend nach Gewicht sortieren
+          }
+        }));
   }
 
   async ladeAltersklasse(altersKlasse: Altersklasse): Promise<GewichtsklassenGruppe[]> {
@@ -72,7 +77,7 @@ export class GewichtsklassenGruppeService {
         return altersklasseSortOrder[a.altersKlasse] - altersklasseSortOrder[b.altersKlasse]; // nach Alter sortieren
         }
         else {
-          return a.gewichtsklasse.gewicht - b.gewichtsklasse.gewicht; // wenn Alter gleich, dann Aufsteigend nach Gewicht sortieren
+          return a.maxGewicht - b.maxGewicht; // wenn Alter gleich, dann Aufsteigend nach Gewicht sortieren
         }
       }));
   }  
@@ -81,6 +86,9 @@ export class GewichtsklassenGruppeService {
     logger.debug("Erstelle Gewichtsklassen...");
     const einstellungen = await einstellungenRepo.load();
     
+    // erstelle die GewichtsklassenGruppen
+    let result: GewichtsklassenGruppe[] = [];    
+
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       logger.info(`Randori-Turnier`);
       logger.debug("Bei einem Randori-Turnier wird nicht nach geschlecht unterschieden, es wird daher keine Einteilung vorgenommen");
@@ -89,26 +97,25 @@ export class GewichtsklassenGruppeService {
       // erstelle random Namen für die Gruppen
       let gruppenNamen = alleGruppenNamen();
 
-      // erstelle die GewichtsklassenGruppen
-      let result: GewichtsklassenGruppe[] = [];
       for (const wks of wettkaempferNachAlter) {
         const aktuelleGruppenNamen = gruppenNamen.slice(0,  Math.ceil(wks.length / RANDORI_GRUPPEN_GROESSE));
         gruppenNamen = gruppenNamen.slice(Math.ceil(wks.length / RANDORI_GRUPPEN_GROESSE));
         result = result.concat(this.erstelleGewichtsklassenGruppenRandori(wks, aktuelleGruppenNamen));
       } 
-      // return gruppenNachAlter.flatMap(gs => this.erstelleGewichtsklassenGruppenRandori(gs));
-      return result;
     }
-    
-    logger.info(`Normales-Turnier`);
-    const gruppenNachGeschlecht: Wettkaempfer[][] = this.gruppiereNachGeschlecht(wettkaempferListe);
-    const gruppenNachGeschlechtUndAlter: Wettkaempfer[][][] = [];
-    for (const g of gruppenNachGeschlecht) {
-      const gruppenNachAlter = this.gruppiereNachAlterklasse(g);
-      gruppenNachGeschlechtUndAlter.push(gruppenNachAlter);
+    else {
+      logger.info(`Normales-Turnier`);
+      const gruppenNachGeschlecht: Wettkaempfer[][] = this.gruppiereNachGeschlecht(wettkaempferListe);
+      const gruppenNachGeschlechtUndAlter: Wettkaempfer[][][] = [];
+      for (const g of gruppenNachGeschlecht) {
+        const gruppenNachAlter = this.gruppiereNachAlterklasse(g);
+        gruppenNachGeschlechtUndAlter.push(gruppenNachAlter);
+      }
+      result = gruppenNachGeschlechtUndAlter.flatMap(gs => gs.flatMap(g => this.erstelleGewichtsklassenGruppen(g)));
     }
-    const gruppen = gruppenNachGeschlechtUndAlter.flatMap(gs => gs.flatMap(g => this.erstelleGewichtsklassenGruppen(g)));
-    return gruppen;
+
+
+    return result;
   }
 
   private getWettkeampferListe(teilnehmerIds: number[] | undefined, wettkaempfer: Wettkaempfer[]) {
@@ -148,13 +155,16 @@ export class GewichtsklassenGruppeService {
     const gewichtsklassenGruppen: GewichtsklassenGruppe[] = [];
     for (const gewichtsklasse of gewichtsklassen) {
       const gewichtsklassenGruppe: Wettkaempfer[] = kaempferListe.filter(k => this.gewichtsKlasse(k) == gewichtsklasse);
+      const maxGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2))
+      const minGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2))
       const geschlecht = gewichtsklassenGruppe[0].geschlecht; // alle Mitglieder der Gruppe haben das gleiche Geschlecht, da sie vorher so sortiert wurden
       const altersKlasse = gewichtsklassenGruppe[0].altersklasse; // alle Mitglieder der Gruppe haben das gleiche Alter, da sie vorher so sortiert wurden
       gewichtsklassenGruppen.push({
         altersKlasse: altersKlasse,
         gruppenGeschlecht: geschlecht,
         teilnehmer: gewichtsklassenGruppe,
-        gewichtsklasse: gewichtsklasse,
+        maxGewicht: maxGewicht,
+        minGewicht: minGewicht,
         name: "-"
       });
     }
@@ -172,14 +182,15 @@ export class GewichtsklassenGruppeService {
       const gewichtsklassenGruppe = wettkaempferGruppen[current];
       const altersKlasse = gewichtsklassenGruppe[0].altersklasse; // alle Mitglieder der Gruppe haben das gleiche Alter, da sie vorher so sortiert wurden
       const randoriGruppe = gruppenNamen[current].toString();
-      const leichtestesGruppenGewicht = gewichtsklassenGruppe[0].gewicht!
-      const hoechstesGruppenGewicht = gewichtsklassenGruppe[gewichtsklassenGruppe.length -1].gewicht!
-      
+      const maxGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2))
+      const minGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2))
+
       gewichtsklassenGruppen.push({
         altersKlasse: altersKlasse,
         gruppenGeschlecht: Geschlecht.w, // bei Randori-Turnieren spielt das Geschlecht keine Rolle
         teilnehmer: gewichtsklassenGruppe,
-        gewichtsklasse: { name: `${leichtestesGruppenGewicht}kg - ${hoechstesGruppenGewicht}kg`, gewicht: leichtestesGruppenGewicht },  // wir nehmen stellvertretend für die Gruppe das Gewicht des ersten Teilnehmers
+        maxGewicht: maxGewicht,
+        minGewicht: minGewicht,
         name: randoriGruppe
       });
     }

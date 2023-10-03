@@ -30,7 +30,7 @@ export class JederGegenJeden implements Algorithmus {
       const wettkampfGruppe: WettkampfGruppe = {
         id: gewichtsklassenGruppe.id ? gewichtsklassenGruppe.id : parseInt(id),
         name: gewichtsklassenGruppe.name,
-        typ: "(" + gewichtsklassenGruppe.gewichtsklasse.name + " " + gewichtsklassenGruppe.altersKlasse + ")",
+        typ: "(" + gewichtsklassenGruppe.minGewicht + "" + gewichtsklassenGruppe.maxGewicht + " " + gewichtsklassenGruppe.altersKlasse + ")",
         begegnungsRunden: begegnungen
       }
       result.push(wettkampfGruppe);

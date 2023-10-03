@@ -25,7 +25,8 @@ export class GewichtsklassenGruppeRepository {
         "    g.id,  " +
         "    g.altersklasse,  " +
         "    g.gruppengeschlecht,  " +
-        "    g.gewichtsklasse,  " +
+        "    g.mingewicht,  " +
+        "    g.maxgewicht,  " +
         "    g.name,  " +
         "    array_agg( " +
         "      jsonb_build_object( " +
@@ -71,13 +72,13 @@ export class GewichtsklassenGruppeRepository {
       let query;
       if (entity.id) {
         query = {
-          text: 'UPDATE gewichtsklassengruppen w SET altersKlasse = $2, gruppenGeschlecht = $3, gewichtsklasse = $4, name = $5, teilnehmer = $6 WHERE w.id = $1 RETURNING id',
-          values: [entity.id, entity.altersKlasse, entity.gruppenGeschlecht, entity.gewichtsklasse, entity.name, entity.teilnehmer]
+          text: 'UPDATE gewichtsklassengruppen w SET altersKlasse = $2, gruppenGeschlecht = $3, mingewicht = $4, maxgewicht = $5, name = $6, teilnehmer = $7 WHERE w.id = $1 RETURNING id',
+          values: [entity.id, entity.altersKlasse, entity.gruppenGeschlecht, entity.minGewicht, entity.maxGewicht, entity.name, entity.teilnehmer]
         };
       } else {
         query = {
-          text: 'INSERT INTO gewichtsklassengruppen(altersklasse, gruppengeschlecht, gewichtsklasse, name, teilnehmer) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-          values: [entity.altersKlasse, entity.gruppenGeschlecht, entity.gewichtsklasse, entity.name, entity.teilnehmer]
+          text: 'INSERT INTO gewichtsklassengruppen(altersklasse, gruppengeschlecht, mingewicht, maxgewicht, name, teilnehmer) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+          values: [entity.altersKlasse, entity.gruppenGeschlecht, entity.minGewicht, entity.maxGewicht, entity.name, entity.teilnehmer]
         };
       }
       const { rows } = await client.query(query);
@@ -141,7 +142,8 @@ const entityToDto = (row: any): GewichtsklassenGruppe => {
       name: row.name,
       gruppenGeschlecht: Geschlecht[geschlechtValue],
       altersKlasse: Altersklasse[altersklasseValue],
-      gewichtsklasse: row.gewichtsklasse as Gewichtsklasse,
+      maxGewicht: row.maxgewicht,
+      minGewicht: row.mingewicht,
       teilnehmer: row.teilnehmer as  Wettkaempfer[],
   };
 };
@@ -149,12 +151,14 @@ const entityToDto = (row: any): GewichtsklassenGruppe => {
 const dtoToEntity = (dto: GewichtsklassenGruppe): any => {
   const geschlechtKey = Object.keys(Geschlecht).filter(key => Geschlecht[key as keyof typeof Geschlecht] == dto.gruppenGeschlecht)[0];
   const altersklasseKey = Object.keys(Altersklasse).filter(key => Altersklasse[key as keyof typeof Altersklasse] == dto.altersKlasse)[0];
+
   return {
     id: dto.id,
     altersKlasse: altersklasseKey,
     gruppenGeschlecht: geschlechtKey,
+    maxGewicht: dto.maxGewicht,
+    minGewicht: dto.minGewicht,
     teilnehmer: dto.teilnehmer.map(t => t.id),
-    gewichtsklasse: dto.gewichtsklasse,
     name: dto.name
   };
 }
