@@ -382,6 +382,60 @@ static wks_gerade: WettkampfGruppe[] = [
   }
 ];
 
+  static wks_gerade_unterschiedlich : WettkampfGruppe[] = [
+    {
+      id: 100,
+      name: 'Antilope',
+      typ: '(Gewichtskl.1 U11)',
+      begegnungsRunden: [ 
+        [{wettkaempfer1: { name: 'Teilnehmer C', geschlecht: Geschlecht.m, id: 3, verein: { name: "Verein3" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer F', geschlecht: Geschlecht.m, id: 6, verein: { name: "Verein6" }, altersklasse: Altersklasse.U11 }},
+        ], 
+      ]
+    },
+    {
+      id: 200,
+      name: 'Eule',
+      typ: '(Gewichtskl.1 U11)',
+      begegnungsRunden: [ 
+        [{wettkaempfer1: { name: 'Teilnehmer G', geschlecht: Geschlecht.m, id: 7, verein: { name: "Verein7" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer L', geschlecht: Geschlecht.m, id: 12, verein: { name: "Verein12" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer H', geschlecht: Geschlecht.m, id: 8, verein: { name: "Verein8" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer K', geschlecht: Geschlecht.m, id: 11, verein: { name: "Verein11" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer I', geschlecht: Geschlecht.m, id: 9, verein: { name: "Verein9" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer J', geschlecht: Geschlecht.m, id: 10, verein: { name: "Verein10" }, altersklasse: Altersklasse.U11 }}], 
+        
+        [{wettkaempfer1: { name: 'Teilnehmer L', geschlecht: Geschlecht.m, id: 12, verein: { name: "Verein12" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer J', geschlecht: Geschlecht.m, id: 10, verein: { name: "Verein10" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer K', geschlecht: Geschlecht.m, id: 11, verein: { name: "Verein11" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer I', geschlecht: Geschlecht.m, id: 9, verein: { name: "Verein9" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer G', geschlecht: Geschlecht.m, id: 7, verein: { name: "Verein7" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer H', geschlecht: Geschlecht.m, id: 8, verein: { name: "Verein8" }, altersklasse: Altersklasse.U11 }}], 
+        
+        [{wettkaempfer1: { name: 'Teilnehmer H', geschlecht: Geschlecht.m, id: 8, verein: { name: "Verein8" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer L', geschlecht: Geschlecht.m, id: 12, verein: { name: "Verein12" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer I', geschlecht: Geschlecht.m, id: 9, verein: { name: "Verein9" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer G', geschlecht: Geschlecht.m, id: 7, verein: { name: "Verein7" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer J', geschlecht: Geschlecht.m, id: 10, verein: { name: "Verein10" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer K', geschlecht: Geschlecht.m, id: 11, verein: { name: "Verein11" }, altersklasse: Altersklasse.U11 }}], 
+  
+        [{wettkaempfer1: { name: 'Teilnehmer L', geschlecht: Geschlecht.m, id: 12, verein: { name: "Verein12" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer K', geschlecht: Geschlecht.m, id: 11, verein: { name: "Verein11" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer G', geschlecht: Geschlecht.m, id: 7, verein: { name: "Verein7" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer J', geschlecht: Geschlecht.m, id: 10, verein: { name: "Verein10" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer H', geschlecht: Geschlecht.m, id: 8, verein: { name: "Verein8" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer I', geschlecht: Geschlecht.m, id: 9, verein: { name: "Verein9" }, altersklasse: Altersklasse.U11 }}], 
+  
+        [{wettkaempfer1: { name: 'Teilnehmer I', geschlecht: Geschlecht.m, id: 9, verein: { name: "Verein9" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer L', geschlecht: Geschlecht.m, id: 12, verein: { name: "Verein12" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer J', geschlecht: Geschlecht.m, id: 10, verein: { name: "Verein10" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer H', geschlecht: Geschlecht.m, id: 8, verein: { name: "Verein8" }, altersklasse: Altersklasse.U11 }},
+         {wettkaempfer1: { name: 'Teilnehmer K', geschlecht: Geschlecht.m, id: 11, verein: { name: "Verein11" }, altersklasse: Altersklasse.U11 },
+          wettkaempfer2: { name: 'Teilnehmer G', geschlecht: Geschlecht.m, id: 7, verein: { name: "Verein7" }, altersklasse: Altersklasse.U11 }}]
+      ]
+    }
+  ];
+
   static gwks2: GewichtsklassenGruppe[] = [
   {
     altersKlasse: Altersklasse.U11,

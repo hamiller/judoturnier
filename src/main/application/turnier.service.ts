@@ -8,7 +8,7 @@ import { getLogger } from './logger';
 import { Einstellungen, TurnierTyp, WettkampfReihenfolge } from "../model/einstellungen";
 import { EinstellungenRepository } from "../adapter/secondary/einstellungen.repository";
 import { JederGegenJeden } from "./algorithm/jeder-gegen-jeden";
-import { Matte, } from "../model/matte";
+import { Matte, Runde, } from "../model/matte";
 import { GewichtsklassenGruppeService } from "./gewichtsklassengruppe.service";
 import { WettkampfRepository } from "../adapter/secondary/wettkampf.repository";
 
@@ -55,31 +55,15 @@ export class TurnierService {
   }
 
   async erstelleWettkampfreihenfolge(): Promise<void> {
-    logger.debug(`Erstelle Wettkampfreihenfolge...`);
-    
-    const einstellungen = await einstellungenRepo.load();
-    const gwks = await gewichtsklassenGruppenService.lade();
-    if (einstellungen.turnierTyp == TurnierTyp.randori) {
-      const algorithmus = new JederGegenJeden();
-      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
-      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl, einstellungen.wettkampfReihenfolge);
-    
-      await wettkampfRepo.speichereMatten(matten);
-      return;
-    }
-    else {
-      const algorithmus = this.getAlgorithmus(Kampfsystem.ko);
-      logger.error(`Turniermodus noch nicht implementiert!`);
-    }
-    
+    await this.erstelleWettkampfreihenfolgeAltersklasse(undefined);
     return;
   }
 
-  async erstelleWettkampfreihenfolgeAltersklasse(altersKlasse: Altersklasse): Promise<void> {
+  async erstelleWettkampfreihenfolgeAltersklasse(altersKlasse: Altersklasse | undefined): Promise<void> {
     logger.debug(`Erstelle Wettkampfreihenfolge für altersklasse...` + altersKlasse);
     
     const einstellungen = await einstellungenRepo.load();
-    const gwks = await gewichtsklassenGruppenService.ladeAltersklasse(altersKlasse);
+    const gwks = altersKlasse ? await gewichtsklassenGruppenService.ladeAltersklasse(altersKlasse) : await gewichtsklassenGruppenService.lade();
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       const algorithmus = new JederGegenJeden();
       const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
@@ -109,7 +93,7 @@ export class TurnierService {
   }
 
   erstelleWettkampfgruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus, anzahlMatten: number): WettkampfGruppe[] {
-    logger.debug("erstelle alle Begegnungen in jeder gegebenen Gruppe");
+    logger.debug("erstelle Wettkampfgruppen aus den Gewichtsklassengruppen");
     // erstelle alle Begegnungen in jeder Gruppe
     let wettkampfGruppen: WettkampfGruppe[] = [];
     for (let i = 0; i < gewichtsklassenGruppen.length; i++) {
@@ -121,30 +105,39 @@ export class TurnierService {
   }
   
   erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[], anzahlMatten: number, reihenfolge: WettkampfReihenfolge): Matte[] {
-    logger.debug("erstelle Reihenfolge der Begegnungen in der Reihenfolge: " + reihenfolge);
+    logger.debug("erstelle Reihenfolge der Wettkämpfe aus den Wettkmapfgruppen: " + reihenfolge);
     let matten : Matte[] = [];
 
     // Ausplitten der Begegnungen auf die Matten
     let wettkampfGruppenJeMatten = this.splitArray(wettkampfGruppen, anzahlMatten);
+
     
     for (let m = 0; m < anzahlMatten; m++) {
-      matten.push({ id: m+1, runden: []});
       const gruppen = wettkampfGruppenJeMatten[m];
-
-      // sortiere die Gruppen, sodass die Gruppen mit wenigen Kämpfen ganz hinten sind
-      gruppen.sort((gs1, gs2) => gs2.begegnungsRunden.length - gs1.begegnungsRunden.length);
-      // this.log(gruppen)
       
+      // TODO
+      // sortiere die Gruppen, sodass die Gruppen mit wenigen Kämpfen ganz hinten sind, aber die Altersklassen zusammen bleiben
+      // gruppen.sort((gs1, gs2) => if (gs2.begegnungsRunden[0][0].wettkaempfer1.altersklasse ) gs2.begegnungsRunden.length - gs1.begegnungsRunden.length);
+      // this.logWettkampfGruppen(gruppen)
+      let runden: Runde[] = [];
       switch (reihenfolge) {
         case WettkampfReihenfolge.abwechselnd:
-          matten[m] = sortierer.erstelleReihenfolgeMitAbwechselndenGruppen(gruppen, matten[m]);
+          runden = sortierer.erstelleReihenfolgeMitAbwechselndenGruppen(gruppen);
+          matten.push({ id: m+1, runden: runden});
           break;
         case WettkampfReihenfolge.alle:
-          matten[m] = sortierer.erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen, matten[m]);
+          runden = sortierer.erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen);
+          matten.push({ id: m+1, runden: runden});
           break;
       }
-      
     }
+
+    const erwartet = wettkampfGruppenJeMatten.reduce(
+      (s1, wgm) => s1 + wgm.reduce(
+        (s2, gr) => s2 + gr.begegnungsRunden.reduce(
+          (s3, br) => s3 + br.length, 0), 0), 0)
+    const summe = matten.reduce((s, m) => s + m.runden.reduce((s2, r) => s2 + r.begegnungen.length, 0), 0)
+    console.log("erwartet, summe, mattenanzahl", erwartet, summe, matten.length)
     return matten;
   }
 

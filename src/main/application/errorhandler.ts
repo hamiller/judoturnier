@@ -8,7 +8,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     if (res.headersSent) {
       return next(err);
     }
-    logger.error('An ERROR occured: ' + err.message, { err: err });
+    logger.error('An ERROR occured: ' + err.message, { data: {Stacktrace: err.stack} });
 
     if (err instanceof HttpError) {
         res.status(err.httpCode).send();

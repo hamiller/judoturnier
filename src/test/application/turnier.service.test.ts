@@ -135,4 +135,26 @@ describe('Erstellen von Begegnungen', () => {
   });
 
 
+  it('abwechselnde Reihenfolge der Gruppen unterschiedlich viele Begegnungen', () => {
+    const data = Hilfsdaten.wks_gerade_unterschiedlich;
+    const mattenZahl = 1
+    const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.abwechselnd);
+    
+    assert.equal(matten.length, mattenZahl);
+    
+    var total = 0;
+    for (const g of data) {
+      const w = new Set()
+      g.begegnungsRunden.map(ra => ra.map(r => {
+        w.add(r.wettkaempfer1.name)
+        w.add(r.wettkaempfer2!.name)
+      }))
+      const n = w.size;
+      const erwarteteAnzahl = n*(n-1)*1/2;
+      total += erwarteteAnzahl;
+    }
+    const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
+      .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
+    assert.equal(gesamtKaempfe, total);
+  });
 });

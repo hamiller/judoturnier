@@ -13,23 +13,43 @@ export class Sortierer {
   /*
     Es werd die erste Runde aller Gruppen gekämpft, danach die zweite Runde aller Gruppen usw.
   */
-  public erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen: WettkampfGruppe[], matte: Matte): Matte {
-    logger.warn("Reihenfolge ALLE noch nicht implementiert!")
-    throw new Error("nicht implementiert");        
+  public erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen: WettkampfGruppe[]): Runde[] {
+    logger.debug("erstelleReihenfolgeMitAllenGruppenJeDurchgang...");
+    let runden: Runde[] = [];
+    const maxRundenNummer = 100; // todo
+    for (let rundenNummer = 0; rundenNummer < maxRundenNummer; rundenNummer += 1) {
+      for (let gruppenNr = 0; gruppenNr < gruppen.length; gruppenNr += 1) {
+        const gruppe = gruppen[gruppenNr];
+        let runde = this.kopiereRunde(rundenNummer, gruppe);        
+        if (runde) {
+          // die Gruppe hat eine entsprechende Runde
+          runden.push(runde);
+        }
+      }
+    }
+    return runden;
+  }
+  kopiereRunde(rundenNummer: number, gruppe: WettkampfGruppe): Runde | undefined {
+    if (!gruppe.begegnungsRunden[rundenNummer]) return undefined;
+
+    const rundenName = rundenNummer + 1;
+    const altersKlasse = gruppe.begegnungsRunden[rundenNummer][0].wettkaempfer1.altersklasse;
+    return { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: gruppe.begegnungsRunden[rundenNummer] };
   }
   
   /*
     Es werden immer zwei Gruppen abwechselnd kämpfen, bis in diesen Gruppen alle Runden gekämpft sind, danach kommen die nächsten beiden Gruppen an die Reihe.
     Bei ungerader Anzahl wechseln sich die letzten drei Gruppen ab, davor gilt weiterhin, dass immer zwei Gruppen abwechselnd an der Reihe sind.
   */
-  public erstelleReihenfolgeMitAbwechselndenGruppen(gruppen: WettkampfGruppe[], matte: Matte): Matte {
+  public erstelleReihenfolgeMitAbwechselndenGruppen(gruppen: WettkampfGruppe[]): Runde[] {
+    logger.debug("erstelleReihenfolgeMitAbwechselndenGruppen...");
     let rundenNummer = 0;
-    let neueMatte = matte;
+    let runden: Runde[] = [];
     // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
     if (gruppen.length % 2 == 0) {
-      logger.debug("Berechne gerade Anzahl an Gruppen");
-      let [, neueMatte] = this.gruppiereAbwechselnd(gruppen, rundenNummer, matte);
-      return neueMatte;
+      logger.debug("Berechne gerade Anzahl an Gruppen (" + gruppen.length + ")");
+      let [, neueRunden] = this.gruppiereAbwechselnd(gruppen, rundenNummer);
+      runden = runden.concat(neueRunden);
     }
     // ungerade Anzahl an Gruppen -> 2 Gruppen je Matte und einmal 3 Gruppen je Matte
     else {
@@ -39,7 +59,8 @@ export class Sortierer {
         // behandle die letzten 3 Gruppen separat und gruppiere zuerst die anderen Gruppen
         const letztenDreiGruppen = gruppen.slice(gruppen.length - 3, gruppen.length);
         const andereGruppen = gruppen.slice(0, gruppen.length - 3);
-        let [neueRundenNummer, neueMatte] = this.gruppiereAbwechselnd(andereGruppen, rundenNummer, matte);
+        let [neueRundenNummer, neueRunden] = this.gruppiereAbwechselnd(andereGruppen, rundenNummer);
+        runden = runden.concat(neueRunden);
         rundenNummer = neueRundenNummer;
 
         // jetzt die letzten drei Gruppen
@@ -55,22 +76,20 @@ export class Sortierer {
           let rundenName = rundenNummer + 1;
           if (gruppe1.begegnungsRunden[r]) {
             const runde1: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
-            neueMatte.runden.push(runde1);
+            runden.push(runde1);
             rundenNummer += 1;
           }
           if (gruppe2.begegnungsRunden[r]) {
             const runde2: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
-            neueMatte.runden.push(runde2);
+            runden.push(runde2);
             rundenNummer += 1;
           }
           if (gruppe3.begegnungsRunden[r]) {
             const runde3: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse3, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r] };
-            neueMatte.runden.push(runde3);
+            runden.push(runde3);
             rundenNummer += 1;
           }
         }
-
-        return neueMatte;
       }
       else {
         logger.debug("Es existiert nur eine Gruppe, daher fügen wir diese komplett hinzu");
@@ -79,17 +98,16 @@ export class Sortierer {
           const altersKlasseZuletzt = gruppeZuletzt.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           let rundenName = rundenNummer + 1;
           const rundeZuletzt: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasseZuletzt, gruppe: gruppeZuletzt, begegnungen: gruppeZuletzt.begegnungsRunden[r] };
-          neueMatte.runden.push(rundeZuletzt);
+          runden.push(rundeZuletzt);
           rundenNummer += 1;
         }
-
-        return neueMatte;
       }
     }
+    return runden;
   }
 
-  private gruppiereAbwechselnd(gruppen: WettkampfGruppe[], rundenNummer: number, matte: Matte): [number, Matte] {
-    const resultMatte: Matte = matte;
+  private gruppiereAbwechselnd(gruppen: WettkampfGruppe[], rundenNummer: number): [number, Runde[]] {
+    const runden: Runde[] = [];
     let resultRundenNummer = rundenNummer;
     for (let gruppenNr = 0; gruppenNr < gruppen.length; gruppenNr += 2) {
       const gruppe1 = gruppen[gruppenNr];
@@ -98,21 +116,21 @@ export class Sortierer {
       const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
 
       // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
-      for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length); r++) {
+      for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length); r++) {
         let rundenName = resultRundenNummer + 1;
         if (gruppe1.begegnungsRunden[r]) {
           const runde1: Runde = { id: resultRundenNummer, runde: rundenName, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
-          resultMatte.runden.push(runde1);
+          runden.push(runde1);
           resultRundenNummer += 1;
         }
         if (gruppe2.begegnungsRunden[r]) {
           const runde2: Runde = { id: resultRundenNummer, runde: rundenName, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
-          resultMatte.runden.push(runde2);
+          runden.push(runde2);
           resultRundenNummer += 1;
         }
       }
     }
-    return [resultRundenNummer, resultMatte];
+    return [resultRundenNummer, runden];
   }
 
   sortiereBegegnungen(begegnungen: Begegnung[]): Begegnung[] {
