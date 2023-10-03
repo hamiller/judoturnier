@@ -69,9 +69,7 @@ const turnierTyp = (rows: any[]): TurnierTyp => {
 const wettkampfReihenfolge = (rows: any[]): WettkampfReihenfolge => {
   const row = rows.filter(row => row.art == "wettkampfreihenfolge")[0];
   const wettkampfReihenfolge: keyof typeof WettkampfReihenfolge = row.wert;
-  const r = WettkampfReihenfolge[wettkampfReihenfolge];
-  console.log("wettkampfReihenfolge", wettkampfReihenfolge, row.wert, r)
-  return r
+  return WettkampfReihenfolge[wettkampfReihenfolge];
 }
 
 const mattenAnzahl = (rows: any[]): number => {

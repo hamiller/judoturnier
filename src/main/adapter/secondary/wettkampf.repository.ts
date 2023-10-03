@@ -72,7 +72,7 @@ export class WettkampfRepository {
   }
 
   async speichereWertung(wertung: Wertung): Promise<void> {
-    logger.debug("Saving Wertung to db", {data: {wertungid: wertung.id}});
+    logger.debug("Saving Wertung to db, mit id: " + wertung.id);
     const client = await this.pool.connect();
     try {
       let query = {
@@ -160,7 +160,7 @@ export class WettkampfRepository {
   }
 
   async speichereMatte(matte: Matte): Promise<void> {
-    logger.debug("Saving wettkampf to db", {data: {mattenid: matte.id}});
+    logger.debug("Saving wettkampf to db mit mattenId: " + matte.id);
     const client = await this.pool.connect();
     try {
       for (const runde of matte.runden) {

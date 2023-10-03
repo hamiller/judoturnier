@@ -114,7 +114,6 @@ export class GewichtsklassenGruppeService {
       result = gruppenNachGeschlechtUndAlter.flatMap(gs => gs.flatMap(g => this.erstelleGewichtsklassenGruppen(g)));
     }
 
-    console.log("ergebnis", result)
     return result;
   }
 

@@ -82,10 +82,6 @@ export default class AppServer {
       return hatWertung;
     });
     hbs.registerHelper('vorherigesElement', function(items) {
-      if (!items) {
-        console.log("hier stimmt was nicht")
-        return []
-      }
       for (let i = 0; i < items.length; i++) {
         if (i > 0) {
           items[i].previous = items[i - 1];

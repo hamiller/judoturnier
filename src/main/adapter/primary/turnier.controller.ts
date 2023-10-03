@@ -42,7 +42,6 @@ export class TurnierController {
 
     const altersklassen = new Set()
     gwks.map(gwk => altersklassen.add(gwk.altersKlasse))
-    logger.debug("altersklassen", {data: altersklassen});
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte, altersklassen: altersklassen };
   }
 
@@ -69,7 +68,7 @@ export class TurnierController {
 
   @Post('/turnier/begegnung')
   async erneuerWettkampfreihenfolgeFuerAltersklasse(@Body() ak: any,@Res() res: Response) {
-    logger.debug('erstelle Wettkampfreihenfolge für altersklasse', {data: ak});
+    logger.debug('erstelle Wettkampfreihenfolge für altersklasse '+ ak);
     const altersklasse: Altersklasse = ak;
     await turnierService.loescheWettkampfreihenfolgeAltersklasse(altersklasse);
     await turnierService.erstelleWettkampfreihenfolgeAltersklasse(altersklasse);
@@ -82,7 +81,7 @@ export class TurnierController {
   @Get('/turnier/begegnungen/randori_printview_matches/:altersklasse')
   @Render("druckansicht_begegnungen_randori.hbs")
   async ladeDruckAnsichtBegegnungenRandori(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
-    logger.debug('lade Druckansicht Randori-Begegnungen', {data: altersklasse});
+    logger.debug('lade Druckansicht Randori-Begegnungen für ' + altersklasse);
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
     
     let filteredMatten: Matte[] = [];
@@ -97,7 +96,7 @@ export class TurnierController {
   @Get('/turnier/begegnungen/randori_printview_matches_inserting_data/:altersklasse')
   @Render("druckansicht_begegnungen_randori_inserting_data.hbs")
   async ladeDruckAnsichtBegegnungenRandoriDateneintrag(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
-    logger.debug('lade Druckansicht Randori-Begegnungen zum Dateneintragen', {data: altersklasse});
+    logger.debug('lade Druckansicht Randori-Begegnungen zum Dateneintragen: ' + altersklasse);
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
 
     let filteredMatten: Matte[] = [];

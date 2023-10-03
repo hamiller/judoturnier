@@ -27,7 +27,6 @@ export class GewichtsklassenController {
     var currentGwks = await gewichtsklassenGruppenService.lade();
     logger.info(`geladene Gruppen: ${currentGwks.length}`);
 
-    console.log(currentGwks)
     var groupedByAge = this.groupByAge(currentGwks);
     const einstellungen = await turnierService.ladeTurnierEinstellungen();
     return { 
@@ -42,7 +41,7 @@ export class GewichtsklassenController {
   @Get('/gewichtsklassen/randori_printview_groups/:altersklasse')
   @Render("druckansicht_gruppen_randori.hbs")
   async ladeDruckAnsichtGruppenRandori(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
-    logger.debug('lade Druckansicht Randori-Gruppen', {data: altersklasse});
+    logger.debug('lade Druckansicht Randori-Gruppen für ' + altersklasse);
     var currentGwks = await gewichtsklassenGruppenService.lade();
     return { gruppen: currentGwks.filter(gwk => gwk.altersKlasse == altersklasse) }
   }

@@ -76,7 +76,7 @@ export class TurnierService {
   }
 
   async erstelleWettkampfreihenfolgeAltersklasse(altersKlasse: Altersklasse): Promise<void> {
-    logger.debug(`Erstelle Wettkampfreihenfolge für altersklasse...`, {data: altersKlasse});
+    logger.debug(`Erstelle Wettkampfreihenfolge für altersklasse...` + altersKlasse);
     
     const einstellungen = await einstellungenRepo.load();
     const gwks = await gewichtsklassenGruppenService.ladeAltersklasse(altersKlasse);
@@ -103,7 +103,7 @@ export class TurnierService {
   }
 
   async loescheWettkampfreihenfolgeAltersklasse(altersKlasse: Altersklasse): Promise<void> {
-    logger.debug(`Lösche Wettkampfreihenfolge für altersklasse...`, {data: altersKlasse});
+    logger.debug(`Lösche Wettkampfreihenfolge für altersklasse... ` + altersKlasse);
     await wettkampfRepo.loescheWettkaempfe(altersKlasse);
     return;
   }
@@ -121,7 +121,7 @@ export class TurnierService {
   }
   
   erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[], anzahlMatten: number, reihenfolge: WettkampfReihenfolge): Matte[] {
-    logger.debug("erstelle Reihenfolge der Begegnungen in der Reihenfolge", {data: {reihenfolge: reihenfolge}});
+    logger.debug("erstelle Reihenfolge der Begegnungen in der Reihenfolge: " + reihenfolge);
     let matten : Matte[] = [];
 
     // Ausplitten der Begegnungen auf die Matten
@@ -137,10 +137,10 @@ export class TurnierService {
       
       switch (reihenfolge) {
         case WettkampfReihenfolge.abwechselnd:
-          sortierer.erstelleReihenfolgeMitAbwechselndenGruppen(gruppen, m, wettkampfGruppen, matten);
+          matten[m] = sortierer.erstelleReihenfolgeMitAbwechselndenGruppen(gruppen, matten[m]);
           break;
-          case WettkampfReihenfolge.alle:
-          sortierer.erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen, m, wettkampfGruppen, matten);
+        case WettkampfReihenfolge.alle:
+          matten[m] = sortierer.erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen, matten[m]);
           break;
       }
       
