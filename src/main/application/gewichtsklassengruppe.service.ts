@@ -98,7 +98,7 @@ export class GewichtsklassenGruppeService {
       let gruppenNamen = alleGruppenNamen();
 
       for (const wks of wettkaempferNachAlter) {
-        const aktuelleGruppenNamen = gruppenNamen.slice(0,  Math.ceil(wks.length / RANDORI_GRUPPEN_GROESSE));
+        const aktuelleGruppenNamen = gruppenNamen.slice(0,  Math.ceil(wks.length / RANDORI_GRUPPEN_GROESSE) +1); // wir brauchen einen Namen mehr um eine leere Gruppe erstellen zu können
         gruppenNamen = gruppenNamen.slice(Math.ceil(wks.length / RANDORI_GRUPPEN_GROESSE));
         result = result.concat(this.erstelleGewichtsklassenGruppenRandori(wks, aktuelleGruppenNamen));
       } 
@@ -114,7 +114,7 @@ export class GewichtsklassenGruppeService {
       result = gruppenNachGeschlechtUndAlter.flatMap(gs => gs.flatMap(g => this.erstelleGewichtsklassenGruppen(g)));
     }
 
-
+    console.log("ergebnis", result)
     return result;
   }
 
@@ -194,7 +194,18 @@ export class GewichtsklassenGruppeService {
         name: randoriGruppe
       });
     }
-    
+
+    // erstelle leere Gruppe in dieser Altersklasse
+    const randoriGruppe = gruppenNamen[anzahlRandoriGruppen].toString();
+    gewichtsklassenGruppen.push({
+      altersKlasse: wettkaempferGruppen[0][0].altersklasse,
+      gruppenGeschlecht: Geschlecht.w,
+      teilnehmer: [],
+      maxGewicht: 100,
+      minGewicht: 0,
+      name: randoriGruppe
+    });
+
     return gewichtsklassenGruppen;
   }
 

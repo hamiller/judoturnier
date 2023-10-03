@@ -21,36 +21,33 @@ export class GewichtsklassenGruppeRepository {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query(
-        "SELECT  " +
-        "    g.id,  " +
-        "    g.altersklasse,  " +
-        "    g.gruppengeschlecht,  " +
-        "    g.mingewicht,  " +
-        "    g.maxgewicht,  " +
-        "    g.name,  " +
-        "    array_agg( " +
-        "      jsonb_build_object( " +
-        "         'id', w.id, " +
-        "         'name', w.name, " +
-        "         'geschlecht', w.geschlecht," +
-        "         'altersklasse', w.altersklasse," +
-        "    	    'gewicht', w.gewicht," +
-        "    	    'farbe', w.farbe," +
-        "         'verein', ( " +
-        "             SELECT jsonb_build_object( " +
-        "                 'id', v.id, " +
-        "                 'name', v.name " +
-        "             ) " +
-        "             FROM verein v " +
-        "             WHERE v.id = w.verein " +
-        "    	     ) " +
-        "      )  " +
-        "      ORDER BY w.id " +
-        "    ) AS teilnehmer " +
+        "SELECT " +
+        "    g.*, " +
+        "    COALESCE(wettkaempferArray.teilnehmer, '[]') as teilnehmer " +
         "FROM gewichtsklassengruppen g " +
-        "JOIN wettkaempfer w ON w.id = ANY(g.teilnehmer) " +
-        "JOIN verein v ON v.id = w.verein " +
-        "GROUP BY g.id"
+        "    LEFT JOIN LATERAL ( " +
+        "         SELECT json_agg( " +
+        "                   jsonb_build_object( " +
+        "                           'id', w.id, " +
+        "                           'name', w.name, " +
+        "                           'geschlecht', w.geschlecht, " +
+        "                           'altersklasse', w.altersklasse, " +
+        "                           'gewicht', w.gewicht, " +
+        "                           'farbe', w.farbe, " +
+        "                           'verein', ( " +
+        "                           SELECT jsonb_build_object( " +
+        "                                          'id', v.id, " +
+        "                                          'name', v.name " +
+        "                                      ) " +
+        "                           FROM verein v " +
+        "                           WHERE v.id = w.verein " +
+        "                       ) " +
+        "                ) " +
+        "          ) AS teilnehmer " +
+        "          FROM wettkaempfer w " +
+        "          WHERE w.id = ANY(g.teilnehmer) " +
+        "    ) wettkaempferArray on true " +
+        "; "
         );
       return entitiesToDtos(rows);
     } catch (error) {
@@ -137,6 +134,7 @@ const entitiesToDtos = (rows: any[]): GewichtsklassenGruppe[] => {
 const entityToDto = (row: any): GewichtsklassenGruppe => {  
   const geschlechtValue: keyof typeof Geschlecht = row.gruppengeschlecht;
   const altersklasseValue: keyof typeof Altersklasse = row.altersklasse;
+  const teilnehmer = row.teilnehmer as  Wettkaempfer[];
   return {
       id: row.id,
       name: row.name,
@@ -144,7 +142,7 @@ const entityToDto = (row: any): GewichtsklassenGruppe => {
       altersKlasse: Altersklasse[altersklasseValue],
       maxGewicht: row.maxgewicht,
       minGewicht: row.mingewicht,
-      teilnehmer: row.teilnehmer as  Wettkaempfer[],
+      teilnehmer: teilnehmer
   };
 };
 
