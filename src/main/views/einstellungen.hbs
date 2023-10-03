@@ -10,6 +10,7 @@
       <h2>Einstellungen</h2>      
     </div>
     <div class="generalcontent">
+
       <h2>Einstellung der Systems</h2>
       <form id="turniereinstellungenformular" action="/turnier/einstellungen" method="POST">
         <div class="actions">
@@ -24,6 +25,12 @@
         <div class="listeneintrag">
           <div class=""><label>Anzahl der Matten </label><input class="wd100" type="number" name="mattenanzahl" value="{{mattenanzahl}}"/></div>
         </div>
+
+        <div class="listeneintrag">
+          <input type="radio" name="wettkampfreihenfolge" value="Abwechselnd" {{setChecked "Abwechselnd" wettkampfreihenfolge}}/><label>Immer 2 Gruppen kämpfen abwechseln</label>
+          <input type="radio" name="wettkampfreihenfolge" value="Alle" {{setChecked "Alle" wettkampfreihenfolge}}/><label>Es kämpfen je Durchgang alle Gruppen</label>
+        </div>
+
       </form>
     </div>
 

@@ -3,7 +3,13 @@ export enum TurnierTyp {
   standard = "Standard"
 }
 
+export enum WettkampfReihenfolge {
+  abwechselnd = "Abwechselnd",
+  alle = "Alle"
+}
+
 export interface Einstellungen {
   turnierTyp: TurnierTyp,
-  mattenAnzahl: number
+  mattenAnzahl: number,
+  wettkampfReihenfolge: WettkampfReihenfolge
 }

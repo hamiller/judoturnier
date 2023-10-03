@@ -72,6 +72,8 @@ CREATE TABLE begegnung (
 );
 
 insert into einstellungen(art, wert) VALUES ('turniertyp', 'randori');
+insert into einstellungen(art, wert) VALUES ('mattenAnzahl', '2');
+insert into einstellungen(art, wert) VALUES ('wettkampfreihenfolge', 'Abwechselnd');
 
 insert into verein("name") values ('Judo Club Hamburg'), ('Judo Club Berlin'),('Judo Club Frankfurt'),('Judo Club Stuttgart'), ('Judo Club Köln'), ('Judo Club München'),('Judo Club Dortmund'),('Judo Club Hannover'),('Judo Club Leipzig'),('Judo Club Nürnberg'),('Judo Club Bremen'),('Judo Club Essen'),('Judo Club Düsseldorf');
 

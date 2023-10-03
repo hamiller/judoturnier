@@ -28,7 +28,8 @@ export class EinstellungenController {
       anzahlwk: wks.length,
       kampfsysteme: Kampfsystem,
       turniertyp: einstellungen.turnierTyp,
-      mattenanzahl: einstellungen.mattenAnzahl
+      mattenanzahl: einstellungen.mattenAnzahl,
+      wettkampfreihenfolge: einstellungen.wettkampfReihenfolge
     };
   }
 
@@ -57,10 +58,10 @@ export class EinstellungenController {
 
     var einstellungen : Einstellungen = {
       turnierTyp: data.turniertyp,
-      mattenAnzahl: data.mattenanzahl
+      mattenAnzahl: data.mattenanzahl,
+      wettkampfReihenfolge: data.wettkampfreihenfolge
     };
     einstellungen = await turnierService.speichereTurnierEinstellungen(einstellungen);
-
     const wks = await wiegenService.alleKaempfer();
     const gwks = await gewichtsklassenGruppenService.lade();
     return { 
@@ -69,7 +70,8 @@ export class EinstellungenController {
       kampfsysteme: Kampfsystem,
       turniertyp: einstellungen.turnierTyp,
       mattenanzahl: einstellungen.mattenAnzahl,
-      standardturnier: einstellungen.turnierTyp == TurnierTyp.standard
+      standardturnier: einstellungen.turnierTyp == TurnierTyp.standard,
+      wettkampfreihenfolge: einstellungen.wettkampfReihenfolge
     };
   }
 
