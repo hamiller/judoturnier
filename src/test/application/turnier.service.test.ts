@@ -2,6 +2,7 @@ import assert from 'assert';
 import { JederGegenJeden } from '../../main/application/algorithm/jeder-gegen-jeden';
 import { TurnierService } from '../../main/application/turnier.service';
 import { Hilfsdaten } from './hilfsdaten';
+import { WettkampfReihenfolge } from '../../main/model/einstellungen';
 
 describe('Erstellen von Begegnungen', () => {
 
@@ -53,7 +54,7 @@ describe('Erstellen von Begegnungen', () => {
   });
 
   it('Simple: korrekte Anzahl an Begegnungen', () => {
-    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks2, 2);
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks2, 2, WettkampfReihenfolge.abwechselnd);
 
     assert.equal(matten.length, 2);
     assert.equal(matten[0].runden.length, 3)
@@ -69,7 +70,7 @@ describe('Erstellen von Begegnungen', () => {
   });
 
   it('Komplex: korrekte Anzahl an Begegnungen', () => {
-    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2);
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2, WettkampfReihenfolge.abwechselnd);
     
     assert.equal(matten.length, 2);
     
@@ -90,7 +91,7 @@ describe('Erstellen von Begegnungen', () => {
   });
 
   it('abwechselnde Reihenfolge der Gruppen ungerade Anzahl', () => {
-    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2);
+    const matten = service.erstelleGruppenReihenfolgeRandori(Hilfsdaten.wks, 2, WettkampfReihenfolge.abwechselnd);
     
     assert.equal(matten.length, 2);
     
@@ -113,7 +114,7 @@ describe('Erstellen von Begegnungen', () => {
   it('abwechselnde Reihenfolge der Gruppen gerade Anzahl', () => {
     const data = Hilfsdaten.wks_gerade;
     const mattenZahl = 1
-    const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl);
+    const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.abwechselnd);
     
     assert.equal(matten.length, mattenZahl);
     

@@ -5,10 +5,10 @@ import { RoundRobin } from "./algorithm/round-robin";
 import { SechserPool } from "./algorithm/sechser-pool";
 import { Algorithmus } from "./algorithmus.interface";
 import { getLogger } from './logger';
-import { Einstellungen, TurnierTyp } from "../model/einstellungen";
+import { Einstellungen, TurnierTyp, WettkampfReihenfolge } from "../model/einstellungen";
 import { EinstellungenRepository } from "../adapter/secondary/einstellungen.repository";
 import { JederGegenJeden } from "./algorithm/jeder-gegen-jeden";
-import { Matte, Runde } from "../model/matte";
+import { Matte, } from "../model/matte";
 import { GewichtsklassenGruppeService } from "./gewichtsklassengruppe.service";
 import { WettkampfRepository } from "../adapter/secondary/wettkampf.repository";
 
@@ -16,12 +16,14 @@ import DatabasePool from "../config/db.config";
 import { Begegnung } from "../model/begegnung";
 import { Wertung } from "../model/wertung";
 import { Altersklasse } from "../model/altersklasse";
+import { Sortierer } from "./sortierer";
 
 const logger = getLogger('TurnierService');
 const pool: DatabasePool = new DatabasePool();
 const einstellungenRepo = new EinstellungenRepository(pool);
 const wettkampfRepo = new WettkampfRepository(pool);
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
+const sortierer = new Sortierer();
 
 export class TurnierService {
   async isRandori(): Promise<boolean> {
@@ -60,7 +62,7 @@ export class TurnierService {
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       const algorithmus = new JederGegenJeden();
       const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
-      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl);
+      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl, einstellungen.wettkampfReihenfolge);
     
       await wettkampfRepo.speichereMatten(matten);
       return;
@@ -81,7 +83,7 @@ export class TurnierService {
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
       const algorithmus = new JederGegenJeden();
       const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
-      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl);
+      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl, einstellungen.wettkampfReihenfolge);
     
       await wettkampfRepo.speichereMatten(matten);
       return;
@@ -118,8 +120,8 @@ export class TurnierService {
     return wettkampfGruppen;
   }
   
-  erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[], anzahlMatten: number): Matte[] {
-    logger.debug("erstelle Reihenfolge der Begegnungen");
+  erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[], anzahlMatten: number, reihenfolge: WettkampfReihenfolge): Matte[] {
+    logger.debug("erstelle Reihenfolge der Begegnungen in der Reihenfolge", {data: {reihenfolge: reihenfolge}});
     let matten : Matte[] = [];
 
     // Ausplitten der Begegnungen auf die Matten
@@ -128,103 +130,22 @@ export class TurnierService {
     for (let m = 0; m < anzahlMatten; m++) {
       matten.push({ id: m+1, runden: []});
       const gruppen = wettkampfGruppenJeMatten[m];
-      
+
       // sortiere die Gruppen, sodass die Gruppen mit wenigen Kämpfen ganz hinten sind
       gruppen.sort((gs1, gs2) => gs2.begegnungsRunden.length - gs1.begegnungsRunden.length);
       // this.log(gruppen)
-     
       
-      let rundenNummer = 0;
-
-      // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
-      if (gruppen.length % 2 == 0) {
-        logger.debug("Berechne gerade Anzahl an Gruppen");
-
-        rundenNummer = gruppiereAbwechselnd(gruppen, rundenNummer, m);
-        const gesamtKaempfeDanach = gruppen.map(g => g.begegnungsRunden.reduce((anzahl, runde) => anzahl + runde.length, 0)).reduce((gesamt, anzahl) => gesamt + anzahl, 0);
-        const gesamtKaempfeDavor = wettkampfGruppen.map(g => g.begegnungsRunden.reduce((anzahl, runde) => anzahl + runde.length, 0)).reduce((gesamt, anzahl) => gesamt + anzahl, 0);
-        console.log("gesamtKaempfe:", gesamtKaempfeDavor, gesamtKaempfeDanach)
-
+      switch (reihenfolge) {
+        case WettkampfReihenfolge.abwechselnd:
+          sortierer.erstelleReihenfolgeMitAbwechselndenGruppen(gruppen, m, wettkampfGruppen, matten);
+          break;
+          case WettkampfReihenfolge.alle:
+          sortierer.erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen, m, wettkampfGruppen, matten);
+          break;
       }
-      // ungerade Anzahl an Gruppen -> 2 Gruppen je Matte und einmal 3 Gruppen je Matte
-      else {
-        logger.debug("Berechne ungerade Anzahl an Gruppen");
-        if (gruppen.length > 1) {
-          logger.debug("Wir haben mehr als 1 Gruppe, also splitten wir")
-          // behandle die letzten 3 Gruppen separat und gruppiere zuerst die anderen Gruppen
-          const letztenDreiGruppen = gruppen.slice(gruppen.length-3, gruppen.length)
-          const andereGruppen = gruppen.slice(0, gruppen.length-3)
-          rundenNummer = gruppiereAbwechselnd(andereGruppen, rundenNummer, m);
-
-          // jetzt die letzten drei Gruppen
-          const gruppe1 = letztenDreiGruppen[0];
-          const gruppe2 = letztenDreiGruppen[1];
-          const gruppe3 = letztenDreiGruppen[2];
-          const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-          const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-          const altersKlasse3 = gruppe3.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-
-          // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
-          for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length, gruppe3.begegnungsRunden.length); r++) {
-            let rundenName = rundenNummer +1;
-            if (gruppe1.begegnungsRunden[r]) {
-              const runde1: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
-              matten[m].runden.push(runde1);
-              rundenNummer += 1;
-            }
-            if (gruppe2.begegnungsRunden[r]) {
-              const runde2: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
-              matten[m].runden.push(runde2);
-              rundenNummer += 1;
-            }
-            if (gruppe3.begegnungsRunden[r]) {
-              const runde3: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse3, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r] };
-              matten[m].runden.push(runde3);
-              rundenNummer += 1;
-            }
-          }
-          
-        }
-        else {
-          logger.debug("Es existiert nur eine Gruppe, daher fügen wir diese komplett hinzu")
-          const gruppeZuletzt = gruppen[gruppen.length-1];
-          for (let r = 0; r < gruppeZuletzt.begegnungsRunden.length; r++) {
-            const altersKlasseZuletzt = gruppeZuletzt.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-            let rundenName = rundenNummer +1;
-            const rundeZuletzt: Runde = { id:rundenNummer, runde: rundenName, altersklasse: altersKlasseZuletzt, gruppe: gruppeZuletzt, begegnungen: gruppeZuletzt.begegnungsRunden[r]};
-            matten[m].runden.push(rundeZuletzt);
-            rundenNummer +=1;
-          }
-        }
-      }
+      
     }
     return matten;
-
-    function gruppiereAbwechselnd(gruppen: WettkampfGruppe[], rundenNummer: number, m: number) {
-      logger.debug("Gruppiere abwechselnd..." + gruppen.length);
-      for (let gruppenNr = 0; gruppenNr < gruppen.length; gruppenNr += 2) {
-        const gruppe1 = gruppen[gruppenNr];
-        const gruppe2 = gruppen[gruppenNr + 1];
-        const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-        const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-
-        // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
-        for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length); r++) {
-          let rundenName = rundenNummer +1;
-          if (gruppe1.begegnungsRunden[r]) {
-            const runde1: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
-            matten[m].runden.push(runde1);
-            rundenNummer += 1;
-          }
-          if (gruppe2.begegnungsRunden[r]) {
-            const runde2: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
-            matten[m].runden.push(runde2);
-            rundenNummer += 1;
-          }
-        }
-      }
-      return rundenNummer;
-    }
   }
 
   private getAlgorithmus(ks: Kampfsystem) : Algorithmus {
@@ -249,7 +170,7 @@ export class TurnierService {
     return parts;
   } 
 
-  private log(gruppe: WettkampfGruppe[]): void {
+  private logWettkampfGruppen(gruppe: WettkampfGruppe[]): void {
     
     const groups: any[] = []
     gruppe.map(g => {
