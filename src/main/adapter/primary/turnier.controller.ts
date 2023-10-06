@@ -85,8 +85,19 @@ export class TurnierController {
     const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
     
     let filteredMatten: Matte[] = [];
+    let rundeTotal = 1;
     for (let mat of wettkampfreihenfolgeJeMatte) {
       const filteredRunden = mat.runden.filter(r => r.altersklasse == altersklasse)
+
+      // prüfen ob wir eine komplette Runde (=gleichzeitige Kämpfe auf einer Matte) fertig haben
+      for (let i = 0; i < filteredRunden.length; i++) {
+        let aktuelleGruppe = filteredRunden[i].gruppe.id
+        let vorherigeGruppe = i > 0 ? filteredRunden[i-1].gruppe.id : filteredRunden[i].gruppe.id
+        if (aktuelleGruppe != vorherigeGruppe) {
+          rundeTotal += 1
+        }
+        filteredRunden[i].rundeTotal = rundeTotal
+      }
       filteredMatten.push({id: mat.id, runden: filteredRunden})
     }
 

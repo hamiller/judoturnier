@@ -1,7 +1,33 @@
 <!DOCTYPE html>
 <html lang="de">
-  {{> header}}
+  <head>
+  <title>Judo-Turniersoftware</title>
+  <link rel="stylesheet" href="/css/interface.css">
+  <link rel="stylesheet" href="/css/mainstyle.css">
+  <style type="text/css">
+      @page {
+        size: A4 landscape;
+        margin: 20mm 30mm 20mm 20mm;
+        
+        @bottom-right-corner {
+          content: "Seite " counter(page);
+        }
+      }
+
+      tr {
+        {{!-- vertical-align: middle; --}}
+      }
+
+      .groupsrow {
+        {{!-- break-inside: avoid; --}}
+      }
+      .wettkaempfer_name {
+        font-weight: bold;
+      }
+
+  </style>
 <body>
+  <script src="/js/paged.polyfill.min.js"></script>
   <div>
     <div class="bodyheader no-print">
     </div>
@@ -23,21 +49,27 @@
                 {{#if previous}}
                   {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
                   {{else}}
-                    <div class="gruppentitel">Gruppe {{gruppe.name}} ({{altersklasse}})</div>
+                    <div class="gruppentitel_2" style="width: 180px;">Gruppe {{gruppe.name}}</div>
+                    <div style="position: absolute;">
+                      <div>{{rundeTotal}} ({{altersklasse}})</div>
+                    </div>
                   {{/if}}
                 {{else}}
-                  <div class="gruppentitel">Gruppe {{gruppe.name}} ({{altersklasse}})</div>
+                  <div class="gruppentitel_2">Gruppe {{gruppe.name}}</div>
+                  <div style="position: absolute;">
+                    <div>{{rundeTotal}} ({{altersklasse}})</div>
+                  </div>
                 {{/if}}
               </td>
               {{#each begegnungen}}
-                <td class="wettkaempfer name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</td><td>({{wettkaempfer1.verein.name}})</td> 
-                <td class="wettkaempfer name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</td><td>({{wettkaempfer2.verein.name}})</td>
+                <td class="wettkaempfer_name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</td><td>({{wettkaempfer1.verein.name}})</td>
+                <td style="width: 50px; text-align: center;">vs</td> 
+                <td class="wettkaempfer_name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</td><td>({{wettkaempfer2.verein.name}})</td>
               {{/each}}
             </tr>
           {{/each}}
           </table>
         </div>
-        <div class="seitenumbruch"></div>
       {{/each}}
     </div>
 

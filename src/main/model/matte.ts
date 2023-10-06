@@ -10,6 +10,7 @@ export interface Matte {
 export interface Runde {
   id: number;
   runde: number;
+  rundeTotal: number|undefined;
   matte_id?: number;
   altersklasse: Altersklasse;
   gruppe: WettkampfGruppe;
