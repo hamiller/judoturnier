@@ -30,7 +30,7 @@
       <label>Verein</label>
       <select class="wd300" mode="config[mode]" name="vereinsid">
       {{#each vereine}}
-        <option value="{{id}}" {{setChecked ../kaempfer.verein.id id}}/>{{name}}</option>
+        <option value="{{id}}" {{setSelected ../kaempfer.verein.id id}}/>{{name}}</option>
       {{/each}}
       </select>
       </div>

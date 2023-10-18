@@ -74,6 +74,13 @@ export default class AppServer {
         return "";
       }
     });
+    hbs.registerHelper('setSelected', function (value, currentValue) {
+      if ( value == currentValue ) {
+        return "selected";
+      } else {
+        return "";
+      }
+    });
     hbs.registerHelper('formatNumber', function(number) {
       return parseFloat(number).toLocaleString(i18n.getLocale(), {minimumFractionDigits: 2});
     });
