@@ -34,7 +34,7 @@ export class Sortierer {
 
     const rundenName = rundenNummer + 1;
     const altersKlasse = gruppe.begegnungsRunden[rundenNummer][0].wettkaempfer1.altersklasse;
-    return { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: gruppe.begegnungsRunden[rundenNummer] };
+    return { id: rundenNummer, runde: rundenName, rundeTotal: undefined, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: gruppe.begegnungsRunden[rundenNummer] };
   }
   
   /*
@@ -75,17 +75,17 @@ export class Sortierer {
         for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length, gruppe3.begegnungsRunden.length); r++) {
           let rundenName = rundenNummer + 1;
           if (gruppe1.begegnungsRunden[r]) {
-            const runde1: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
+            const runde1: Runde = { id: rundenNummer, runde: rundenName, rundeTotal: undefined, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
             runden.push(runde1);
             rundenNummer += 1;
           }
           if (gruppe2.begegnungsRunden[r]) {
-            const runde2: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
+            const runde2: Runde = { id: rundenNummer, runde: rundenName, rundeTotal: undefined, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
             runden.push(runde2);
             rundenNummer += 1;
           }
           if (gruppe3.begegnungsRunden[r]) {
-            const runde3: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasse3, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r] };
+            const runde3: Runde = { id: rundenNummer, runde: rundenName, rundeTotal: undefined, altersklasse: altersKlasse3, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r] };
             runden.push(runde3);
             rundenNummer += 1;
           }
@@ -97,7 +97,7 @@ export class Sortierer {
         for (let r = 0; r < gruppeZuletzt.begegnungsRunden.length; r++) {
           const altersKlasseZuletzt = gruppeZuletzt.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
           let rundenName = rundenNummer + 1;
-          const rundeZuletzt: Runde = { id: rundenNummer, runde: rundenName, altersklasse: altersKlasseZuletzt, gruppe: gruppeZuletzt, begegnungen: gruppeZuletzt.begegnungsRunden[r] };
+          const rundeZuletzt: Runde = { id: rundenNummer, runde: rundenName, rundeTotal: undefined, altersklasse: altersKlasseZuletzt, gruppe: gruppeZuletzt, begegnungen: gruppeZuletzt.begegnungsRunden[r] };
           runden.push(rundeZuletzt);
           rundenNummer += 1;
         }
@@ -119,12 +119,12 @@ export class Sortierer {
       for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length); r++) {
         let rundenName = resultRundenNummer + 1;
         if (gruppe1.begegnungsRunden[r]) {
-          const runde1: Runde = { id: resultRundenNummer, runde: rundenName, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
+          const runde1: Runde = { id: resultRundenNummer, runde: rundenName, rundeTotal: undefined, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
           runden.push(runde1);
           resultRundenNummer += 1;
         }
         if (gruppe2.begegnungsRunden[r]) {
-          const runde2: Runde = { id: resultRundenNummer, runde: rundenName, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
+          const runde2: Runde = { id: resultRundenNummer, runde: rundenName, rundeTotal: undefined, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
           runden.push(runde2);
           resultRundenNummer += 1;
         }

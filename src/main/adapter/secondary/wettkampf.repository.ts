@@ -281,6 +281,7 @@ const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
   const runde: Runde = {
     id: data.id,
     runde: data.runde,
+    rundeTotal: undefined,
     altersklasse: begegnung.wettkaempfer1.altersklasse,
     gruppe: data.gruppe,
     matte_id: data.matte_id,
