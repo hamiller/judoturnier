@@ -33,6 +33,7 @@ export class GewichtsklassenController {
       gewichtsklassengruppenWeiblich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 
       gewichtsklassengruppenMaennlich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.m), 
       anzahlwk: wks.length,
+      anzahlwkInGroups: currentGwks.reduce((sum, g) => sum + g.teilnehmer.length, 0),
       standardturnier: einstellungen.turnierTyp == TurnierTyp.standard ,
       gruppiertBeiAlter: groupedByAge
     };

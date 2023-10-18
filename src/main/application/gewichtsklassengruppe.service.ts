@@ -154,6 +154,10 @@ export class GewichtsklassenGruppeService {
     const gewichtsklassenGruppen: GewichtsklassenGruppe[] = [];
     for (const gewichtsklasse of gewichtsklassen) {
       const gewichtsklassenGruppe: Wettkaempfer[] = kaempferListe.filter(k => this.gewichtsKlasse(k) == gewichtsklasse);
+      if (gewichtsklassenGruppe.length == 0) {
+        logger.info("Skipping group", {data: gewichtsklasse})
+        continue // might happen for the empty groups...
+      }
       const maxGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2))
       const minGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2))
       const geschlecht = gewichtsklassenGruppe[0].geschlecht; // alle Mitglieder der Gruppe haben das gleiche Geschlecht, da sie vorher so sortiert wurden
@@ -219,7 +223,7 @@ export class GewichtsklassenGruppeService {
       }
     }
     // hier sollten wir nie hinkommen
-    throw new Error("Unbekanntes Gewicht:" + wettkaempfer.gewicht);
+    throw new Error("Unbekannte Gewichtsklasse:" + wettkaempfer.gewicht);
   }
 
   private randoriKlassen(wettkaempfer: Wettkaempfer[], gruppenGroesse: number): Wettkaempfer[][] {

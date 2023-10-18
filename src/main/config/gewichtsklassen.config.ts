@@ -36,6 +36,7 @@ const config: GewichtsklasseConfig = {
     {
       geschlecht: Geschlecht.m,
       altersKlassenGewichte: [
+        {altersklasse: Altersklasse.U9,       gewichtsKlassen: [Mehr]},
         {altersklasse: Altersklasse.U11,      gewichtsKlassen: [Mehr]},
         {altersklasse: Altersklasse.U13,      gewichtsKlassen: [Bis28, Bis31, Bis34, Bis37, Bis40, Bis43, Bis46, Bis50, Bis55, Mehr]},
         {altersklasse: Altersklasse.U15,      gewichtsKlassen: [Bis34, Bis37, Bis40, Bis43, Bis46, Bis50, Bis55, Bis60, Bis66, Mehr]},
@@ -47,6 +48,7 @@ const config: GewichtsklasseConfig = {
     {
       geschlecht: Geschlecht.w,
       altersKlassenGewichte: [
+        {altersklasse: Altersklasse.U9,       gewichtsKlassen: [Mehr]},
         {altersklasse: Altersklasse.U11,      gewichtsKlassen: [Mehr]},
         {altersklasse: Altersklasse.U13,      gewichtsKlassen: [Bis27, Bis30, Bis33, Bis36, Bis40, Bis44, Bis48, Bis52, Bis57, Mehr]},
         {altersklasse: Altersklasse.U15,      gewichtsKlassen: [Bis33, Bis36, Bis40, Bis44, Bis48, Bis52, Bis57, Bis63, Mehr]},
