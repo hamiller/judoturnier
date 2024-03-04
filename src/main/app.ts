@@ -84,6 +84,12 @@ export default class AppServer {
     hbs.registerHelper('formatNumber', function(number) {
       return parseFloat(number).toLocaleString(i18n.getLocale(), {minimumFractionDigits: 2});
     });
+    hbs.registerHelper('istLeer', function(... params) {
+      logger.info("Prüfe", params)
+      const istLeer = params.some(param => param === null || param === undefined || param === "");
+      if (istLeer) logger.info("Leeres Element gefunden")
+      return istLeer ? "leer" : "";
+    });
     hbs.registerHelper('wertungVorhanden', function(wertung: Wertung | null) {
       var hatWertung = (wertung != null && (wertung.kampfgeistWettkaempfer1 != null || wertung.sieger != null)) ? "vorhanden": "";
       return hatWertung;

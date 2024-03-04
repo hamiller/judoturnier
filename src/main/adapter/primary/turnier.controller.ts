@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Body, Controller, Get, Param, Post, Render, Res } from "routing-controllers";
+import { Body, Controller, Get, Param, Post, Render, Res, QueryParam } from "routing-controllers";
 import { GewichtsklassenGruppeService } from '../../application/gewichtsklassengruppe.service';
 import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
@@ -35,14 +35,14 @@ export class TurnierController {
 
   @Get('/turnier/begegnungen/randori')
   @Render("begegnungen_randori.hbs")
-  async ladeWettkampfreihenfolgeJeMatteRandori(@Res() res: Response) {
+  async ladeWettkampfreihenfolgeJeMatteRandori(@QueryParam('error') error: string, @Res() res: Response) {
     logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((m1, m2) => m1.id - m2.id);
 
     const altersklassen = new Set()
     gwks.map(gwk => altersklassen.add(gwk.altersKlasse))
-    return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte, altersklassen: altersklassen };
+    return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte, altersklassen: altersklassen, preverror: error};
   }
 
   @Get('/turnier/begegnungen/normal')
@@ -58,11 +58,17 @@ export class TurnierController {
   @Post('/turnier/begegnungen')
   async erstelleWettkampfreihenfolgeJeMatte(@Res() res: Response) {
     logger.debug('erstelle Wettkampfreihenfolge je Matte');
-    await turnierService.loescheWettkampfreihenfolge();
-    await turnierService.erstelleWettkampfreihenfolge();
-  
-    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori");
-    else res.redirect("/turnier/begegnungen/normal");
+    let error = ""
+    try {
+      await turnierService.loescheWettkampfreihenfolge();
+      await turnierService.erstelleWettkampfreihenfolge();
+    }
+    catch (err: any) {
+      logger.error("Konnte Begegnungen nicht anlegen!", {error: err});
+      error = err.toString()
+    }
+    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori?error="+error);
+    else res.redirect("/turnier/begegnungen/normal?error="+error);
     return res;
   }
 

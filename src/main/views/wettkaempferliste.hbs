@@ -19,9 +19,11 @@
     
     <ul class="wettkaempferliste generalcontent">
       {{#kaempferListe}}
-      <li class="wettkaempferliste-wettkaempfer listeneintrag">
+      <li class="wettkaempferliste-wettkaempfer listeneintrag {{istLeer gewicht altersklasse geschlecht}}" >
         <div class="listeneintrag-titel">{{name}}</div>
+        <div>{{id}}</div>
         <div>{{geschlecht}}</div>
+        <div>{{altersklasse}}</div>
         <div>{{verein.name}}</div>
         <div>{{alter}}</div>
         <div>{{formatNumber gewicht}}kg</div>

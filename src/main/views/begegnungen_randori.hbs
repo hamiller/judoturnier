@@ -30,6 +30,11 @@
         </div>
       </div>
     </div>
+
+    {{#if preverror}}
+      <div class="errormsg">Der vorheriger Wettkämpfer konnte nicht angelegt werden: {{preverror}}</div>
+    {{/if}}
+    
     <div class="generalcontent">
       <div class="tab">
         {{#each matten}}
@@ -73,8 +78,9 @@
   const renewBegegnungen = async () => {
     var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
     if (sicher) {
+      console.log("Fetching again...")
       fetch('/turnier/begegnungen', { method: 'POST' })
-        .then(() => window.location.href='/turnier/begegnungen/randori')
+        .then((r) => location.href=r.url)
     };
   };
 
@@ -82,6 +88,7 @@
     var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in der Altersklasse\n\t" + altersklasse + "\nin Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
     if (sicher) {
       console.log("Erstelle die Begegnungen neu", altersklasse);
+      console.log("Fetching again 2...")
       fetch('/turnier/begegnung', { method: 'POST', body: altersklasse })
         .then(() => window.location.href='/turnier/begegnungen/randori')
     };

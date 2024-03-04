@@ -65,6 +65,9 @@ export class TurnierService {
     const einstellungen = await einstellungenRepo.load();
     const gwks = altersKlasse ? await gewichtsklassenGruppenService.ladeAltersklasse(altersKlasse) : await gewichtsklassenGruppenService.lade();
     if (einstellungen.turnierTyp == TurnierTyp.randori) {
+      // check gruppe auf vorhandene Daten
+      this.checkGruppenSindValide(gwks);
+
       const algorithmus = new JederGegenJeden();
       const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
       const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl, einstellungen.wettkampfReihenfolge);
@@ -198,5 +201,17 @@ export class TurnierService {
     };
 
     logger.debug("Inhalt Begegnungsrunden", {data :logmessage});
+  }
+  
+  private checkGruppenSindValide(gruppen: GewichtsklassenGruppe[]): void {
+    for (const gruppe of gruppen) {
+      if (gruppe.altersKlasse == null) throw new Error("GewichtsklassenGruppe " + gruppe.id + " hat keine Altersklasse.");
+      if (gruppe.gruppenGeschlecht == null) throw new Error("GewichtsklassenGruppe " + gruppe.id + " hat kein Geschlecht.");
+      for (const teilnehmer of gruppe.teilnehmer) {
+        if (teilnehmer.altersklasse == null) throw new Error("Teilnehmer " + teilnehmer.id + " hat keine Altersklasse.");
+        if (teilnehmer.geschlecht == null) throw new Error("Teilnehmer " + teilnehmer.id + " hat kein Geschlecht.");
+        if (teilnehmer.gewicht == null) throw new Error("Teilnehmer " + teilnehmer.id + " hat kein Gewicht.");
+      }
+    }
   }
 }
