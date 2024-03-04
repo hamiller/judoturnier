@@ -85,16 +85,43 @@ li {
 
 .navbar {
   background-color: var(--color-light-grey);
+  width: 100%;
+}
+
+@media only screen and (min-width: 700px) {
+  .navbar ul {
+    display: flex !important;
+  }
+
+  button {
+    width: unset !important;
+  }
+  
+}
+
+@media only screen and (min-width: 1000px) {
+  .ergebnis {
+    display: flex !important;
+  }  
+  
+  .row label {
+    margin: 20px !important;
+  }
 }
 
 button {
   vertical-align: middle;
   font-size: 1em;
   padding: 5px;
+  width: 100%;
 }
 
 .centered {
   vertical-align: middle;
+}
+
+.centertext {
+  text-align: center;
 }
 
 .actions a span {
@@ -107,8 +134,7 @@ button {
 }
 
 .navbar ul {
-  display: flex;
-  align-items: center;
+  display: block;
   justify-content: flex-end;
   padding-left: 0;
   padding-top: 2px;
@@ -250,6 +276,7 @@ button {
 
 .wettkaempfer.name {
   font-weight: bold;
+  flex-wrap: wrap;
 }
 
 .wd100 {
@@ -281,10 +308,10 @@ button {
 }
 
 .ergebnis {
-  display: flex;
+  display: block;
   justify-content: center; /* Horizontal zentrieren */
   align-items: center; /* Vertikal zentrieren */
-  gap: 160px;
+  column-gap: 5%;
 }
 
 .ergebnis_eintrag {
@@ -304,7 +331,7 @@ button {
 }
 
 .row label {
-  margin: 20px;
+  margin: 2px;
 }
 
 .weiss {
