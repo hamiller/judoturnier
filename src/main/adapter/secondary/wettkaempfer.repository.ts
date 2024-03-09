@@ -55,13 +55,13 @@ export class WettkaempferRepository {
       let query;
       if (entity.id) {
         query = {
-          text: 'UPDATE wettkaempfer w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6, farbe = $7 WHERE w.id = $1 RETURNING $1',
-          values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid, entity.farbe]
+          text: 'UPDATE wettkaempfer w SET name = $2, altersklasse = $3, geschlecht = $4, gewicht = $5, verein = $6, farbe = $7, checked = $8, printed = $9 WHERE w.id = $1 RETURNING $1',
+          values: [entity.id, entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid, entity.farbe, entity.checked, entity.printed]
         };
       } else {
         query = {
-          text: 'INSERT INTO wettkaempfer(name, altersklasse, geschlecht, gewicht, verein, farbe) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-          values: [entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid, entity.farbe]
+          text: 'INSERT INTO wettkaempfer(name, altersklasse, geschlecht, gewicht, verein, farbe, checked, printed) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
+          values: [entity.name, entity.altersklasse, entity.geschlecht, entity.gewicht, entity.vereinsid, entity.farbe, entity.checked, entity.printed]
         };
       }
       const { rows } = await client.query(query);
@@ -114,6 +114,8 @@ const entityToDto = (row: any): Wettkaempfer => {
       },
       gewicht: row.gewicht,
       farbe: Farbe[farbeValue],
+      printed: row.printed,
+      checked: row.checked,
   };
 };
 
@@ -129,5 +131,7 @@ const dtoToEntity = (dto: Wettkaempfer): any => {
     vereinsid: dto.verein.id,
     gewicht: dto.gewicht?.toFixed(2),
     farbe: farbeKey,
+    printed: dto.printed,
+    checked: dto.checked,
   };
 }

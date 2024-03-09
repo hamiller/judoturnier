@@ -11,4 +11,6 @@ export interface Wettkaempfer {
   verein: Verein;
   gewicht?: number;
   farbe?: Farbe;
+  checked: boolean;
+  printed: boolean
 }

@@ -22,7 +22,7 @@ export class WettkaempferController {
 
   @Post('/wettkaempfer')
   async speichereWettkaempfer(@Body() wk: any, @Res() res: Response) {
-    logger.debug('speichere Wettkaempfer ', {wk: wk} );
+    logger.info('speichere Wettkaempfer ', {wk: wk} );
     const geschlechtString: keyof typeof Geschlecht = wk.geschlecht;
     const altersklasseString: keyof typeof Altersklasse = wk.altersklasse;
     const g: Geschlecht = Geschlecht[geschlechtString];
@@ -32,7 +32,9 @@ export class WettkaempferController {
       verein: {id: parseInt(wk.vereinsid), name: wk.vereinsname}, 
       geschlecht: g, 
       altersklasse: Altersklasse[altersklasseString], 
-      gewicht: (wk.gewicht ? parseFloat(wk.gewicht): undefined) 
+      gewicht: (wk.gewicht ? parseFloat(wk.gewicht): undefined),
+      checked: (wk.checked ? true : false),
+      printed: (wk.printed ? true : false)
     };
 
     if (!wettkaempfer.name) {
@@ -63,6 +65,7 @@ export class WettkaempferController {
   async ladeWettkaempfer(@Param('id') id: number, @Res() res: Response) {
     logger.debug('Wettkaempfer-Seite angefragt ' + id);
     const wk = await wiegenService.ladeKaempfer(id);
+    console.log(wk)
     const vs = await wiegenService.alleVereine().then(vereine => vereine?.sort((v1, v2) => v1.name.localeCompare(v2.name)));
     return { kaempfer: wk, vereine: vs, geschlechter: Geschlecht, altersklasse: Altersklasse };
   }
