@@ -424,8 +424,11 @@ tr {
 
 .groupsrow {
   outline: black;
+  margin-bottom: 20px;
   outline-style: auto;
-  
+  break-inside: avoid;
+  break-after: avoid-page; /* Mögliche Werte: auto, always, avoid, left, right, page, column, avoid-page, etc. */
+  /* break-after: auto;  */
 }
 
 .emptyTableCell {

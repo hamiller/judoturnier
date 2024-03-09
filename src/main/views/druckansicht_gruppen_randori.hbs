@@ -33,14 +33,14 @@
     <div class="">
       
         <div class="wettkampfgruppe">
-          <table style="border-spacing: 20px;">
-            <tbody>
+          <div>
+            <tul>
           {{#each gruppen}}
-            <tr class="groupsrow">
-              <td>{{altersKlasse}}</td>
-              <td>{{name}} </td>
-              <td>
-                <table>
+            <li class="groupsrow">
+              <div>{{altersKlasse}}</div>
+              <div>{{name}} </div>
+              <div>
+                <table style="width: 100%;">
                 <tbody>
                 {{#each teilnehmer}}
                   <tr>
@@ -49,11 +49,11 @@
                 {{/each}}
                 </tbody>
                 </table>
-              </td>
-            </tr>
+              </div>
+            </li>
           {{/each}}
-          </tbody>
-          </table>
+          </ul>
+          </div>
         </div>
     </div>
 </body>
