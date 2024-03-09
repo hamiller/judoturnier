@@ -29,11 +29,13 @@ export class GewichtsklassenController {
 
     var groupedByAge = this.groupByAge(currentGwks);
     const einstellungen = await turnierService.ladeTurnierEinstellungen();
+    const anzahlwkInGroups = currentGwks.reduce((sum, g) => sum + g.teilnehmer.length, 0);
     return { 
       gewichtsklassengruppenWeiblich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.w), 
       gewichtsklassengruppenMaennlich: currentGwks.filter(gruppe => gruppe.gruppenGeschlecht == Geschlecht.m), 
       anzahlwk: wks.length,
-      anzahlwkInGroups: currentGwks.reduce((sum, g) => sum + g.teilnehmer.length, 0),
+      anzahlwkInGroups: anzahlwkInGroups,
+      anzahlUnterschiedlich: anzahlwkInGroups != wks.length,
       standardturnier: einstellungen.turnierTyp == TurnierTyp.standard ,
       gruppiertBeiAlter: groupedByAge
     };

@@ -50,6 +50,9 @@
       </div>
 
       <div class="wettkaempfer gewicht"><label>Gewicht</label><input class="wd100" type="number" step="0.1" name="gewicht" value="{{kaempfer.gewicht}}"/></div>
+      <div class="wettkaempfer checked"><label>geprüft</label><input class="wd100" type="checkbox" name="checked" value={{kaempfer.checked}} {{setChecked true kaempfer.checked}}/></div>
+      <div class="wettkaempfer printed"><label>gedruckt</label><input class="wd100" type="checkbox" name="printed" value={{kaempfer.checked}} {{setChecked true kaempfer.printed}}/></div>
+
 
       <button type="submit"><span class="material-icons md-48" title="Wettkämpfer eintragen">person_add</span></button>
     </form>

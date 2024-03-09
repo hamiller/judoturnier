@@ -67,11 +67,23 @@ export default class AppServer {
 
   private initHbsHelperMethods(app: Application) {
     app.use(express.static('public'));
+    hbs.registerHelper('janein', function (value) {
+      if ( value ) {
+        return "Ja";
+      } else {
+        return "Nein";
+      }
+    });
     hbs.registerHelper('setChecked', function (value, currentValue) {
       if ( value == currentValue ) {
         return "checked";
       } else {
         return "";
+      }
+    });
+    hbs.registerHelper('istWarnung', function (isWarning) {
+      if (isWarning) {
+        return "warnung"
       }
     });
     hbs.registerHelper('setSelected', function (value, currentValue) {
@@ -85,9 +97,7 @@ export default class AppServer {
       return parseFloat(number).toLocaleString(i18n.getLocale(), {minimumFractionDigits: 2});
     });
     hbs.registerHelper('istLeer', function(... params) {
-      logger.info("Prüfe", params)
       const istLeer = params.some(param => param === null || param === undefined || param === "");
-      if (istLeer) logger.info("Leeres Element gefunden")
       return istLeer ? "leer" : "";
     });
     hbs.registerHelper('wertungVorhanden', function(wertung: Wertung | null) {

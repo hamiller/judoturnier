@@ -18,15 +18,25 @@
     </div>
     
     <ul class="wettkaempferliste generalcontent">
+      <li class="wettkaempferliste-wettkaempfer listeneintrag ">
+        <div  class="listeneintrag-titel">Name</div>
+        <div>Verein</div>
+        <div>Geschlecht</div>
+        <div>Altersklasse</div>
+        <div>Gewicht</div>
+        <div>Geprüft</div>
+        <div>Gedruckt</div>
+        <div>Bearbeiten</div>
+      </li>
       {{#kaempferListe}}
       <li class="wettkaempferliste-wettkaempfer listeneintrag {{istLeer gewicht altersklasse geschlecht}}" >
         <div class="listeneintrag-titel">{{name}}</div>
-        <div>{{id}}</div>
+        <div>{{verein.name}}</div>
         <div>{{geschlecht}}</div>
         <div>{{altersklasse}}</div>
-        <div>{{verein.name}}</div>
-        <div>{{alter}}</div>
         <div>{{formatNumber gewicht}}kg</div>
+        <div>{{janein checked}}</div>
+        <div>{{janein printed}}</div>
         <div>
           <a href="/wettkaempfer/{{ id }}"><span class="material-icons">edit</span></a>
           <a href="#" onclick="deleteWK({{ id }})"><span class="material-icons">person_remove</span></a>
