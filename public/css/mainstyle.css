@@ -485,12 +485,3 @@ tr {
 .columnName {
   width: 180px !important;
 }
-
-@page {
-  size: A4 landscape;
-  margin: 20mm 15mm 20mm 15mm;
-  
-  @bottom-right-corner {
-    content: "Seite " counter(page);
-  }
-}

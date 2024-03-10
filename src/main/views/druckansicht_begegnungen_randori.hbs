@@ -4,6 +4,25 @@
   <title>Judo-Turniersoftware</title>
   <link rel="stylesheet" href="/css/interface.css">
   <link rel="stylesheet" href="/css/mainstyle.css">
+  <style type="text/css">
+    @page {
+      size: A4 landscape;
+      margin: 20mm 15mm 20mm 15mm;
+      
+      @bottom-right-corner {
+        content: "Seite " counter(page);
+      }
+    }
+
+    tr {
+      vertical-align: middle;
+    }
+
+    .groupsrow {
+      break-inside: avoid;
+    }
+
+</style>
 <body>
   <script src="/js/paged.polyfill.min.js"></script>
   <div>
@@ -11,7 +30,7 @@
     </div>
     <div class="generalcontent">
       {{#each matten}}
-        <div class="wettkampfgruppe">
+        <div class="wettkampfgruppe horizontal">
           <div class="listeneintrag-titel">Matte {{id}}</div>
 
           {{#each gruppenRunden}}
