@@ -297,6 +297,7 @@ button {
 
 .wettkampfgruppe {
   margin-bottom: 2em;
+  break-before: page;
 }
 
 .vs div{
@@ -440,4 +441,51 @@ tr {
 
 .seitenumbruch {
   page-break-before: always;
+}
+
+.table {
+  display: table;
+  width: 100%; /* Passen Sie die Breite nach Bedarf an */
+  margin-bottom: 20px;
+}
+
+.table .wettkaempfer_name {
+  font-weight: bold;
+}
+
+.breakbefore {
+  page-break-before: page; /* Mögliche Werte: auto, always, avoid, left, right, page, column, avoid-page, etc. */
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-cell {
+  display: table-cell;
+  padding: 8px; /* Abstand innerhalb der Zellen */
+  text-align: left; /* Textausrichtung */
+}
+
+.column1 {
+  /* width: 180px !important; */
+}
+.columnVerein{
+  width: 160px;
+}
+.columnVS{
+  width: 50px; 
+  text-align: center;
+}
+.columnName {
+  width: 180px !important;
+}
+
+@page {
+  size: A4 landscape;
+  margin: 20mm 15mm 20mm 15mm;
+  
+  @bottom-right-corner {
+    content: "Seite " counter(page);
+  }
 }

@@ -4,28 +4,6 @@
   <title>Judo-Turniersoftware</title>
   <link rel="stylesheet" href="/css/interface.css">
   <link rel="stylesheet" href="/css/mainstyle.css">
-  <style type="text/css">
-      @page {
-        size: A4 landscape;
-        margin: 20mm 30mm 20mm 20mm;
-        
-        @bottom-right-corner {
-          content: "Seite " counter(page);
-        }
-      }
-
-      tr {
-        {{!-- vertical-align: middle; --}}
-      }
-
-      .groupsrow {
-        {{!-- break-inside: avoid; --}}
-      }
-      .wettkaempfer_name {
-        font-weight: bold;
-      }
-
-  </style>
 <body>
   <script src="/js/paged.polyfill.min.js"></script>
   <div>
@@ -35,40 +13,36 @@
       {{#each matten}}
         <div class="wettkampfgruppe">
           <div class="listeneintrag-titel">Matte {{id}}</div>
-          <table>
-            <th></th>
           {{#each (vorherigesElement runden)}}
-            {{#if previous}}
-              {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
-              {{else}}
-                <tr><td style="height: 50px;"></td></tr>
-              {{/if}}
-            {{/if}}
-            <tr>
-              <td>
+          <div class="table">
+            <div class="table-row">
+              <div class="table-cell column1">
                 {{#if previous}}
                   {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
+                    <!-- Beginn einer neuen Gruppe -->
                   {{else}}
+                    <!-- Ende einer Gruppe -->
                     <div class="gruppentitel_2" style="width: 180px;">Gruppe {{gruppe.name}}</div>
                     <div style="position: absolute;">
                       <div>{{rundeTotal}} ({{altersklasse}})</div>
                     </div>
                   {{/if}}
                 {{else}}
-                  <div class="gruppentitel_2">Gruppe {{gruppe.name}}</div>
+                  <!-- Beginn der neuen Matte -->
+                  <div class="gruppentitel_2 breakbefore">Gruppe {{gruppe.name}}</div>
                   <div style="position: absolute;">
                     <div>{{rundeTotal}} ({{altersklasse}})</div>
                   </div>
                 {{/if}}
-              </td>
+              </div>
               {{#each begegnungen}}
-                <td class="wettkaempfer_name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</td><td>({{wettkaempfer1.verein.name}})</td>
-                <td style="width: 50px; text-align: center;">vs</td> 
-                <td class="wettkaempfer_name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</td><td>({{wettkaempfer2.verein.name}})</td>
+                <div class="table-cell columnName wettkaempfer_name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</div><div class="table-cell columnVerein">({{wettkaempfer1.verein.name}})</div>
+                <div class="table-cell columnVS">vs</div> 
+                <div class="table-cell columnName wettkaempfer_name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</div><div class="table-cell columnVerein">({{wettkaempfer2.verein.name}})</div>
               {{/each}}
-            </tr>
+            </div>
+          </div>
           {{/each}}
-          </table>
         </div>
       {{/each}}
     </div>
