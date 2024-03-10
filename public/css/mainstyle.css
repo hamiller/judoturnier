@@ -485,3 +485,10 @@ tr {
 .columnName {
   width: 180px !important;
 }
+.hochkannt {
+  transform: rotate(-90deg);
+  transform-origin: left bottom;
+  display: inline-block;
+  position: relative;
+  top: 430px;
+}

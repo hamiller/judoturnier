@@ -92,30 +92,8 @@ export class TurnierController {
 
     // filter nach altersklasse
     const wettkampfreihenfolgeJeMatteGefiltert = wettkampfreihenfolgeJeMatte.filter(matte => matte.runden.some(r => r.altersklasse == altersklasse))
-    console.log(wettkampfreihenfolgeJeMatteGefiltert)
-
     // gruppiere nach Gruppen um besser drucken (Seitenumbruch) zu können
-    const wettkampfreihenfolgeJeMatteGefiltertUndGruppiert: Matte[] = [];
-    for (let mat of wettkampfreihenfolgeJeMatteGefiltert) {
-      const filteredRunden = mat.runden.filter(r => r.altersklasse == altersklasse)
-      let gruppenRunden: GruppenRunde[] = []
-      gruppenRunden[0] = {runden: []};
-      let gruppenRundenNummer = 0;
-    
-      for (let i = 0; i < filteredRunden.length; i++) {  
-        let aktuelleGruppe = filteredRunden[i].gruppe.id
-        let vorherigeGruppe = i > 0 ? filteredRunden[i-1].gruppe.id : filteredRunden[i].gruppe.id
-        
-        if (aktuelleGruppe != vorherigeGruppe) {
-          gruppenRunden.push({runden: []})
-          gruppenRundenNummer += 1
-        }
-        gruppenRunden[gruppenRundenNummer].runden.push(filteredRunden[i])
-      }
-
-      wettkampfreihenfolgeJeMatteGefiltertUndGruppiert.push({id: mat.id, runden: [], gruppenRunden: gruppenRunden})
-    }
-
+    const wettkampfreihenfolgeJeMatteGefiltertUndGruppiert = this.gruppiereNachGruppen(wettkampfreihenfolgeJeMatteGefiltert);
     return { matten: wettkampfreihenfolgeJeMatteGefiltertUndGruppiert }
   }
 
@@ -123,16 +101,13 @@ export class TurnierController {
   @Render("druckansicht_begegnungen_randori_inserting_data.hbs")
   async ladeDruckAnsichtBegegnungenRandoriDateneintrag(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
     logger.debug('lade Druckansicht Randori-Begegnungen zum Dateneintragen: ' + altersklasse);
-    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
+    const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((matte1, matte2) => matte1.id - matte2.id);
 
-    let filteredMatten: Matte[] = [];
-    for (let mat of wettkampfreihenfolgeJeMatte) {
-      const filteredRunden = mat.runden.filter(r => r.altersklasse == altersklasse)
-      filteredMatten.push({id: mat.id, runden: filteredRunden})
-    }
-
-    return { matten: filteredMatten }
-
+    // filter nach altersklasse
+    const wettkampfreihenfolgeJeMatteGefiltert = wettkampfreihenfolgeJeMatte.filter(matte => matte.runden.some(r => r.altersklasse == altersklasse))
+    // gruppiere nach Gruppen um besser drucken (Seitenumbruch) zu können
+    const wettkampfreihenfolgeJeMatteGefiltertUndGruppiert = this.gruppiereNachGruppen(wettkampfreihenfolgeJeMatteGefiltert);
+    return { matten: wettkampfreihenfolgeJeMatteGefiltertUndGruppiert }
   }
 
   @Get('/turnier/begegnungen/randori/:id')
@@ -169,5 +144,29 @@ export class TurnierController {
     
     res.redirect("/turnier/begegnungen/randori/");
     return res;
+  }
+
+  gruppiereNachGruppen(matten: Matte[]): Matte[] {
+    // gruppiere nach Gruppen um besser drucken (Seitenumbruch) zu können
+    const wettkampfreihenfolgeJeMatteGefiltertUndGruppiert: Matte[] = [];
+    for (let mat of matten) {
+      let gruppenRunden: GruppenRunde[] = []
+      gruppenRunden[0] = {runden: []};
+      let gruppenRundenNummer = 0;
+    
+      for (let i = 0; i < mat.runden.length; i++) {  
+        let aktuelleGruppe = mat.runden[i].gruppe.id
+        let vorherigeGruppe = i > 0 ? mat.runden[i-1].gruppe.id : mat.runden[i].gruppe.id
+        
+        if (aktuelleGruppe != vorherigeGruppe) {
+          gruppenRunden.push({runden: []})
+          gruppenRundenNummer += 1
+        }
+        gruppenRunden[gruppenRundenNummer].runden.push(mat.runden[i])
+      }
+
+      wettkampfreihenfolgeJeMatteGefiltertUndGruppiert.push({id: mat.id, runden: [], gruppenRunden: gruppenRunden})
+    }
+    return wettkampfreihenfolgeJeMatteGefiltertUndGruppiert;
   }
 }
