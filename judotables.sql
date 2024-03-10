@@ -15,8 +15,6 @@ CREATE TABLE wettkaempfer (
     verein BIGINT,
     gewicht FLOAT,
     farbe VARCHAR(10),
-    checked BOOLEAN,
-    printed BOOLEAN,
     PRIMARY KEY (id)
 );
 
@@ -46,7 +44,8 @@ CREATE TABLE einstellungen (
 CREATE TABLE wettkampf (
   id SERIAL,
   matte_id INTEGER,
-  runde INTEGER,
+  matten_runde INTEGER,
+  gruppen_runde INTEGER,
   gruppe INTEGER,
   begegnung INTEGER,
   PRIMARY KEY (id)

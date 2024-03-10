@@ -167,7 +167,7 @@ export class WettkampfRepository {
         for (const begegnung of runde.begegnungen) {
           var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);
           var begegnung_id = result_begegnung.rows[0].id;
-          var result_wettkampf = await client.query('INSERT INTO wettkampf (matte_id, runde, gruppe, begegnung) VALUES ($1, $2, $3, $4) RETURNING id',  [matte.id, runde.id, runde.gruppe.id, begegnung_id]);
+          var result_wettkampf = await client.query('INSERT INTO wettkampf (matte_id, matten_runde, gruppen_runde, gruppe, begegnung) VALUES ($1, $2, $3, $4, $5) RETURNING id',  [matte.id, runde.matten_runde, runde.gruppen_runde, runde.gruppe.id, begegnung_id]);
         }
       }
       return;
@@ -184,7 +184,7 @@ export class WettkampfRepository {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query(
-        "SELECT m.id, m.matte_id, m.runde, m.gruppe as gruppeid, m.begegnung as begegnung_id, b.*, " +
+        "SELECT m.id, m.matte_id, m.matten_runde, m.gruppen_runde, m.gruppe as gruppeid, m.begegnung as begegnung_id, b.*, " +
         " jsonb_build_object(  " +
         "               'id', w1.id,  " +
         "               'name', w1.name,  " +
@@ -280,7 +280,8 @@ const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
 
   const runde: Runde = {
     id: data.id,
-    runde: data.runde,
+    matten_runde: data.matten_runde,
+    gruppen_runde: data.gruppen_runde,
     rundeTotal: undefined,
     altersklasse: begegnung.wettkaempfer1.altersklasse,
     gruppe: data.gruppe,

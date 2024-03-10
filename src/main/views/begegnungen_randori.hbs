@@ -49,10 +49,16 @@
             {{#if previous}}
               {{#if (gleichesElement (concat previous.gruppe.name previous.altersklasse) (concat this.gruppe.name altersklasse))}}
               {{else}}
-              <div class="listeneintrag-titel">{{gruppe.name}} ({{altersklasse}}) </div>
+              <div class="listeneintrag-header">
+                <div class="listeneintrag-titel">{{gruppe.name}} ({{altersklasse}})</div>
+                <div class="listeneintrag-titel-info rechts">(Wettkampf Nr. {{matten_runde}} auf Matte {{../id}}, Runde Nr. {{gruppen_runde}} für Gruppe {{gruppe.name}})</div>
+              </div>
               {{/if}}
             {{else}}
-              <div class="listeneintrag-titel">{{gruppe.name}} ({{altersklasse}}) </div>
+              <div class="listeneintrag-header">
+                <div class="listeneintrag-titel">{{gruppe.name}} ({{altersklasse}})</div>
+                <div class="listeneintrag-titel-info rechts">(Wettkampf Nr. {{matten_runde}} auf Matte {{../id}}, Runde Nr. {{gruppen_runde}} für Gruppe {{gruppe.name}})</div>
+              </div>
             {{/if}}
             {{#each begegnungen}}
               <a href="/turnier/begegnungen/randori/{{begegnung_id}}">
@@ -68,7 +74,6 @@
           </div>
         </div>
       {{/each}}
-      </form>
     </div>
 
   {{> footer}}

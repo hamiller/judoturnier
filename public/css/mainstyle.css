@@ -196,6 +196,11 @@ button {
   min-width: 200px;
 }
 
+.listeneintrag-header {
+  display: flex;
+  margin-top: 20px;page-break-before: auto;
+}
+
 .justifycontent {
   justify-content: space-between;
 }

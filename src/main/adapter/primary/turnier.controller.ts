@@ -7,7 +7,7 @@ import { WiegenService } from '../../application/wiegen.service';
 import { Wertung } from '../../model/wertung';
 import { TurnierTyp } from '../../model/einstellungen';
 import { Altersklasse } from '../../model/altersklasse';
-import { Matte } from '../../model/matte';
+import { GruppenRunde, Matte } from '../../model/matte';
 
 const logger = getLogger('TurnierController');
 const gewichtsklassenGruppenService = new GewichtsklassenGruppeService();
@@ -38,7 +38,7 @@ export class TurnierController {
   async ladeWettkampfreihenfolgeJeMatteRandori(@QueryParam('error') error: string, @Res() res: Response) {
     logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
     const gwks = await gewichtsklassenGruppenService.lade();
-    const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((m1, m2) => m1.id - m2.id);
+    const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((matte1, matte2) => matte1.id - matte2.id);
 
     const altersklassen = new Set()
     gwks.map(gwk => altersklassen.add(gwk.altersKlasse))
@@ -88,26 +88,35 @@ export class TurnierController {
   @Render("druckansicht_begegnungen_randori.hbs")
   async ladeDruckAnsichtBegegnungenRandori(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
     logger.debug('lade Druckansicht Randori-Begegnungen für ' + altersklasse);
-    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
-    
-    let filteredMatten: Matte[] = [];
-    let rundeTotal = 1;
-    for (let mat of wettkampfreihenfolgeJeMatte) {
-      const filteredRunden = mat.runden.filter(r => r.altersklasse == altersklasse)
+    const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((matte1, matte2) => matte1.id - matte2.id);
 
-      // prüfen ob wir eine komplette Runde (=gleichzeitige Kämpfe auf einer Matte) fertig haben
-      for (let i = 0; i < filteredRunden.length; i++) {
+    // filter nach altersklasse
+    const wettkampfreihenfolgeJeMatteGefiltert = wettkampfreihenfolgeJeMatte.filter(matte => matte.runden.some(r => r.altersklasse == altersklasse))
+    console.log(wettkampfreihenfolgeJeMatteGefiltert)
+
+    // gruppiere nach Gruppen um besser drucken (Seitenumbruch) zu können
+    const wettkampfreihenfolgeJeMatteGefiltertUndGruppiert: Matte[] = [];
+    for (let mat of wettkampfreihenfolgeJeMatteGefiltert) {
+      const filteredRunden = mat.runden.filter(r => r.altersklasse == altersklasse)
+      let gruppenRunden: GruppenRunde[] = []
+      gruppenRunden[0] = {runden: []};
+      let gruppenRundenNummer = 0;
+    
+      for (let i = 0; i < filteredRunden.length; i++) {  
         let aktuelleGruppe = filteredRunden[i].gruppe.id
         let vorherigeGruppe = i > 0 ? filteredRunden[i-1].gruppe.id : filteredRunden[i].gruppe.id
+        
         if (aktuelleGruppe != vorherigeGruppe) {
-          rundeTotal += 1
+          gruppenRunden.push({runden: []})
+          gruppenRundenNummer += 1
         }
-        filteredRunden[i].rundeTotal = rundeTotal
+        gruppenRunden[gruppenRundenNummer].runden.push(filteredRunden[i])
       }
-      filteredMatten.push({id: mat.id, runden: filteredRunden})
+
+      wettkampfreihenfolgeJeMatteGefiltertUndGruppiert.push({id: mat.id, runden: [], gruppenRunden: gruppenRunden})
     }
 
-    return { matten: filteredMatten }
+    return { matten: wettkampfreihenfolgeJeMatteGefiltertUndGruppiert }
   }
 
   @Get('/turnier/begegnungen/randori_printview_matches_inserting_data/:altersklasse')
