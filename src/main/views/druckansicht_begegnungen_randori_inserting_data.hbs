@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="de">
-<html lang="de">
   <head>
   <title>Judo-Turniersoftware</title>
   <link rel="stylesheet" href="/css/interface.css">
@@ -18,43 +17,49 @@
       tr {
         vertical-align: middle;
       }
-
-      .groupsrow {
-        break-inside: avoid;
+      .printlayout_name {
+        width: 150px;
       }
   </style>
 </head>
 <body>
+  <script src="/js/paged.polyfill.min.js"></script>
   <div>
-    <div class="generalcontent">
+    <div class="">
       {{#each matten}}
         <div class="wettkampfgruppe printing">
           <div class="listeneintrag-titel">Matte {{id}}</div>
           
           {{#each gruppenRunden}}
-            <div class="table">
+            <div class="flex_warp">
               {{#each runden as |runden rundenindex|}}
-                {{#each begegnungen}}
-                  <div class="table-row">
-                    <div class="table-cell column1 hochkannt">
-                      {{#if (gleichesElement @rundenindex 0)}}
-                        <div class="gruppentitel_2">
-                          Gruppe {{runden.gruppe.name}}, Runde {{runden.gruppen_runde}} (Wettkampf Nr. {{runden.matten_runde}} insgesamt)
-                        </div>
-                      {{/if}}
-                    </div>
-                  
-                    <div>
+                {{#if (gleichesElement @rundenindex 0)}}
+                  <div class="gruppentitel_2 box">
+                    Gruppe {{runden.gruppe.name}}<br>
+                    Gruppen-Runde {{runden.gruppen_runde}}<br>
+                    Wettkampf-Nr. {{runden.matten_runde}}
+                  </div>
+                {{/if}}
+              
+                <div class="box">
+                  {{#each begegnungen}}
+                    <div class="">
                       <table>
                         <tbody>
                           <tr>
-                            <td class="wettkaempfer name" style="width: 200px;">{{wettkaempfer1.name}}</td>
-                            <td class="{{wettkaempfer1.farbe}}" style="width: 60px;">{{wettkaempfer1.farbe}}</td>
-                            <td style="width: 200px;">({{wettkaempfer1.verein.name}})</td> 
-                            <td style="width: 50px;"></td>
-                            <td class="wettkaempfer name" style="width: 200px;">{{wettkaempfer2.name}}</td>
-                            <td class="{{wettkaempfer2.farbe}}" style="width: 60px;">{{wettkaempfer2.farbe}}</td>
-                            <td style="width: 200px;">({{wettkaempfer2.verein.name}})</td>
+                            <td class="wettkaempfer name printlayout_name">{{wettkaempfer1.name}}</td>
+                            <td></td>
+                            <td class="wettkaempfer name printlayout_name">{{wettkaempfer2.name}}</td>
+                          </tr>
+                          <tr>
+                            <td><div class="{{wettkaempfer1.farbe}}">{{wettkaempfer1.farbe}}</div></td>
+                            <td></td>
+                            <td class="{{wettkaempfer2.farbe}}">{{wettkaempfer2.farbe}}</td>
+                          </tr>
+                          <tr>
+                            <td>({{wettkaempfer1.verein.name}})</td> 
+                            <td></td>
+                            <td>({{wettkaempfer2.verein.name}})</td>
                           </tr>
                           <tr>
                             <td>
@@ -80,8 +85,6 @@
                               </table>
                             </td>
                             <td></td>
-                            <td></td>
-                            <td></td>
                             <td>
                               <table>
                                 <tbody>
@@ -105,12 +108,11 @@
                               </table>
                             </td>
                           </tr>
-                          <tr><td class="seitenumbruch">----------</td></tr>
                         </tbody>
                       </table>
                     </div>
-                  </div>
-                {{/each}}
+                  {{/each}}
+                </div>
               {{/each}}
             </div>
           {{/each}}

@@ -198,7 +198,8 @@ button {
 
 .listeneintrag-header {
   display: flex;
-  margin-top: 20px;page-break-before: auto;
+  margin-top: 20px;
+  page-break-before: auto;
 }
 
 .justifycontent {
@@ -440,7 +441,7 @@ tr {
 .emptyTableCell {
   background-color: white;
   border-style: dotted;
-  width: 150px;
+  width: 50px;
   height: 30px;
 }
 
@@ -452,6 +453,7 @@ tr {
   display: table;
   width: 100%; /* Passen Sie die Breite nach Bedarf an */
   margin-bottom: 20px;
+  border-bottom: 1px solid #000;
 }
 
 .table .wettkaempfer_name {
@@ -472,9 +474,6 @@ tr {
   text-align: left; /* Textausrichtung */
 }
 
-.column1 {
-  /* width: 180px !important; */
-}
 .columnVerein{
   width: 160px;
 }
@@ -491,4 +490,19 @@ tr {
   display: inline-block;
   position: relative;
   top: 430px;
+}
+
+.flex_warp {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 80px;
+  border-bottom: 1px solid #000;
+}
+
+.box {
+  width: 50%;
+}
+
+.gruppentitel_2 {
+  font-size: medium;
 }
