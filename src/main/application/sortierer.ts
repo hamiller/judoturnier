@@ -3,6 +3,7 @@ import { Begegnung } from "../model/begegnung";
 import { WettkampfGruppe } from "../model/wettkampfgruppe";
 import { Matte, Runde } from "../model/matte";
 import { getLogger } from './logger';
+import { log } from "console";
 
 const PAUSEN = 2;
 
@@ -48,7 +49,7 @@ export class Sortierer {
     // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
     if (gruppen.length % 2 == 0) {
       logger.debug("Berechne gerade Anzahl an Gruppen (" + gruppen.length + ")");
-      let [, neueRunden] = this.gruppiereAbwechselnd(gruppen, rundenNummer);
+      let [, neueRunden] = this.gruppiereAbwechselndPaare(gruppen, rundenNummer);
       runden = runden.concat(neueRunden);
     }
     // ungerade Anzahl an Gruppen -> 2 Gruppen je Matte und einmal 3 Gruppen je Matte
@@ -59,48 +60,17 @@ export class Sortierer {
         // behandle die letzten 3 Gruppen separat und gruppiere zuerst die anderen Gruppen
         const letztenDreiGruppen = gruppen.slice(gruppen.length - 3, gruppen.length);
         const andereGruppen = gruppen.slice(0, gruppen.length - 3);
-        let [neueRundenNummer, neueRunden] = this.gruppiereAbwechselnd(andereGruppen, rundenNummer);
+        let [neueRundenNummer, neueRunden] = this.gruppiereAbwechselndPaare(andereGruppen, rundenNummer);
         runden = runden.concat(neueRunden);
         rundenNummer = neueRundenNummer;
 
         // jetzt die letzten drei Gruppen
-        const gruppe1 = letztenDreiGruppen[0];
-        const gruppe2 = letztenDreiGruppen[1];
-        const gruppe3 = letztenDreiGruppen[2];
-        const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-        const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-        const altersKlasse3 = gruppe3.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
-
-        let gruppe1Runde = 0;
-        let gruppe2Runde = 0;
-        let gruppe3Runde = 0;
-        // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
-        for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length, gruppe3.begegnungsRunden.length); r++) {
-          if (gruppe1.begegnungsRunden[r]) {
-            gruppe1Runde += 1;
-            let rundenName = rundenNummer + 1;
-            const runde1: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe1Runde, rundeTotal: undefined, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
-            runden.push(runde1);
-            rundenNummer += 1;
-          }
-          if (gruppe2.begegnungsRunden[r]) {
-            gruppe2Runde += 1;
-            let rundenName = rundenNummer + 1;
-            const runde2: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe2Runde, rundeTotal: undefined, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
-            runden.push(runde2);
-            rundenNummer += 1;
-          }
-          if (gruppe3.begegnungsRunden[r]) {
-            gruppe3Runde += 1;
-            let rundenName = rundenNummer + 1;
-            const runde3: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe3Runde, rundeTotal: undefined, altersklasse: altersKlasse3, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r] };
-            runden.push(runde3);
-            rundenNummer += 1;
-          }
-        }
+        [neueRundenNummer, neueRunden] = this.gruppiereAbwechselndTrios(letztenDreiGruppen, rundenNummer);
+        runden = runden.concat(neueRunden);
+        rundenNummer = neueRundenNummer;
       }
       else {
-        logger.debug("Es existiert nur eine Gruppe, daher fügen wir diese komplett hinzu");
+        logger.info("Es existiert nur eine Gruppe, daher fügen wir diese komplett hinzu");
         const gruppeZuletzt = gruppen[gruppen.length - 1];
         let gruppeRunde = 0;
         for (let r = 0; r < gruppeZuletzt.begegnungsRunden.length; r++) {
@@ -116,7 +86,7 @@ export class Sortierer {
     return runden;
   }
 
-  private gruppiereAbwechselnd(gruppen: WettkampfGruppe[], rundenNummer: number): [number, Runde[]] {
+  private gruppiereAbwechselndPaare(gruppen: WettkampfGruppe[], rundenNummer: number): [number, Runde[]] {
     const runden: Runde[] = [];
     let resultRundenNummer = rundenNummer;
     for (let gruppenNr = 0; gruppenNr < gruppen.length; gruppenNr += 2) {
@@ -136,6 +106,11 @@ export class Sortierer {
           runden.push(runde1);
           resultRundenNummer += 1;
         }
+        else {
+          // Gruppe 1 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
+          logger.info("Gruppe 1 ist leer, füge Dummy ein")
+        }
+
         if (gruppe2.begegnungsRunden[r]) {
           gruppe2Runde += 1
           let rundenName = resultRundenNummer + 1;
@@ -143,6 +118,65 @@ export class Sortierer {
           runden.push(runde2);
           resultRundenNummer += 1;
         }
+        else {
+          // Gruppe 2 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
+          logger.info("Gruppe 2 ist leer, füge Dummy ein")
+        }
+      }
+    }
+    return [resultRundenNummer, runden];
+  }
+
+  private gruppiereAbwechselndTrios(gruppen: WettkampfGruppe[], rundenNummer: number): [number, Runde[]] {
+    const runden: Runde[] = [];
+    const gruppe1 = gruppen[0];
+    const gruppe2 = gruppen[1];
+    const gruppe3 = gruppen[2];
+    const altersKlasse1 = gruppe1.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
+    const altersKlasse2 = gruppe2.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
+    const altersKlasse3 = gruppe3.begegnungsRunden[0][0].wettkaempfer1.altersklasse;
+
+    let resultRundenNummer = rundenNummer;
+    let gruppe1Runde = 0;
+    let gruppe2Runde = 0;
+    let gruppe3Runde = 0;
+        
+    // Abwechselnd die Begegnungen der gruppe1 und gruppe2 nehmen und der Matte hinzufügen
+    for (let r = 0; r < Math.max(gruppe1.begegnungsRunden.length, gruppe2.begegnungsRunden.length, gruppe3.begegnungsRunden.length); r++) {
+      if (gruppe1.begegnungsRunden[r]) {
+        gruppe1Runde += 1;
+        let rundenName = rundenNummer + 1;
+        const runde1: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe1Runde, rundeTotal: undefined, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.begegnungsRunden[r] };
+        runden.push(runde1);
+        rundenNummer += 1;
+      }
+      else {
+        // Gruppe 1 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
+        logger.info("Gruppe 1 ist leer, füge Dummy ein")
+      }
+
+      if (gruppe2.begegnungsRunden[r]) {
+        gruppe2Runde += 1;
+        let rundenName = rundenNummer + 1;
+        const runde2: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe2Runde, rundeTotal: undefined, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.begegnungsRunden[r] };
+        runden.push(runde2);
+        rundenNummer += 1;
+      }
+      else {
+        // Gruppe 2 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
+        logger.info("Gruppe 2 ist leer, füge Dummy ein")
+      }
+
+      if (gruppe3.begegnungsRunden[r]) {
+        gruppe3Runde += 1;
+        let rundenName = rundenNummer + 1;
+        const runde3: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe3Runde, rundeTotal: undefined, altersklasse: altersKlasse3, gruppe: gruppe3, begegnungen: gruppe3.begegnungsRunden[r] };
+        runden.push(runde3);
+        rundenNummer += 1;
+      }
+      else {
+        // Gruppe 3 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
+        logger.info("Gruppe 3 ist leer, füge Dummy ein")
       }
     }
     return [resultRundenNummer, runden];
