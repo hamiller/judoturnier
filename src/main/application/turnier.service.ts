@@ -120,7 +120,7 @@ export class TurnierService {
       
       // TODO
       // sortiere die Gruppen, sodass die Gruppen mit wenigen Kämpfen ganz hinten sind, aber die Altersklassen zusammen bleiben
-      // gruppen.sort((gs1, gs2) => if (gs2.begegnungsRunden[0][0].wettkaempfer1.altersklasse ) gs2.begegnungsRunden.length - gs1.begegnungsRunden.length);
+      // gruppen.sort((gs1, gs2) => if (gs2.alleGruppenBegegnungen[0][0].wettkaempfer1.altersklasse ) gs2.alleGruppenBegegnungen.length - gs1.alleGruppenBegegnungen.length);
       // this.logWettkampfGruppen(gruppen)
       let runden: Runde[] = [];
       switch (reihenfolge) {
@@ -137,10 +137,11 @@ export class TurnierService {
 
     const erwartet = wettkampfGruppenJeMatten.reduce(
       (s1, wgm) => s1 + wgm.reduce(
-        (s2, gr) => s2 + gr.begegnungsRunden.reduce(
+        (s2, gr) => s2 + gr.alleGruppenBegegnungen.reduce(
           (s3, br) => s3 + br.length, 0), 0), 0)
     const summe = matten.reduce((s, m) => s + m.runden.reduce((s2, r) => s2 + r.begegnungen.length, 0), 0)
     logger.debug("erwartet, summe, mattenanzahl", {data: {erwartet: erwartet, summe: summe, mattenanzahl: matten.length}})
+    logger.debug("Begegnungen: ", {data: matten})
     return matten;
   }
 
@@ -171,12 +172,12 @@ export class TurnierService {
     const groups: any[] = []
     gruppe.map(g => {
       const runden: any[] = [];
-      g.begegnungsRunden.map(bArray => {
+      g.alleGruppenBegegnungen.map(bArray => {
         bArray.map(b => runden.push({Begegnung: b.wettkaempfer1.name +" VS " + b.wettkaempfer2?.name}))
       });
   
       const w = new Set();
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }));
@@ -196,11 +197,11 @@ export class TurnierService {
 
     let logmessage: any = {
       AnzahlDerGruppen: gruppe.length,
-      AnzahlBegegnungenJeGruppe: gruppe.reduce((s, w) => s + w.begegnungsRunden.length + ",", ""),
+      AnzahlBegegnungenJeGruppe: gruppe.reduce((s, w) => s + w.alleGruppenBegegnungen.length + ",", ""),
       Gruppen: groups
     };
 
-    logger.debug("Inhalt Begegnungsrunden", {data :logmessage});
+    logger.debug("Inhalt alleGruppenBegegnungen", {data :logmessage});
   }
   
   private checkGruppenSindValide(gruppen: GewichtsklassenGruppe[]): void {

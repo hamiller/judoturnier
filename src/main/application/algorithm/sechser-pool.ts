@@ -30,7 +30,7 @@ export class SechserPool implements Algorithmus {
         id: parseInt(id),
         name: gewichtsklassenGruppe.name,
         typ: "(" + gewichtsklassenGruppe.minGewicht + "" + gewichtsklassenGruppe.maxGewicht +  + " " + gewichtsklassenGruppe.altersKlasse + ")",
-        begegnungsRunden: [sortedBegegnungen]
+        alleGruppenBegegnungen: [sortedBegegnungen]
       }
 
       result.push(wettkampfGruppe);

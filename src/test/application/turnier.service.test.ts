@@ -16,10 +16,10 @@ describe('Erstellen von Begegnungen', () => {
     const wettkampfGruppen = service.erstelleWettkampfgruppen(Hilfsdaten.gwks2, new JederGegenJeden(), 2);
     
     assert.equal(wettkampfGruppen.length, 1);
-    assert.equal(wettkampfGruppen[0].begegnungsRunden.reduce((sum, g) => sum + g.length, 0), 6);
+    assert.equal(wettkampfGruppen[0].alleGruppenBegegnungen.reduce((sum, g) => sum + g.length, 0), 6);
 
     // im Randori sind max 3 Kämpfe pro Matte
-    assert.ok(wettkampfGruppen[0].begegnungsRunden.every(v => v.length <= 3))
+    assert.ok(wettkampfGruppen[0].alleGruppenBegegnungen.every(v => v.length <= 3))
   });
 
   it ('Komplex: korrekte Wettkampfgruppen aus Gewichtsgruppen', () => {    
@@ -34,7 +34,7 @@ describe('Erstellen von Begegnungen', () => {
       const erwarteteAnzahl = n*(n-1)*1/2;
       total += erwarteteAnzahl;
     }
-    const gesamtKaempfe = wettkampfGruppen.reduce((s, g) => s+g.begegnungsRunden.reduce((sum, g) => sum + g.length, 0), 0);
+    const gesamtKaempfe = wettkampfGruppen.reduce((s, g) => s+g.alleGruppenBegegnungen.reduce((sum, g) => sum + g.length, 0), 0);
     assert.equal(gesamtKaempfe, total);
 
     
@@ -42,14 +42,14 @@ describe('Erstellen von Begegnungen', () => {
     console.log("wettkampfGruppen")
     wettkampfGruppen.map(g => {
       console.log("\t gruppe\n")
-      g.begegnungsRunden.map(bArray => {
+      g.alleGruppenBegegnungen.map(bArray => {
         console.log("\t\t runde\n")
         bArray.map(b => console.log("\t\t\t" + b.wettkaempfer1.name +"-"+b.wettkaempfer2?.name))
       })
     });
 
     // im Randori sind max 3 Kämpfe pro Matte
-    assert.ok(wettkampfGruppen.every(v => v.begegnungsRunden.every(r => r.length <= 3)));
+    assert.ok(wettkampfGruppen.every(v => v.alleGruppenBegegnungen.every(r => r.length <= 3)));
     
   });
 
@@ -77,7 +77,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of Hilfsdaten.wks) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))
@@ -98,7 +98,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of Hilfsdaten.wks) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))
@@ -121,7 +121,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of data) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))
@@ -145,7 +145,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of data) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))
@@ -183,7 +183,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of Hilfsdaten.wks) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))
@@ -204,7 +204,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of Hilfsdaten.wks) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))
@@ -227,7 +227,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of data) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))
@@ -251,7 +251,7 @@ describe('Erstellen von Begegnungen', () => {
     var total = 0;
     for (const g of data) {
       const w = new Set()
-      g.begegnungsRunden.map(ra => ra.map(r => {
+      g.alleGruppenBegegnungen.map(ra => ra.map(r => {
         w.add(r.wettkaempfer1.name)
         w.add(r.wettkaempfer2!.name)
       }))

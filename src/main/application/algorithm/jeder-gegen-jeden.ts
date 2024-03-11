@@ -31,7 +31,7 @@ export class JederGegenJeden implements Algorithmus {
         id: gewichtsklassenGruppe.id ? gewichtsklassenGruppe.id : parseInt(id),
         name: gewichtsklassenGruppe.name,
         typ: "(" + gewichtsklassenGruppe.minGewicht + "" + gewichtsklassenGruppe.maxGewicht + " " + gewichtsklassenGruppe.altersKlasse + ")",
-        begegnungsRunden: begegnungen
+        alleGruppenBegegnungen: begegnungen
       }
       result.push(wettkampfGruppe);
     }

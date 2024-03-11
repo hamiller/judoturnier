@@ -4,5 +4,5 @@ export interface WettkampfGruppe {
   id: number;
   name: string;
   typ: string;
-  begegnungsRunden: Begegnung[][];
+  alleGruppenBegegnungen: Begegnung[][];
 }
