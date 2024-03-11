@@ -354,7 +354,8 @@ button {
 }
 
 .braun {
-  background-color: brown;
+  background-color: #723f21;
+  color: white;
 }
 
 .gelb {
@@ -367,10 +368,12 @@ button {
 
 .gruen {
   background-color: forestgreen;
+  color: white;
 }
 
 .blau {
-  background-color: cornflowerblue;
+  background-color: rgb(54, 111, 216);
+  color: white;
 }
 
 .vorhanden {
