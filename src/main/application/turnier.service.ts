@@ -141,7 +141,8 @@ export class TurnierService {
           (s3, br) => s3 + br.length, 0), 0), 0)
     const summe = matten.reduce((s, m) => s + m.runden.reduce((s2, r) => s2 + r.begegnungen.length, 0), 0)
     logger.debug("erwartet, summe, mattenanzahl", {data: {erwartet: erwartet, summe: summe, mattenanzahl: matten.length}})
-    logger.debug("Begegnungen: ", {data: matten})
+    // const runden = matten[1].runden.flatMap(runde => runde.begegnungen)
+    // logger.debug("Begegnungen Matte 1: ", {data: runden})
     return matten;
   }
 

@@ -55,6 +55,7 @@ CREATE TABLE begegnung (
   id SERIAL,
   wettkaempfer1 INTEGER,
   wettkaempfer2 INTEGER,
+  altersklasse VARCHAR(10),
   strafenWettkaempfer1 INTEGER,
   punkteWettkaempfer1 INTEGER,
   strafenWettkaempfer2 INTEGER,

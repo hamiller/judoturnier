@@ -143,12 +143,11 @@ export class WettkampfRepository {
     logger.debug("Delete some wettkampf from db");
     const client = await this.pool.connect();
     try {
-      const { rows } = await client.query('SELECT distinct(b.id) FROM begegnung b join wettkaempfer w1 on w1.id = b.wettkaempfer1 join wettkaempfer w2 on w2.id = b.wettkaempfer2 where w1.altersklasse = $1 or w2.altersklasse = $1',
-        [altersKlasse]);
       const begegnungIdSet = new Set();
-      rows.forEach(r => begegnungIdSet.add(r.id));
-      const begegnungIds = Array.from(begegnungIdSet.values());
+      await client.query('SELECT distinct(b.id) FROM begegnung b where b.altersklasse = $1', [altersKlasse])
+        .then(resault => resault.rows.forEach(r => begegnungIdSet.add(r.id)));
       
+      const begegnungIds = Array.from(begegnungIdSet.values());
       await client.query('DELETE FROM wettkampf where begegnung = ANY ($1)', [begegnungIds]);
       await client.query('DELETE FROM begegnung where id = ANY ($1)', [begegnungIds]);
       return;
@@ -166,7 +165,8 @@ export class WettkampfRepository {
     try {
       for (const runde of matte.runden) {
         for (const begegnung of runde.begegnungen) {
-          var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);
+          if (!begegnung.wettkaempfer1.id) throw Error("Wettkämpfer '" + begegnung.wettkaempfer1.name + "' hat keine ID!");
+          var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2, altersklasse) VALUES ($1, $2, $3) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id, begegnung.wettkaempfer1.altersklasse]);
           var begegnung_id = result_begegnung.rows[0].id;
           await client.query('INSERT INTO wettkampf (matte_id, matten_runde, gruppen_runde, gruppe, begegnung) VALUES ($1, $2, $3, $4, $5) RETURNING id',  [matte.id, runde.matten_runde, runde.gruppen_runde, runde.gruppe.id, begegnung_id]);
         }
@@ -229,11 +229,9 @@ export class WettkampfRepository {
         "  ) as gruppe " +
         "from wettkampf m  " +
         "left join begegnung b on b.id = m.begegnung " +
-        "join wettkaempfer w1 " +
-        "on w1.id = b.wettkaempfer1 " +
-        "join wettkaempfer w2 " +
-        "on w2.id = b.wettkaempfer2 " +
-        "join gewichtsklassengruppen gwk on m.gruppe = gwk.id " +
+        "left join wettkaempfer w1 on w1.id = b.wettkaempfer1 " +
+        "left join wettkaempfer w2 on w2.id = b.wettkaempfer2 " +
+        "left join gewichtsklassengruppen gwk on m.gruppe = gwk.id " +
         "order by m.id; "
       );
       return matteEntitiesToDtos(rows);

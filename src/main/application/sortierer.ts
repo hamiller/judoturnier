@@ -136,15 +136,17 @@ export class Sortierer {
 
   private dummyRunde(resultRundenNummer: number, rundenName: number, gruppenRunde: number, altersKlasse: Altersklasse, gruppe: WettkampfGruppe): Runde {
     logger.debug("erstelle Pause")
-    const pause: Begegnung = {wettkaempfer1: {
-      name: "Pause",
-      geschlecht: Geschlecht.m,
-      altersklasse: altersKlasse,
-      verein: {name: ""},
-      checked: false,
-      printed: false
-    }};
-    return { id: resultRundenNummer, matten_runde: rundenName, gruppen_runde: gruppenRunde, rundeTotal: undefined, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: [pause] };
+    const pausenBegegnung: Begegnung = {wettkaempfer1: {
+        id: -1,
+        name: "Pause",
+        geschlecht: Geschlecht.m,
+        altersklasse: altersKlasse,
+        verein: {name: ""},
+        checked: false,
+        printed: false
+      }
+    };
+    return { id: resultRundenNummer, matten_runde: rundenName, gruppen_runde: gruppenRunde, rundeTotal: undefined, altersklasse: altersKlasse, gruppe: gruppe, begegnungen: [pausenBegegnung] };
   }
 
   private gruppiereAbwechselndTrios(gruppen: WettkampfGruppe[], rundenNummer: number): [number, Runde[]] {

@@ -111,7 +111,7 @@ describe('Erstellen von Begegnungen', () => {
     assert.equal(gesamtKaempfe, total);
   });
 
-  it('Reihenfolge der Gruppen gerade Anzahl, WettkampfReihenfolge.abwechselnd', () => {
+  it('Reihenfolge der Gruppen gerade Anzahl, WettkampfReihenfolge.abwechselnd, wegen Ungleichgewicht mit 2 Pausen', () => {
     const data = Hilfsdaten.wks_gerade;
     const mattenZahl = 1
     const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.abwechselnd);
@@ -129,13 +129,14 @@ describe('Erstellen von Begegnungen', () => {
       const erwarteteAnzahl = n*(n-1)*1/2;
       total += erwarteteAnzahl;
     }
+    total += 2 // plus 2 Pausen
     const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
       .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
     assert.equal(gesamtKaempfe, total);
   });
 
 
-  it('Reihenfolge der Gruppen unterschiedlich viele Begegnungen, WettkampfReihenfolge.abwechselnd', () => {
+  it('Reihenfolge der Gruppen unterschiedlich viele Begegnungen, WettkampfReihenfolge.abwechselnd, wegen Ungleichgewicht mit 4 Pausen', () => {
     const data = Hilfsdaten.wks_gerade_unterschiedlich;
     const mattenZahl = 1
     const matten = service.erstelleGruppenReihenfolgeRandori(data, mattenZahl, WettkampfReihenfolge.abwechselnd);
@@ -153,6 +154,7 @@ describe('Erstellen von Begegnungen', () => {
       const erwarteteAnzahl = n*(n-1)*1/2;
       total += erwarteteAnzahl;
     }
+    total += 4 // plus 4 Pausen
     const gesamtKaempfe = matten.map((matte) => matte.runden.reduce((anzahl, runde) => anzahl + runde.begegnungen.length, 0))
       .reduce((gesamt, anzahl) => gesamt + anzahl, 0);
     assert.equal(gesamtKaempfe, total);

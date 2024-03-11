@@ -7,7 +7,9 @@
     "build": "npx tsc",
     "start": "node dist/main.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/main.js\"",
-    "test": "jest"
+    "test": "jest",
+    "test:single": "jest -i 'turnier.service.test' -t 'Reihenfolge der Gruppen unterschiedlich viele Begegnungen, WettkampfReihenfolge.abwechselnd'"
+
   },
   "author": "Florian Miess",
   "license": "GNU General Public License v3.0 only",
