@@ -51,7 +51,7 @@ export class TurnierService {
 
   async ladeWettkampfreihenfolge(): Promise<Matte[]> {
     logger.debug("Lade Wettkampfreihenfolge");
-    return wettkampfRepo.ladeMatten();
+    return await wettkampfRepo.ladeMatten();
   }
 
   async erstelleWettkampfreihenfolge(): Promise<void> {
@@ -69,8 +69,8 @@ export class TurnierService {
       this.checkGruppenSindValide(gwks);
 
       const algorithmus = new JederGegenJeden();
-      const wettkampfGruppen = await this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
-      const matten: Matte[] = await this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl, einstellungen.wettkampfReihenfolge);
+      const wettkampfGruppen = this.erstelleWettkampfgruppen(gwks, algorithmus, einstellungen.mattenAnzahl);
+      const matten: Matte[] = this.erstelleGruppenReihenfolgeRandori(wettkampfGruppen, einstellungen.mattenAnzahl, einstellungen.wettkampfReihenfolge);
     
       await wettkampfRepo.speichereMatten(matten);
       return;
@@ -140,7 +140,7 @@ export class TurnierService {
         (s2, gr) => s2 + gr.begegnungsRunden.reduce(
           (s3, br) => s3 + br.length, 0), 0), 0)
     const summe = matten.reduce((s, m) => s + m.runden.reduce((s2, r) => s2 + r.begegnungen.length, 0), 0)
-    console.log("erwartet, summe, mattenanzahl", erwartet, summe, matten.length)
+    logger.debug("erwartet, summe, mattenanzahl", {data: {erwartet: erwartet, summe: summe, mattenanzahl: matten.length}})
     return matten;
   }
 

@@ -39,7 +39,6 @@ export class TurnierController {
     logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
     const gwks = await gewichtsklassenGruppenService.lade();
     const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((matte1, matte2) => matte1.id - matte2.id);
-
     const altersklassen = new Set()
     gwks.map(gwk => altersklassen.add(gwk.altersKlasse))
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte, altersklassen: altersklassen, preverror: error};
@@ -76,11 +75,18 @@ export class TurnierController {
   async erneuerWettkampfreihenfolgeFuerAltersklasse(@Body() ak: any,@Res() res: Response) {
     logger.debug('erstelle Wettkampfreihenfolge für altersklasse '+ ak);
     const altersklasse: Altersklasse = ak;
-    await turnierService.loescheWettkampfreihenfolgeAltersklasse(altersklasse);
-    await turnierService.erstelleWettkampfreihenfolgeAltersklasse(altersklasse);
+    let error = ""
+    try {
+      await turnierService.loescheWettkampfreihenfolgeAltersklasse(altersklasse);
+      await turnierService.erstelleWettkampfreihenfolgeAltersklasse(altersklasse);
+    }
+    catch (err: any) {
+      logger.error("Konnte Begegnungen nicht anlegen!", {error: err});
+      error = err.toString()
+    }
   
-    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori");
-    else res.redirect("/turnier/begegnungen/normal");
+    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori?error="+error);
+    else res.redirect("/turnier/begegnungen/normal?error="+error);
     return res;
   }
 

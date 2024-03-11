@@ -120,7 +120,8 @@ export class WettkampfRepository {
   }
 
   async speichereMatten(matten: Matte[]): Promise<void> {
-    return matten.forEach(matte => this.speichereMatte(matte));
+    await Promise.all(matten.map(matte => this.speichereMatte(matte)));
+    return;
   }
 
   async loescheAlleMatten(): Promise<void> {
@@ -167,7 +168,7 @@ export class WettkampfRepository {
         for (const begegnung of runde.begegnungen) {
           var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2) VALUES ($1, $2) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id]);
           var begegnung_id = result_begegnung.rows[0].id;
-          var result_wettkampf = await client.query('INSERT INTO wettkampf (matte_id, matten_runde, gruppen_runde, gruppe, begegnung) VALUES ($1, $2, $3, $4, $5) RETURNING id',  [matte.id, runde.matten_runde, runde.gruppen_runde, runde.gruppe.id, begegnung_id]);
+          await client.query('INSERT INTO wettkampf (matte_id, matten_runde, gruppen_runde, gruppe, begegnung) VALUES ($1, $2, $3, $4, $5) RETURNING id',  [matte.id, runde.matten_runde, runde.gruppen_runde, runde.gruppe.id, begegnung_id]);
         }
       }
       return;
@@ -175,6 +176,7 @@ export class WettkampfRepository {
       logger.error(error);
       throw error;
     } finally {
+      logger.info("Daten in die DB gespeichert")
       client.release();
     }
   }

@@ -83,9 +83,9 @@
   const renewBegegnungen = async () => {
     var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
     if (sicher) {
-      console.log("Fetching again...")
+      console.log("Erstelle alle Begegnungen neu");
       fetch('/turnier/begegnungen', { method: 'POST' })
-        .then((r) => location.href=r.url)
+        .then((r) => window.location.href=r.url)
     };
   };
 
@@ -93,7 +93,6 @@
     var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern in der Altersklasse\n\t" + altersklasse + "\nin Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
     if (sicher) {
       console.log("Erstelle die Begegnungen neu", altersklasse);
-      console.log("Fetching again 2...")
       fetch('/turnier/begegnung', { method: 'POST', body: altersklasse })
         .then(() => window.location.href='/turnier/begegnungen/randori')
     };
