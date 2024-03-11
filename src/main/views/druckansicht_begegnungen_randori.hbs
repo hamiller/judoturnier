@@ -33,17 +33,24 @@
               {{#each runden as |runden rundenindex|}}
                 {{#each begegnungen}}
                   <div class="table-row">
-                    <div class="table-cell column1">
-                      {{#if (gleichesElement @rundenindex 0)}}
-                        <div class="gruppentitel_2">
-                          Gruppe {{runden.gruppe.name}}, Runde {{runden.gruppen_runde}} (Wettkampf Nr. {{runden.matten_runde}} insgesamt)
-                        </div>
-                      {{/if}}
-                    </div>
-                  
-                    <div class="table-cell columnName wettkaempfer_name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</div><div class="table-cell columnVerein">({{wettkaempfer1.verein.name}})</div>
-                    <div class="table-cell columnVS">vs</div> 
-                    <div class="table-cell columnName wettkaempfer_name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</div><div class="table-cell columnVerein">({{wettkaempfer2.verein.name}})</div>
+                    {{#if (gleichesElement wettkaempfer1.name null)}}
+                      <div class="gruppentitel_2">
+                        Pause<br>
+                        (Ansonsten wäre nun Gruppe {{runden.gruppe.name}} an der Reihe)
+                      </div>
+                    {{else}}
+                      <div class="table-cell column1">
+                        {{#if (gleichesElement @rundenindex 0)}}
+                          <div class="gruppentitel_2">
+                            Gruppe {{runden.gruppe.name}}, Runde {{runden.gruppen_runde}} (Wettkampf Nr. {{runden.matten_runde}} insgesamt)
+                          </div>
+                        {{/if}}
+                      </div>
+                    
+                      <div class="table-cell columnName wettkaempfer_name {{wettkaempfer1.farbe}}">{{wettkaempfer1.name}}</div><div class="table-cell columnVerein">({{wettkaempfer1.verein.name}})</div>
+                      <div class="table-cell columnVS">vs</div> 
+                      <div class="table-cell columnName wettkaempfer_name {{wettkaempfer2.farbe}}">{{wettkaempfer2.name}}</div><div class="table-cell columnVerein">({{wettkaempfer2.verein.name}})</div>
+                    {{/if}}
                   </div>
                 {{/each}}
               {{/each}}

@@ -495,8 +495,9 @@ tr {
 .flex_warp {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 80px;
+  margin-bottom: 50px;
   border-bottom: 1px solid #000;
+  page-break-inside: avoid;
 }
 
 .box {
