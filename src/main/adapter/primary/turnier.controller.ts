@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Body, Controller, Get, Param, Post, Render, Res, QueryParam } from "routing-controllers";
+import { Body, Controller, Get, Param, Post, Render, Res, QueryParam, Delete } from "routing-controllers";
 import { GewichtsklassenGruppeService } from '../../application/gewichtsklassengruppe.service';
 import { getLogger } from "../../application/logger";
 import { TurnierService } from '../../application/turnier.service';
@@ -38,7 +38,7 @@ export class TurnierController {
   async ladeWettkampfreihenfolgeJeMatteRandori(@QueryParam('error') error: string, @Res() res: Response) {
     logger.debug('lade Wettkampfreihenfolge je Matte für Randori');
     const gwks = await gewichtsklassenGruppenService.lade();
-    const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((matte1, matte2) => matte1.id - matte2.id);
+    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
     const altersklassen = new Set()
     gwks.map(gwk => altersklassen.add(gwk.altersKlasse))
     return { gewichtsklassenGruppe: gwks, matten: wettkampfreihenfolgeJeMatte, altersklassen: altersklassen, preverror: error};
@@ -72,7 +72,7 @@ export class TurnierController {
   }
 
   @Post('/turnier/begegnung')
-  async erneuerWettkampfreihenfolgeFuerAltersklasse(@Body() ak: any,@Res() res: Response) {
+  async erneuerWettkampfreihenfolgeFuerAltersklasse(@Body() ak: any, @Res() res: Response) {
     logger.debug('erstelle Wettkampfreihenfolge für altersklasse '+ ak);
     const altersklasse: Altersklasse = ak;
     let error = ""
@@ -82,6 +82,22 @@ export class TurnierController {
     }
     catch (err: any) {
       logger.error("Konnte Begegnungen nicht anlegen!", {error: err});
+      error = err.toString()
+    }
+  
+    if (await turnierService.isRandori()) res.redirect("/turnier/begegnungen/randori?error="+error);
+    else res.redirect("/turnier/begegnungen/normal?error="+error);
+    return res;
+  }
+
+  @Delete('/turnier/begegnung')
+  async entferneWettkampfreihenfolgeFuerAltersklasse(@Res() res: Response) {
+    logger.debug('lösche Wettkampfreihenfolge für alle Altersklassen');
+    let error = ""
+    try {
+      await turnierService.loescheWettkampfreihenfolge();
+    }
+    catch (err: any) {
       error = err.toString()
     }
   
@@ -107,7 +123,7 @@ export class TurnierController {
   @Render("druckansicht_begegnungen_randori_inserting_data.hbs")
   async ladeDruckAnsichtBegegnungenRandoriDateneintrag(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
     logger.debug('lade Druckansicht Randori-Begegnungen zum Dateneintragen: ' + altersklasse);
-    const wettkampfreihenfolgeJeMatte = (await turnierService.ladeWettkampfreihenfolge()).sort((matte1, matte2) => matte1.id - matte2.id);
+    const wettkampfreihenfolgeJeMatte = await turnierService.ladeWettkampfreihenfolge();
 
     // filter nach altersklasse
     const wettkampfreihenfolgeJeMatteGefiltert = wettkampfreihenfolgeJeMatte.filter(matte => matte.runden.some(r => r.altersklasse == altersklasse))
@@ -127,7 +143,7 @@ export class TurnierController {
 
   @Post('/turnier/begegnungen/randori/:id')
   @Render("wettkampf_randori.hbs")
-  async speichereBegenungRandori(@Param('id') id: number, @Body() data: any, @Res() res: Response) {
+  async speichereBegegnungRandori(@Param('id') id: number, @Body() data: any, @Res() res: Response) {
     logger.debug('Aktuelle Begegnung ' + id);
     var wertung: Wertung = {
       id: id,

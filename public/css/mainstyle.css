@@ -510,3 +510,11 @@ tr {
 .gruppentitel_2 {
   font-size: medium;
 }
+
+.title_with_icons {
+  margin-left: 10px;
+}
+
+.clickbar  {
+  cursor: pointer;
+}

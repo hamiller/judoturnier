@@ -17,6 +17,7 @@
 
       <div class="actions">
         <button onclick="renewBegegnungen()"><span class="material-icons md-48 centered" title="Alle Wettkampfgruppen neu erstellen">create_new_folder</span> Alle Wettkampfgruppen neu erstellen</button>
+        <button onclick="deleteBegegnungen()"><span class="material-icons md-48 centered" title="Alle Wettkampfgruppen löschen">autorenew</span> Alle Wettkampfgruppen löschen</button>
         <div class="sameline">
         {{#each altersklassen}}
           <div class="actions ">
@@ -109,6 +110,14 @@
         .then(() => window.location.href='/turnier/begegnungen/randori')
     };
   }
+
+  const deleteBegegnungen = async (altersklasse) => {
+    var sicher = confirm("ACHTUNG\n\nHiermit werden alle bisherigen Zuordnung von Wettkämpfern aller Altersklassen\nin Wettkampf-Begegnungen gelöscht! \n\nSind sie sicher?");
+    if (sicher) {
+      fetch('/turnier/begegnung', { method: 'DELETE' })
+        .then(() => window.location.href='/turnier/begegnungen/randori')
+    };
+  };
 
   const openMatte = (evt, id) => {
     // Declare all variables

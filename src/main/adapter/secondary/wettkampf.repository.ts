@@ -224,15 +224,13 @@ export class WettkampfRepository {
         "     'name', gwk.name, " +
         "     'altersKlasse', gwk.altersklasse, " +
         "     'gruppenGeschlecht', gwk.gruppengeschlecht " +
-        // "      'teilnehmer', [] " +
-        // "      'gewichtsklasse', {} " +
         "  ) as gruppe " +
         "from wettkampf m  " +
         "left join begegnung b on b.id = m.begegnung " +
         "left join wettkaempfer w1 on w1.id = b.wettkaempfer1 " +
         "left join wettkaempfer w2 on w2.id = b.wettkaempfer2 " +
         "left join gewichtsklassengruppen gwk on m.gruppe = gwk.id " +
-        "order by m.id; "
+        "order by m.matte_id, m.matten_runde; "
       );
       return matteEntitiesToDtos(rows);
     } catch (error) {

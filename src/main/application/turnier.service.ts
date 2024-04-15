@@ -51,7 +51,7 @@ export class TurnierService {
 
   async ladeWettkampfreihenfolge(): Promise<Matte[]> {
     logger.debug("Lade Wettkampfreihenfolge");
-    return await wettkampfRepo.ladeMatten();
+    return await wettkampfRepo.ladeMatten().then(matten => matten.sort((matte1, matte2) => matte1.id - matte2.id));
   }
 
   async erstelleWettkampfreihenfolge(): Promise<void> {
