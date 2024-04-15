@@ -75,7 +75,7 @@ export class WettkampfRepository {
     logger.debug("Saving Wertung to db, mit id: " + wertung.id);
     const client = await this.pool.connect();
     try {
-      let query = {
+      const query = {
         text: "UPDATE begegnung " +
               "   SET " +
               "     strafenWettkaempfer1 = $2, " +
@@ -166,8 +166,8 @@ export class WettkampfRepository {
       for (const runde of matte.runden) {
         for (const begegnung of runde.begegnungen) {
           if (!begegnung.wettkaempfer1.id) throw Error("Wettkämpfer '" + begegnung.wettkaempfer1.name + "' hat keine ID!");
-          var result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2, altersklasse) VALUES ($1, $2, $3) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id, begegnung.wettkaempfer1.altersklasse]);
-          var begegnung_id = result_begegnung.rows[0].id;
+          const result_begegnung: any = await client.query('INSERT INTO begegnung (wettkaempfer1, wettkaempfer2, altersklasse) VALUES ($1, $2, $3) RETURNING id', [begegnung.wettkaempfer1.id, begegnung.wettkaempfer2?.id, begegnung.wettkaempfer1.altersklasse]);
+          const begegnung_id = result_begegnung.rows[0].id;
           await client.query('INSERT INTO wettkampf (matte_id, matten_runde, gruppen_runde, gruppe, begegnung) VALUES ($1, $2, $3, $4, $5) RETURNING id',  [matte.id, runde.matten_runde, runde.gruppen_runde, runde.gruppe.id, begegnung_id]);
         }
       }
@@ -176,7 +176,7 @@ export class WettkampfRepository {
       logger.error(error);
       throw error;
     } finally {
-      logger.info("Daten in die DB gespeichert")
+      logger.info("Daten in die DB gespeichert");
       client.release();
     }
   }
@@ -267,7 +267,7 @@ const matteEntityToDto = (data: any, matteArray: Matte[]): void => {
     technikWettkaempfer2: data.technikwettkaempfer2,
     kampfstilWettkaempfer2: data.kampfstilwettkaempfer2,
     fairnessWettkaempfer2: data.fairnesswettkaempfer2
-  }
+  };
 
   const begegnung: Begegnung = {
     begegnung_id: data.begegnung_id,
@@ -308,7 +308,7 @@ const matteDtoToEntity = (dto: Matte): any => {
     gruppe: dto.runden.map(runde => runde.id).join(), 
     begegnung: ""
   };
-}
+};
 
 const wettkampfEntityToDto = (data: any): Begegnung => {
   const wertung: Wertung = {
@@ -327,7 +327,7 @@ const wettkampfEntityToDto = (data: any): Begegnung => {
     technikWettkaempfer2: data.technikwettkaempfer2,
     kampfstilWettkaempfer2: data.kampfstilwettkaempfer2,
     fairnessWettkaempfer2: data.fairnesswettkaempfer2
-  }
+  };
   
   const begegnung: Begegnung = {
     begegnung_id: data.begegnung_id,
@@ -356,5 +356,5 @@ const wettkampfDtoToEntity = (dto: Wertung): any => {
       technikWettkaempfer2: dto.technikWettkaempfer2,
       kampfstilWettkaempfer2: dto.kampfstilWettkaempfer2,
       fairnessWettkaempfer2: dto.fairnessWettkaempfer2     
-    }
-}
+    };
+};

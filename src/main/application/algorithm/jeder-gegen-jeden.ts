@@ -32,7 +32,7 @@ export class JederGegenJeden implements Algorithmus {
         name: gewichtsklassenGruppe.name,
         typ: "(" + gewichtsklassenGruppe.minGewicht + "" + gewichtsklassenGruppe.maxGewicht + " " + gewichtsklassenGruppe.altersKlasse + ")",
         alleGruppenBegegnungen: begegnungen
-      }
+      };
       result.push(wettkampfGruppe);
     }
     return result;
@@ -110,7 +110,7 @@ export class JederGegenJeden implements Algorithmus {
     const letzteUngeradeTeilnehmerZahl = teilnehmerZahl - 2;
     for (let i = 0, k = letzteUngeradeTeilnehmerZahl; i < anzahlRunden; i++) {
         for (let j = 1; j < anzahlBegegnungenJeRunden; j++) {
-            runden[i][j].wettkaempfer2 = teilnehmer[k]
+            runden[i][j].wettkaempfer2 = teilnehmer[k];
 
             k--;
             if (k == -1)

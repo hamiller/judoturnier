@@ -1,7 +1,7 @@
 import express, { Application } from 'express';
 import { useExpressServer } from 'routing-controllers';
 import httpContext from 'express-http-context';
-import bodyParser from 'body-parser'
+import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { getLogger } from './application/logger';
 import 'reflect-metadata';
@@ -83,7 +83,7 @@ export default class AppServer {
     });
     hbs.registerHelper('istWarnung', function (isWarning) {
       if (isWarning) {
-        return "warnung"
+        return "warnung";
       }
     });
     hbs.registerHelper('setSelected', function (value, currentValue) {
@@ -101,7 +101,7 @@ export default class AppServer {
       return istLeer ? "leer" : "";
     });
     hbs.registerHelper('wertungVorhanden', function(wertung: Wertung | null) {
-      var hatWertung = (wertung != null && (wertung.kampfgeistWettkaempfer1 != null || wertung.sieger != null)) ? "vorhanden": "";
+      const hatWertung = (wertung != null && (wertung.kampfgeistWettkaempfer1 != null || wertung.sieger != null)) ? "vorhanden": "";
       return hatWertung;
     });
     hbs.registerHelper('vorherigesElement', function(items) {
@@ -117,8 +117,8 @@ export default class AppServer {
     hbs.registerHelper('gleichesElement', function(element1, element2) {
       return element1 == element2;
     });
-    hbs.registerHelper('concat', function() {
-      return [...arguments].join('');
+    hbs.registerHelper('concat', function(args) {
+      return [...args].join('');
     });
     
     
@@ -133,7 +133,7 @@ export default class AppServer {
   async start() {
     logger.debug("Starte...");
     AppServer.app.listen(port, () => {
-      logger.info(`Judo-Turniersoftware gestartet an Port *:${port}`)
+      logger.info(`Judo-Turniersoftware gestartet an Port *:${port}`);
     });
   }
 }

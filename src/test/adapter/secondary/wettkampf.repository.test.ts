@@ -33,12 +33,12 @@ describe('WettkampfRepository Test', () => {
   
     const result: Matte[] = await repo.ladeMatten();
 
-    expect(mockedDbPool.connect).toBeCalledTimes(1)
-    expect(result.length).toBe(1)
-    expect(result[0].runden.length).toBe(8)
-    expect(result[0].runden[0].begegnungen.length).toBe(1)
-    expect(result[0].runden[0].begegnungen[0].wettkaempfer1.id).toBe(3)
-    expect(result[0].runden[0].begegnungen[0].wettkaempfer2!.id).toBe(1)
+    expect(mockedDbPool.connect).toBeCalledTimes(1);
+    expect(result.length).toBe(1);
+    expect(result[0].runden.length).toBe(8);
+    expect(result[0].runden[0].begegnungen.length).toBe(1);
+    expect(result[0].runden[0].begegnungen[0].wettkaempfer1.id).toBe(3);
+    expect(result[0].runden[0].begegnungen[0].wettkaempfer2!.id).toBe(1);
   });
 });
 
@@ -268,4 +268,4 @@ const resultJson = [
           }
       }
   }
-]
+];

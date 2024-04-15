@@ -17,7 +17,7 @@ describe('Sortierung von Begegnungen', () => {
     // sortiereBegegnungen.slice(0,3).forEach(p => console.log(p.wettkaempfer1.name + "=>" + p.wettkaempfer2?.name));
 
     // assert.notEqual(sortiereBegegnungen[0].wettkaempfer1.id, sortiereBegegnungen[1].wettkaempfer1.id)
-    assert(true)
+    assert(true);
   });
 });
 

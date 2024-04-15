@@ -60,7 +60,7 @@ const config: GewichtsklasseConfig = {
       ]
     }
   ]
-}
+};
 
 export const getGewichtsklasse = (geschlecht: Geschlecht, alter: Altersklasse): Gewichtsklasse[] => {
   return config.geschlechter

@@ -42,7 +42,7 @@ describe('Erstellen von Gruppen', () => {
 
   it('korrekt erstellt ', async () => {
     const gewichtsKlassenGruppen = await service.teileInGewichtsklassen(teilnehmer);
-    console.log(gewichtsKlassenGruppen)
+    console.log(gewichtsKlassenGruppen);
     assert.equal(gewichtsKlassenGruppen.length,6); // eine leere Gruppe wird zusätzlich je Altersklasse erstellt
   });
 

@@ -26,7 +26,7 @@ export class VereinRepository {
     }
   }
 
-  async find(id: Number): Promise<Verein | null> {
+  async find(id: number): Promise<Verein | null> {
     logger.debug("Fetching Verein (" + id + ") from db");
     const client = await this.pool.connect();
     try {
@@ -43,7 +43,7 @@ export class VereinRepository {
     }
   }
 
-  async save(verein: Verein): Promise<Number> {
+  async save(verein: Verein): Promise<number> {
     logger.debug("Saving Verein to db");
     const client = await this.pool.connect();
     try {
@@ -69,11 +69,11 @@ export class VereinRepository {
     }
   }
 
-  async delete(id: Number): Promise<void> {
+  async delete(id: number): Promise<void> {
     logger.debug("Removing Verein from db");
     const client = await this.pool.connect();
     try {
-      let query = {
+      const query = {
         text: 'DELETE FROM Verein v WHERE v.id = $1',
         values: [id]
       };

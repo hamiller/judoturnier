@@ -4,7 +4,6 @@ import { WettkaempferRepository } from "../adapter/secondary/wettkaempfer.reposi
 import { getLogger } from './logger';
 import { VereinRepository } from "../adapter/secondary/verein.repository";
 import { Geschlecht } from "../model/geschlecht";
-import { altersklasseSortOrder } from "../model/altersklasse";
 import DatabasePool from "../config/db.config";
 
 const logger = getLogger('WiegenService');
@@ -15,7 +14,7 @@ export class WiegenService {
 
   
   async alleKaempfer(): Promise<Wettkaempfer[]> {
-    let kaempfer = await wettkaempferRepo.all();
+    const kaempfer = await wettkaempferRepo.all();
     kaempfer.sort((a, b) => {
       if (a.geschlecht === b.geschlecht) {
         return a.name.localeCompare(b.name);
@@ -26,15 +25,15 @@ export class WiegenService {
     return kaempfer;
   }
 
-  async ladeKaempfer(id: Number): Promise<Wettkaempfer | null> {
+  async ladeKaempfer(id: number): Promise<Wettkaempfer | null> {
     return await wettkaempferRepo.find(id);
   }
 
-  async speichereKaempfer(wettkaempfer: Wettkaempfer): Promise<Number> {
+  async speichereKaempfer(wettkaempfer: Wettkaempfer): Promise<number> {
     return await wettkaempferRepo.save(wettkaempfer);
   }
 
-  async loescheKaempfer(id: Number): Promise<void> {
+  async loescheKaempfer(id: number): Promise<void> {
     return await wettkaempferRepo.delete(id);
   }
 

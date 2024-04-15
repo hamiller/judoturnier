@@ -27,7 +27,7 @@ const sortierer = new Sortierer();
 
 export class TurnierService {
   async isRandori(): Promise<boolean> {
-    return await einstellungenRepo.load().then((einstellung) => einstellung.turnierTyp == TurnierTyp.randori).catch(() => {throw new Error("Turniertyp nicht gefunden")});
+    return await einstellungenRepo.load().then((einstellung) => einstellung.turnierTyp == TurnierTyp.randori).catch(() => {throw new Error("Turniertyp nicht gefunden");});
   }
   
   async ladeWertungFuerWettkampf(wettkampfId: number): Promise<Begegnung> {
@@ -35,7 +35,7 @@ export class TurnierService {
   }
 
   async speichereWertung(wertung: Wertung): Promise<void> {
-    await wettkampfRepo.speichereWertung(wertung)
+    await wettkampfRepo.speichereWertung(wertung);
   }
   
   async speichereTurnierEinstellungen(einstellungen: Einstellungen): Promise<Einstellungen> {
@@ -98,7 +98,7 @@ export class TurnierService {
   erstelleWettkampfgruppen(gewichtsklassenGruppen: GewichtsklassenGruppe[], algorithmus: Algorithmus, anzahlMatten: number): WettkampfGruppe[] {
     logger.debug("erstelle Wettkampfgruppen aus den Gewichtsklassengruppen");
     // erstelle alle Begegnungen in jeder Gruppe
-    let wettkampfGruppen: WettkampfGruppe[] = [];
+    const wettkampfGruppen: WettkampfGruppe[] = [];
     for (let i = 0; i < gewichtsklassenGruppen.length; i++) {
       const gruppe = gewichtsklassenGruppen[i];
       const wkg = algorithmus.erstelleWettkampfGruppen(i, gruppe, anzahlMatten);
@@ -109,10 +109,10 @@ export class TurnierService {
   
   erstelleGruppenReihenfolgeRandori(wettkampfGruppen: WettkampfGruppe[], anzahlMatten: number, reihenfolge: WettkampfReihenfolge): Matte[] {
     logger.debug("erstelle Reihenfolge der Wettkämpfe aus den Wettkmapfgruppen: " + reihenfolge);
-    let matten : Matte[] = [];
+    const matten : Matte[] = [];
 
     // Ausplitten der Begegnungen auf die Matten
-    let wettkampfGruppenJeMatten = this.splitArray(wettkampfGruppen, anzahlMatten);
+    const wettkampfGruppenJeMatten = this.splitArray(wettkampfGruppen, anzahlMatten);
 
     
     for (let m = 0; m < anzahlMatten; m++) {
@@ -138,9 +138,9 @@ export class TurnierService {
     const erwartet = wettkampfGruppenJeMatten.reduce(
       (s1, wgm) => s1 + wgm.reduce(
         (s2, gr) => s2 + gr.alleGruppenBegegnungen.reduce(
-          (s3, br) => s3 + br.length, 0), 0), 0)
-    const summe = matten.reduce((s, m) => s + m.runden.reduce((s2, r) => s2 + r.begegnungen.length, 0), 0)
-    logger.debug("erwartet, summe, mattenanzahl", {data: {erwartet: erwartet, summe: summe, mattenanzahl: matten.length}})
+          (s3, br) => s3 + br.length, 0), 0), 0);
+    const summe = matten.reduce((s, m) => s + m.runden.reduce((s2, r) => s2 + r.begegnungen.length, 0), 0);
+    logger.debug("erwartet, summe, mattenanzahl", {data: {erwartet: erwartet, summe: summe, mattenanzahl: matten.length}});
     // const runden = matten[1].runden.flatMap(runde => runde.begegnungen)
     // logger.debug("Begegnungen Matte 1: ", {data: runden})
     return matten;
@@ -170,17 +170,17 @@ export class TurnierService {
 
   private logWettkampfGruppen(gruppe: WettkampfGruppe[]): void {
     
-    const groups: any[] = []
+    const groups: any[] = [];
     gruppe.map(g => {
       const runden: any[] = [];
       g.alleGruppenBegegnungen.map(bArray => {
-        bArray.map(b => runden.push({Begegnung: b.wettkaempfer1.name +" VS " + b.wettkaempfer2?.name}))
+        bArray.map(b => runden.push({Begegnung: b.wettkaempfer1.name +" VS " + b.wettkaempfer2?.name}));
       });
   
       const w = new Set();
       g.alleGruppenBegegnungen.map(ra => ra.map(r => {
-        w.add(r.wettkaempfer1.name)
-        w.add(r.wettkaempfer2!.name)
+        w.add(r.wettkaempfer1.name);
+        w.add(r.wettkaempfer2!.name);
       }));
       const n = w.size;
       const erwarteteAnzahl = n*(n-1)*1/2;
@@ -196,7 +196,7 @@ export class TurnierService {
     });
     
 
-    let logmessage: any = {
+    const logmessage: any = {
       AnzahlDerGruppen: gruppe.length,
       AnzahlBegegnungenJeGruppe: gruppe.reduce((s, w) => s + w.alleGruppenBegegnungen.length + ",", ""),
       Gruppen: groups

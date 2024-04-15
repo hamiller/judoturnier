@@ -48,7 +48,7 @@ export class WettkaempferController {
       res.redirect('/wettkaempfer-neu?success=' + id);
     } catch (error) {
       logger.error("Konnte den Kämpfer nicht anlegen!", {error: error});
-      res.redirect("/wettkaempfer-neu")
+      res.redirect("/wettkaempfer-neu");
     }
     return res;
   }
@@ -65,7 +65,7 @@ export class WettkaempferController {
   async ladeWettkaempfer(@Param('id') id: number, @Res() res: Response) {
     logger.debug('Wettkaempfer-Seite angefragt ' + id);
     const wk = await wiegenService.ladeKaempfer(id);
-    console.log(wk)
+    console.log(wk);
     const vs = await wiegenService.alleVereine().then(vereine => vereine?.sort((v1, v2) => v1.name.localeCompare(v2.name)));
     return { kaempfer: wk, vereine: vs, geschlechter: Geschlecht, altersklasse: Altersklasse };
   }

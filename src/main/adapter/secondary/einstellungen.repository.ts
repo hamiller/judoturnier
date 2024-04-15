@@ -32,7 +32,7 @@ export class EinstellungenRepository {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query("SELECT * FROM einstellungen");
-      return entityToDto(rows);;
+      return entityToDto(rows); ;
     } catch (error) {
       logger.error(error);
       throw error;
@@ -51,28 +51,28 @@ const dtoToEntity = (dto: Einstellungen): any => {
     anzahlmatten: dto.mattenAnzahl,
     wettkampfreihenfolge: wettkampfReihenfolgeKey
   };
-}
+};
 
 const entityToDto = (rows: any[]): Einstellungen => {
   return {
     turnierTyp: turnierTyp(rows),
     mattenAnzahl: mattenAnzahl(rows),
     wettkampfReihenfolge: wettkampfReihenfolge(rows)
-  }
-}
+  };
+};
 const turnierTyp = (rows: any[]): TurnierTyp => {
   const row = rows.filter(row => row.art == "turniertyp")[0];
   const turnierTyp: keyof typeof TurnierTyp = row.wert;
   return TurnierTyp[turnierTyp];
-}
+};
 
 const wettkampfReihenfolge = (rows: any[]): WettkampfReihenfolge => {
   const row = rows.filter(row => row.art == "wettkampfreihenfolge")[0];
   const wettkampfReihenfolge: keyof typeof WettkampfReihenfolge = row.wert;
   return WettkampfReihenfolge[wettkampfReihenfolge];
-}
+};
 
 const mattenAnzahl = (rows: any[]): number => {
   const row = rows.filter(row => row.art == "mattenanzahl")[0];
   return (row.wert as unknown as number);
-}
+};

@@ -31,7 +31,7 @@ export class SechserPool implements Algorithmus {
         name: gewichtsklassenGruppe.name,
         typ: "(" + gewichtsklassenGruppe.minGewicht + "" + gewichtsklassenGruppe.maxGewicht +  + " " + gewichtsklassenGruppe.altersKlasse + ")",
         alleGruppenBegegnungen: [sortedBegegnungen]
-      }
+      };
 
       result.push(wettkampfGruppe);
     }

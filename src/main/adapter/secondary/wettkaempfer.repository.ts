@@ -30,7 +30,7 @@ export class WettkaempferRepository {
     }
   }
 
-  async find(id: Number): Promise<Wettkaempfer | null> {
+  async find(id: number): Promise<Wettkaempfer | null> {
     logger.debug("Fetching wettkaempfer (" + id + ") from db");
     const client = await this.pool.connect();
     try {
@@ -47,11 +47,11 @@ export class WettkaempferRepository {
     }
   }
 
-  async save(wettkaempfer: Wettkaempfer): Promise<Number> {
+  async save(wettkaempfer: Wettkaempfer): Promise<number> {
     logger.debug("Saving wettkaempfer to db");
     const client = await this.pool.connect();
     try {
-      let entity = dtoToEntity(wettkaempfer);
+      const entity = dtoToEntity(wettkaempfer);
       let query;
       if (entity.id) {
         query = {
@@ -74,11 +74,11 @@ export class WettkaempferRepository {
     }
   }
 
-  async delete(id: Number): Promise<void> {
+  async delete(id: number): Promise<void> {
     logger.debug("Removing wettkaempfer from db");
     const client = await this.pool.connect();
     try {
-      let query = {
+      const query = {
         text: 'DELETE FROM wettkaempfer w WHERE w.id = $1',
         values: [id]
       };
@@ -134,4 +134,4 @@ const dtoToEntity = (dto: Wettkaempfer): any => {
     printed: dto.printed,
     checked: dto.checked,
   };
-}
+};

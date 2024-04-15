@@ -17,12 +17,12 @@ export class Sortierer {
   */
   public erstelleReihenfolgeMitAllenGruppenJeDurchgang(gruppen: WettkampfGruppe[]): Runde[] {
     logger.debug("erstelleReihenfolgeMitAllenGruppenJeDurchgang...");
-    let runden: Runde[] = [];
+    const runden: Runde[] = [];
     const maxRundenNummer = 100; // todo
     for (let rundenNummer = 0; rundenNummer < maxRundenNummer; rundenNummer += 1) {
       for (let gruppenNr = 0; gruppenNr < gruppen.length; gruppenNr += 1) {
         const gruppe = gruppen[gruppenNr];
-        let runde = this.kopiereRunde(rundenNummer, gruppe);        
+        const runde = this.kopiereRunde(rundenNummer, gruppe);        
         if (runde) {
           // die Gruppe hat eine entsprechende Runde
           runden.push(runde);
@@ -50,7 +50,7 @@ export class Sortierer {
     // gerade Anzahl an Gruppen -> 2 Gruppen je Matte
     if (gruppen.length % 2 == 0) {
       logger.debug("Berechne gerade Anzahl an Gruppen (" + gruppen.length + ")");
-      let [, neueRunden] = this.gruppiereAbwechselndPaare(gruppen, rundenNummer);
+      const [, neueRunden] = this.gruppiereAbwechselndPaare(gruppen, rundenNummer);
       runden = runden.concat(neueRunden);
     }
     // ungerade Anzahl an Gruppen -> 2 Gruppen je Matte und einmal 3 Gruppen je Matte
@@ -76,8 +76,8 @@ export class Sortierer {
         let gruppeRunde = 0;
         for (let r = 0; r < gruppeZuletzt.alleGruppenBegegnungen.length; r++) {
           const altersKlasseZuletzt = gruppeZuletzt.alleGruppenBegegnungen[0][0].wettkaempfer1.altersklasse;
-          gruppeRunde += 1
-          let rundenName = rundenNummer + 1;
+          gruppeRunde += 1;
+          const rundenName = rundenNummer + 1;
           const rundeZuletzt: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppeRunde, rundeTotal: undefined, altersklasse: altersKlasseZuletzt, gruppe: gruppeZuletzt, begegnungen: gruppeZuletzt.alleGruppenBegegnungen[r] };
           runden.push(rundeZuletzt);
           rundenNummer += 1;
@@ -102,31 +102,31 @@ export class Sortierer {
       for (let r = 0; r < Math.max(gruppe1.alleGruppenBegegnungen.length, gruppe2.alleGruppenBegegnungen.length); r++) {
         if (gruppe1.alleGruppenBegegnungen[r]) {
           gruppe1Runde += 1;
-          let rundenName = resultRundenNummer + 1;
+          const rundenName = resultRundenNummer + 1;
           const runde1: Runde = { id: resultRundenNummer, matten_runde: rundenName, gruppen_runde: gruppe1Runde, rundeTotal: undefined, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.alleGruppenBegegnungen[r] };
           runden.push(runde1);
           resultRundenNummer += 1;
         }
         else {
           // Gruppe 1 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
-          logger.info("Gruppe 1 (von 2) ist leer, füge Dummy ein")
-          gruppe1Runde += 1
-          let rundenName = resultRundenNummer + 1;
+          logger.info("Gruppe 1 (von 2) ist leer, füge Dummy ein");
+          gruppe1Runde += 1;
+          const rundenName = resultRundenNummer + 1;
           runden.push(this.dummyRunde(resultRundenNummer, rundenName, gruppe1Runde, altersKlasse1, gruppe1));
         }
 
         if (gruppe2.alleGruppenBegegnungen[r]) {
-          gruppe2Runde += 1
-          let rundenName = resultRundenNummer + 1;
+          gruppe2Runde += 1;
+          const rundenName = resultRundenNummer + 1;
           const runde2: Runde = { id: resultRundenNummer, matten_runde: rundenName, gruppen_runde: gruppe2Runde, rundeTotal: undefined, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.alleGruppenBegegnungen[r] };
           runden.push(runde2);
           resultRundenNummer += 1;
         }
         else {
           // Gruppe 2 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
-          logger.info("Gruppe 2 (von 2) ist leer, füge Dummy ein")
-          gruppe2Runde += 1
-          let rundenName = resultRundenNummer + 1;
+          logger.info("Gruppe 2 (von 2) ist leer, füge Dummy ein");
+          gruppe2Runde += 1;
+          const rundenName = resultRundenNummer + 1;
           runden.push(this.dummyRunde(resultRundenNummer, rundenName, gruppe2Runde, altersKlasse2, gruppe2));
         }
       }
@@ -135,7 +135,7 @@ export class Sortierer {
   }
 
   private dummyRunde(resultRundenNummer: number, rundenName: number, gruppenRunde: number, altersKlasse: Altersklasse, gruppe: WettkampfGruppe): Runde {
-    logger.debug("erstelle Pause")
+    logger.debug("erstelle Pause");
     const pausenBegegnung: Begegnung = {wettkaempfer1: {
         id: -1,
         name: "Pause",
@@ -158,7 +158,7 @@ export class Sortierer {
     const altersKlasse2 = gruppe2.alleGruppenBegegnungen[0][0].wettkaempfer1.altersklasse;
     const altersKlasse3 = gruppe3.alleGruppenBegegnungen[0][0].wettkaempfer1.altersklasse;
 
-    let resultRundenNummer = rundenNummer;
+    const resultRundenNummer = rundenNummer;
     let gruppe1Runde = 0;
     let gruppe2Runde = 0;
     let gruppe3Runde = 0;
@@ -167,38 +167,38 @@ export class Sortierer {
     for (let r = 0; r < Math.max(gruppe1.alleGruppenBegegnungen.length, gruppe2.alleGruppenBegegnungen.length, gruppe3.alleGruppenBegegnungen.length); r++) {
       if (gruppe1.alleGruppenBegegnungen[r]) {
         gruppe1Runde += 1;
-        let rundenName = rundenNummer + 1;
+        const rundenName = rundenNummer + 1;
         const runde1: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe1Runde, rundeTotal: undefined, altersklasse: altersKlasse1, gruppe: gruppe1, begegnungen: gruppe1.alleGruppenBegegnungen[r] };
         runden.push(runde1);
         rundenNummer += 1;
       }
       else {
         // Gruppe 1 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
-        logger.info("Gruppe 1 (von 3) ist leer, füge Dummy ein")
+        logger.info("Gruppe 1 (von 3) ist leer, füge Dummy ein");
       }
 
       if (gruppe2.alleGruppenBegegnungen[r]) {
         gruppe2Runde += 1;
-        let rundenName = rundenNummer + 1;
+        const rundenName = rundenNummer + 1;
         const runde2: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe2Runde, rundeTotal: undefined, altersklasse: altersKlasse2, gruppe: gruppe2, begegnungen: gruppe2.alleGruppenBegegnungen[r] };
         runden.push(runde2);
         rundenNummer += 1;
       }
       else {
         // Gruppe 2 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
-        logger.info("Gruppe 2 (von 3) ist leer, füge Dummy ein")
+        logger.info("Gruppe 2 (von 3) ist leer, füge Dummy ein");
       }
 
       if (gruppe3.alleGruppenBegegnungen[r]) {
         gruppe3Runde += 1;
-        let rundenName = rundenNummer + 1;
+        const rundenName = rundenNummer + 1;
         const runde3: Runde = { id: rundenNummer, matten_runde: rundenName, gruppen_runde: gruppe3Runde, rundeTotal: undefined, altersklasse: altersKlasse3, gruppe: gruppe3, begegnungen: gruppe3.alleGruppenBegegnungen[r] };
         runden.push(runde3);
         rundenNummer += 1;
       }
       else {
         // Gruppe 3 hat keine Teilnehmer mehr, wir fügen daher einen Dummy (zB Pause) ein
-        logger.info("Gruppe 3 (von 3) ist leer, füge Dummy ein")
+        logger.info("Gruppe 3 (von 3) ist leer, füge Dummy ein");
       }
     }
     return [resultRundenNummer, runden];
@@ -218,7 +218,7 @@ export class Sortierer {
           wettkaempfer2Jetzt === wettkaempfer1Danach || wettkaempfer2Jetzt === wettkaempfer2Danach) {
           // Wenn Teilnehmer in aufeinanderfolgenden Begegnungen wiederholt auftreten,
           // tausche die Begegnungen
-          this.tauscheBegegnungen(j + 1, j + 2, sortedBegegnungen)
+          this.tauscheBegegnungen(j + 1, j + 2, sortedBegegnungen);
         }
       }
     }

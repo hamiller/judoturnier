@@ -56,7 +56,7 @@ export class EinstellungenController {
   async speichereTurnierEinstellungen(@Body() data: any, @Res() res: Response) {
     logger.debug('speichere Turnier-Einstellungen', {data: data});
 
-    var einstellungen : Einstellungen = {
+    let einstellungen : Einstellungen = {
       turnierTyp: data.turniertyp,
       mattenAnzahl: data.mattenanzahl,
       wettkampfReihenfolge: data.wettkampfreihenfolge

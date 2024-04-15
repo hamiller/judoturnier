@@ -24,10 +24,10 @@ export class GewichtsklassenController {
   @Render("gewichtsklassen.hbs")
   async ladeGewichtsklassen(@Res() res: Response) {
     const wks = await wiegenService.alleKaempfer();
-    var currentGwks = await gewichtsklassenGruppenService.lade();
+    const currentGwks = await gewichtsklassenGruppenService.lade();
     logger.info(`geladene Gruppen: ${currentGwks.length}`);
 
-    var groupedByAge = this.groupByAge(currentGwks);
+    const groupedByAge = this.groupByAge(currentGwks);
     const einstellungen = await turnierService.ladeTurnierEinstellungen();
     const anzahlwkInGroups = currentGwks.reduce((sum, g) => sum + g.teilnehmer.length, 0);
     return { 
@@ -45,8 +45,8 @@ export class GewichtsklassenController {
   @Render("druckansicht_gruppen_randori.hbs")
   async ladeDruckAnsichtGruppenRandori(@Param('altersklasse') altersklasse: string, @Res() res: Response) {
     logger.debug('lade Druckansicht Randori-Gruppen für ' + altersklasse);
-    var currentGwks = await gewichtsklassenGruppenService.lade();
-    return { gruppen: currentGwks.filter(gwk => gwk.altersKlasse == altersklasse) }
+    const currentGwks = await gewichtsklassenGruppenService.lade();
+    return { gruppen: currentGwks.filter(gwk => gwk.altersKlasse == altersklasse) };
   }
 
   @Post('/gewichtsklassen-renew')

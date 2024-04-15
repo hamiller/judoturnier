@@ -133,7 +133,7 @@ export class GewichtsklassenGruppeService {
     const geschlechtZugehoerige: Wettkaempfer[][] = [];
     const geschlechter = new Set(kaempferListe.map(k => k.geschlecht));
     for (const geschlecht of geschlechter) {
-      const geschlechtZugehoerig = kaempferListe.filter(k => k.geschlecht == geschlecht)
+      const geschlechtZugehoerig = kaempferListe.filter(k => k.geschlecht == geschlecht);
       geschlechtZugehoerige.push(geschlechtZugehoerig);
     }
     return geschlechtZugehoerige;
@@ -155,11 +155,11 @@ export class GewichtsklassenGruppeService {
     for (const gewichtsklasse of gewichtsklassen) {
       const gewichtsklassenGruppe: Wettkaempfer[] = kaempferListe.filter(k => this.gewichtsKlasse(k) == gewichtsklasse);
       if (gewichtsklassenGruppe.length == 0) {
-        logger.info("Skipping group", {data: gewichtsklasse})
-        continue // might happen for the empty groups...
+        logger.info("Skipping group", {data: gewichtsklasse});
+        continue; // might happen for the empty groups...
       }
-      const maxGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2))
-      const minGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2))
+      const maxGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2));
+      const minGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2));
       const geschlecht = gewichtsklassenGruppe[0].geschlecht; // alle Mitglieder der Gruppe haben das gleiche Geschlecht, da sie vorher so sortiert wurden
       const altersKlasse = gewichtsklassenGruppe[0].altersklasse; // alle Mitglieder der Gruppe haben das gleiche Alter, da sie vorher so sortiert wurden
       gewichtsklassenGruppen.push({
@@ -185,8 +185,8 @@ export class GewichtsklassenGruppeService {
       const gewichtsklassenGruppe = wettkaempferGruppen[current];
       const altersKlasse = gewichtsklassenGruppe[0].altersklasse; // alle Mitglieder der Gruppe haben das gleiche Alter, da sie vorher so sortiert wurden
       const randoriGruppe = gruppenNamen[current].toString();
-      const maxGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2))
-      const minGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2))
+      const maxGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.max(g1, g2));
+      const minGewicht = gewichtsklassenGruppe.map(k => k.gewicht ? k.gewicht : 0).reduce((g1, g2) => Math.min(g1, g2));
 
       gewichtsklassenGruppen.push({
         altersKlasse: altersKlasse,

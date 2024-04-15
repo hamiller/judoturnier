@@ -62,10 +62,10 @@ export class GewichtsklassenGruppeRepository {
     return gkgs.forEach(gkg => this.save(gkg));
   }
 
-  async save(gkg: GewichtsklassenGruppe): Promise<Number> {
+  async save(gkg: GewichtsklassenGruppe): Promise<number> {
     const client = await this.pool.connect();
     try {
-      let entity = dtoToEntity(gkg);
+      const entity = dtoToEntity(gkg);
       let query;
       if (entity.id) {
         query = {
@@ -92,7 +92,7 @@ export class GewichtsklassenGruppeRepository {
     logger.debug("Deleting all GewichtsklassenGruppe from db");
     const client = await this.pool.connect();
     try {
-      let query = {
+      const query = {
         text: 'DELETE FROM gewichtsklassengruppen',
         values: []
       };
@@ -110,7 +110,7 @@ export class GewichtsklassenGruppeRepository {
     logger.debug("Deleting single GewichtsklassenGruppe from db");
     const client = await this.pool.connect();
     try {
-      let query = {
+      const query = {
         text: 'DELETE FROM gewichtsklassengruppen where altersklasse = $1',
         values: [altersKlasse]
       };
@@ -159,4 +159,4 @@ const dtoToEntity = (dto: GewichtsklassenGruppe): any => {
     teilnehmer: dto.teilnehmer.map(t => t.id),
     name: dto.name
   };
-}
+};
